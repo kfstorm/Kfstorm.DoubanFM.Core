@@ -1,0 +1,592 @@
+{
+    "groups": [
+        {
+            "chls": [
+                {
+                    "style": {
+                        "display_text": "",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "intro": "我的个性化音乐频道",
+                    "name": "私人",
+                    "song_num": 123,
+                    "collected": "disabled",
+                    "cover": "http:\/\/img3.douban.com\/pics\/fm\/channel_0_cover.png",
+                    "id": 0
+                },
+                {
+                    "style": {
+                        "display_text": "0首",
+                        "bg_color": "0xe06b59",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "红心",
+                    "cover": "http:\/\/img3.douban.com\/pics\/fm\/channel_-3_cover.png",
+                    "intro": "我喜欢过的音乐",
+                    "song_num": 456,
+                    "collected": "disabled",
+                    "id": -3
+                }
+            ],
+            "group_id": 0,
+            "group_name": "我的兆赫"
+        },
+        {
+            "chls": [
+                {
+                    "style": {
+                        "display_text": "5982首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "七零",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26385.jpg",
+                    "intro": "曾经一无所有的你，在告别的年代道一声“青春无悔”",
+                    "song_num": 5982,
+                    "collected": "false",
+                    "id": 3
+                },
+                {
+                    "style": {
+                        "display_text": "8023首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "华语",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26383.jpg",
+                    "intro": "每天发现一首好听的歌",
+                    "song_num": 8023,
+                    "collected": "false",
+                    "id": 1
+                },
+                {
+                    "style": {
+                        "display_text": "3329首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "法语",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26380.jpg",
+                    "intro": "轻松，优雅，愉悦",
+                    "song_num": 3329,
+                    "collected": "false",
+                    "id": 22
+                },
+                {
+                    "style": {
+                        "display_text": "4578首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "韩语",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26374.jpg",
+                    "intro": "韩语流行音乐就在这里",
+                    "song_num": 4578,
+                    "collected": "false",
+                    "id": 18
+                },
+                {
+                    "style": {
+                        "display_text": "5507首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "九零",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26387.jpg",
+                    "intro": "更新鲜的歌曲，更新鲜的声音",
+                    "song_num": 5507,
+                    "collected": "false",
+                    "id": 5
+                },
+                {
+                    "style": {
+                        "display_text": "6056首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "八零",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26386.jpg",
+                    "intro": "生于八零年代的我们，听着这些歌成长",
+                    "song_num": 6056,
+                    "collected": "false",
+                    "id": 4
+                }
+            ],
+            "group_id": 1,
+            "group_name": "推荐兆赫"
+        },
+        {
+            "chls": [
+                {
+                    "style": {
+                        "display_text": "9522首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "新歌",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26376.jpg",
+                    "intro": "让你的耳朵吸收新鲜正能量",
+                    "song_num": 9522,
+                    "collected": "false",
+                    "id": 61
+                },
+                {
+                    "style": {
+                        "display_text": "8023首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "华语",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26383.jpg",
+                    "intro": "每天发现一首好听的歌",
+                    "song_num": 8023,
+                    "collected": "false",
+                    "id": 1
+                },
+                {
+                    "style": {
+                        "display_text": "8873首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "欧美",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26384.jpg",
+                    "intro": "关于欧美流行音乐的一切，就在这里了",
+                    "song_num": 8873,
+                    "collected": "false",
+                    "id": 2
+                },
+                {
+                    "style": {
+                        "display_text": "8931首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "粤语",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26388.jpg",
+                    "intro": "那些年我们心水的劲歌金曲",
+                    "song_num": 8931,
+                    "collected": "false",
+                    "id": 6
+                },
+                {
+                    "style": {
+                        "display_text": "4189首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "古典",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26382.jpg",
+                    "intro": "古典乐也能听得轻松随性",
+                    "song_num": 4189,
+                    "collected": "false",
+                    "id": 27
+                },
+                {
+                    "style": {
+                        "display_text": "3329首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "法语",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26380.jpg",
+                    "intro": "轻松，优雅，愉悦",
+                    "song_num": 3329,
+                    "collected": "false",
+                    "id": 22
+                },
+                {
+                    "style": {
+                        "display_text": "10214首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "日语",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26373.jpg",
+                    "intro": "日语流行音乐，来这里听就对了",
+                    "song_num": 10214,
+                    "collected": "false",
+                    "id": 17
+                },
+                {
+                    "style": {
+                        "display_text": "4578首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "韩语",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26374.jpg",
+                    "intro": "韩语流行音乐就在这里",
+                    "song_num": 4578,
+                    "collected": "false",
+                    "id": 18
+                },
+                {
+                    "style": {
+                        "display_text": "8051首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "电子",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26393.jpg",
+                    "intro": "小心，有电，注意，节拍！",
+                    "song_num": 8051,
+                    "collected": "false",
+                    "id": 14
+                },
+                {
+                    "style": {
+                        "display_text": "7122首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "R&B",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26369.jpg",
+                    "intro": "跟随着节拍，一起摇摆。",
+                    "song_num": 7122,
+                    "collected": "false",
+                    "id": 16
+                },
+                {
+                    "style": {
+                        "display_text": "8930首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "摇滚",
+                    "brand_logo": "http:\/\/t.douban.com\/img\/files\/file-1427704450.jpg",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/31060.jpg",
+                    "brand_bg": "http:\/\/t.douban.com\/img\/files\/file-1427704432.jpg",
+                    "intro": "Rock and Roll Ain't Noise Pollution，Welcome to the Jungle.",
+                    "song_num": 8930,
+                    "collected": "false",
+                    "id": 7
+                },
+                {
+                    "style": {
+                        "display_text": "8827首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "民谣",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26390.jpg",
+                    "intro": "James Blunt、Bob Dylan 以及 Taylor Swift",
+                    "song_num": 8827,
+                    "collected": "false",
+                    "id": 8
+                },
+                {
+                    "style": {
+                        "display_text": "9539首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "电影原声",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26395.jpg",
+                    "intro": "彼时感动你的电影，此刻温暖你的声音",
+                    "song_num": 9539,
+                    "collected": "false",
+                    "id": 10
+                },
+                {
+                    "style": {
+                        "display_text": "7176首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "轻音乐",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26391.jpg",
+                    "intro": "在属于你的放松地带，释放心灵",
+                    "song_num": 7176,
+                    "collected": "false",
+                    "id": 9
+                },
+                {
+                    "style": {
+                        "display_text": "5982首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "七零",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26385.jpg",
+                    "intro": "曾经一无所有的你，在告别的年代道一声“青春无悔”",
+                    "song_num": 5982,
+                    "collected": "false",
+                    "id": 3
+                },
+                {
+                    "style": {
+                        "display_text": "6056首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "八零",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26386.jpg",
+                    "intro": "生于八零年代的我们，听着这些歌成长",
+                    "song_num": 6056,
+                    "collected": "false",
+                    "id": 4
+                },
+                {
+                    "style": {
+                        "display_text": "5507首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "九零",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26387.jpg",
+                    "intro": "更新鲜的歌曲，更新鲜的声音",
+                    "song_num": 5507,
+                    "collected": "false",
+                    "id": 5
+                },
+                {
+                    "style": {
+                        "display_text": "2442首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "小清新",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26375.jpg",
+                    "intro": "这里没有喧哗与吵闹，静下心来感受世界的美好",
+                    "song_num": 2442,
+                    "collected": "false",
+                    "id": 76
+                },
+                {
+                    "style": {
+                        "display_text": "1883首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "91.1",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/16582.jpg",
+                    "intro": " 都市的节奏和声音",
+                    "song_num": 1883,
+                    "collected": "false",
+                    "id": 78
+                },
+                {
+                    "style": {
+                        "display_text": "3460首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "咖啡",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26379.jpg",
+                    "intro": "我不在喝咖啡，就在听咖啡兆赫。",
+                    "song_num": 3460,
+                    "collected": "false",
+                    "id": 32
+                }
+            ],
+            "group_id": 2,
+            "group_name": "热门兆赫"
+        },
+        {
+            "chls": [
+                {
+                    "style": {
+                        "display_text": "9522首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "新歌",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26376.jpg",
+                    "intro": "让你的耳朵吸收新鲜正能量",
+                    "song_num": 9522,
+                    "collected": "false",
+                    "id": 61
+                },
+                {
+                    "style": {
+                        "display_text": "3460首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "咖啡",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26379.jpg",
+                    "intro": "我不在喝咖啡，就在听咖啡兆赫。",
+                    "song_num": 3460,
+                    "collected": "false",
+                    "id": 32
+                },
+                {
+                    "style": {
+                        "display_text": "6056首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "八零",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26386.jpg",
+                    "intro": "生于八零年代的我们，听着这些歌成长",
+                    "song_num": 6056,
+                    "collected": "false",
+                    "id": 4
+                },
+                {
+                    "style": {
+                        "display_text": "5507首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "九零",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26387.jpg",
+                    "intro": "更新鲜的歌曲，更新鲜的声音",
+                    "song_num": 5507,
+                    "collected": "false",
+                    "id": 5
+                },
+                {
+                    "style": {
+                        "display_text": "8930首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "摇滚",
+                    "brand_logo": "http:\/\/t.douban.com\/img\/files\/file-1427704450.jpg",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/31060.jpg",
+                    "brand_bg": "http:\/\/t.douban.com\/img\/files\/file-1427704432.jpg",
+                    "intro": "Rock and Roll Ain't Noise Pollution，Welcome to the Jungle.",
+                    "song_num": 8930,
+                    "collected": "false",
+                    "id": 7
+                },
+                {
+                    "style": {
+                        "display_text": "8827首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "民谣",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26390.jpg",
+                    "intro": "James Blunt、Bob Dylan 以及 Taylor Swift",
+                    "song_num": 8827,
+                    "collected": "false",
+                    "id": 8
+                },
+                {
+                    "style": {
+                        "display_text": "7176首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "轻音乐",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26391.jpg",
+                    "intro": "在属于你的放松地带，释放心灵",
+                    "song_num": 7176,
+                    "collected": "false",
+                    "id": 9
+                },
+                {
+                    "style": {
+                        "display_text": "9539首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "电影原声",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26395.jpg",
+                    "intro": "彼时感动你的电影，此刻温暖你的声音",
+                    "song_num": 9539,
+                    "collected": "false",
+                    "id": 10
+                },
+                {
+                    "style": {
+                        "display_text": "2442首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "小清新",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26375.jpg",
+                    "intro": "这里没有喧哗与吵闹，静下心来感受世界的美好",
+                    "song_num": 2442,
+                    "collected": "false",
+                    "id": 76
+                },
+                {
+                    "style": {
+                        "display_text": "8023首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "华语",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26383.jpg",
+                    "intro": "每天发现一首好听的歌",
+                    "song_num": 8023,
+                    "collected": "false",
+                    "id": 1
+                },
+                {
+                    "style": {
+                        "display_text": "8873首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "欧美",
+                    "cover": "http:\/\/img3.douban.com\/img\/fmadmin\/medium\/26384.jpg",
+                    "intro": "关于欧美流行音乐的一切，就在这里了",
+                    "song_num": 8873,
+                    "collected": "false",
+                    "id": 2
+                },
+                {
+                    "style": {
+                        "display_text": "8931首",
+                        "bg_color": "0x499884",
+                        "layout_type": 1,
+                        "bg_image": ""
+                    },
+                    "name": "粤语",
+                    "cover": "http:\/\/img5.douban.com\/img\/fmadmin\/medium\/26388.jpg",
+                    "intro": "那些年我们心水的劲歌金曲",
+                    "song_num": 8931,
+                    "collected": "false",
+                    "id": 6
+                }
+            ],
+            "group_id": 3,
+            "group_name": "上升最快兆赫"
+        }
+    ]
+}
