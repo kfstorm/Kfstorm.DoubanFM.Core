@@ -39,28 +39,34 @@
     <Compile Include="Channel.cs" />
     <Compile Include="ChannelList.cs" />
     <Compile Include="EventArgs{T}.cs" />
+    <Compile Include="GetPlayListType.cs" />
+    <Compile Include="GetPlayListTypeString.cs" />
+    <Compile Include="IAuthentication.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="ISession.cs" />
+    <Compile Include="LogOnResult.cs" />
     <Compile Include="Player.Network.cs" />
     <Compile Include="Player.Parser.cs" />
     <Compile Include="PlayerState.cs" />
+    <Compile Include="Session.cs" />
     <Compile Include="Song.cs" />
     <Compile Include="IServerConnection.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Session.cs" />
+    <Compile Include="UserInfo.cs" />
+    <Compile Include="UsernamePasswordAuthentication.cs" />
     <Compile Include="SessionState.cs" />
     <Compile Include="ServerConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    <Reference Include="Microsoft.CSharp"/>
-    <Reference Include="System.Data"/>
-    <Reference Include="System.Xml"/>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>

@@ -26,5 +26,32 @@ namespace Kfstorm.DoubanFM.Core
                     }).ToArray()
             };
         }
+
+        protected virtual Song[] ParsePlayList(string jsonContent)
+        {
+            var obj = JObject.Parse(jsonContent);
+            return (from song in obj["song"]
+                select new Song
+                {
+                    AlbumUrl = (string)song["album"],
+                    PictureUrl = (string)song["picture"],
+                    Ssid = (int)song["ssid"],
+                    Artist = (string)song["artist"],
+                    Url = (string)song["url"],
+                    Company = (string)song["company"],
+                    Title = (string)song["title"],
+                    AverageRating = (double)song["rating_avg"],
+                    Length = (int)song["length"],
+                    SubType = (string)song["subtype"],
+                    PublishTime = (int)song["public_time"],
+                    SongListsCount = (int)song["songlists_count"],
+                    Sid = (int)song["sid"],
+                    Aid = (int)song["aid"],
+                    Sha256 = (string)song["sha256"],
+                    Kbps = (int)song["kbps"],
+                    AlbumTitle = (string)song["albumtitle"],
+                    Like = (bool)song["like"],
+                }).ToArray();
+        }
     }
 }

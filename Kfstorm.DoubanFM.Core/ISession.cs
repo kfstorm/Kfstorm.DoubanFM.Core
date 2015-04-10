@@ -1,10 +1,16 @@
-﻿namespace Kfstorm.DoubanFM.Core
+﻿using System;
+using System.Threading.Tasks;
+
+namespace Kfstorm.DoubanFM.Core
 {
     public interface ISession
     {
         SessionState State { get; }
+        UserInfo UserInfo { get; }
 
-        void LogOn();
+        event EventHandler<EventArgs<SessionState>> StateChanged;
+
+        Task<bool> LogOn(IAuthentication authentication);
         void LogOff();
     }
 }

@@ -15,15 +15,11 @@ namespace Kfstorm.DoubanFM.Core
             throw new NotImplementedException();
         }
 
-        public Client(IServerConnection serverConnection)
+        public Client(ISession session, IServerConnection serverConnection)
         {
             ServerConnection = serverConnection;
             Player = new Player(serverConnection);
-            Session = new Session(serverConnection);
-        }
-
-        public Client() : this(new ServerConnection())
-        {
+            Session = session;
         }
     }
 }
