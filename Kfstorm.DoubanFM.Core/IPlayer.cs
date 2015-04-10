@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Kfstorm.DoubanFM.Core
 {
     public interface IPlayer : IDisposable
     {
-        Song CurerntSong { get; }
-        Song[] NextSongs { get; }
+        Song CurrentSong { get; }
+        Queue<Song> NextSongs { get; }
         ChannelList ChannelList { get; }
         Channel CurrentChannel { get; set; }
         PlayerState State { get; }

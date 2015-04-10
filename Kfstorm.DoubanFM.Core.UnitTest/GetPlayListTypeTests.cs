@@ -10,13 +10,19 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         [Test]
         public void TestConvertPlayListTypeEnumToString()
         {
-            var enumValues = Enum.GetValues(typeof(GetPlayListType)).Cast<GetPlayListType>();
+            var enumValues = Enum.GetValues(typeof(ReportType)).Cast<ReportType>();
             foreach (var type in enumValues)
             {
-                var stringValue = GetPlayListTypeString.GetString(type);
+                var stringValue = ReportTypeString.GetString(type);
                 Assert.IsNotEmpty(stringValue);
                 Assert.AreEqual(1, stringValue.Length);
             }
+        }
+
+        [Test]
+        public void TestInvalidEnum()
+        {
+            Assert.Catch<ArgumentOutOfRangeException>(() => ReportTypeString.GetString((ReportType)int.MaxValue));
         }
     }
 }

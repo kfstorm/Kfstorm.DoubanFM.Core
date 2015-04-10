@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using System;
+using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 
 namespace Kfstorm.DoubanFM.Core.UnitTest
@@ -20,11 +22,12 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                     ExpiresIn = 12345678,
                     UserId = 12345,
                 }
-            });
+            }).Verifiable();
             var session = new Session();
             Assert.AreEqual(SessionState.LoggedOff, session.State);
             Assert.IsNull(session.UserInfo);
             var success = await session.LogOn(authenticationMock.Object);
+            authenticationMock.Verify();
             Assert.IsTrue(success);
             Assert.AreEqual(SessionState.LoggedOn, session.State);
             Assert.IsNotNull(session.UserInfo);
@@ -39,14 +42,55 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestLogOnFailure()
         {
             var authenticationMock = new Mock<IAuthentication>();
-            authenticationMock.Setup(a => a.Authenticate()).ReturnsAsync(new LogOnResult { ErrorMessage = "Test error message." });
+            authenticationMock.Setup(a => a.Authenticate()).ReturnsAsync(new LogOnResult { ErrorMessage = "Test error message." }).Verifiable();
             var session = new Session();
             Assert.AreEqual(SessionState.LoggedOff, session.State);
             Assert.IsNull(session.UserInfo);
             var success = await session.LogOn(authenticationMock.Object);
+            authenticationMock.Verify();
             Assert.IsFalse(success);
             Assert.AreEqual(SessionState.LoggedOff, session.State);
             Assert.IsNull(session.UserInfo);
+        }
+
+        [Test]
+        public async void TestLogOff()
+        {
+            var authenticationMock = new Mock<IAuthentication>();
+            authenticationMock.Setup(a => a.Authenticate()).ReturnsAsync(new LogOnResult { UserInfo = new UserInfo()}).Verifiable();
+            var session = new Session();
+            Assert.AreEqual(SessionState.LoggedOff, session.State);
+            Assert.IsNull(session.UserInfo);
+            var success = await session.LogOn(authenticationMock.Object);
+            authenticationMock.Verify();
+            Assert.IsTrue(success);
+            Assert.AreEqual(SessionState.LoggedOn, session.State);
+            Assert.IsNotNull(session.UserInfo);
+            session.LogOff();
+            Assert.AreEqual(SessionState.LoggedOff, session.State);
+        }
+
+        [Test]
+        public async void TestAlreadyLoggedOn()
+        {
+            var authenticationMock = new Mock<IAuthentication>();
+            authenticationMock.Setup(a => a.Authenticate()).ReturnsAsync(new LogOnResult { UserInfo = new UserInfo() }).Verifiable();
+            var session = new Session();
+            var success = await session.LogOn(authenticationMock.Object);
+            authenticationMock.Verify();
+            Assert.IsTrue(success);
+            Assert.AreEqual(SessionState.LoggedOn, session.State);
+            try
+            {
+                await session.LogOn(authenticationMock.Object);
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
         }
     }
 }

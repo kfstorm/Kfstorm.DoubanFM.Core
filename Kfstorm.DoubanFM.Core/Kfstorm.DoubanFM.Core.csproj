@@ -39,8 +39,8 @@
     <Compile Include="Channel.cs" />
     <Compile Include="ChannelList.cs" />
     <Compile Include="EventArgs{T}.cs" />
-    <Compile Include="GetPlayListType.cs" />
-    <Compile Include="GetPlayListTypeString.cs" />
+    <Compile Include="ReportType.cs" />
+    <Compile Include="ReportTypeString.cs" />
     <Compile Include="IAuthentication.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="IPlayer.cs" />

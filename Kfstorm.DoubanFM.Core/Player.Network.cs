@@ -13,9 +13,9 @@ namespace Kfstorm.DoubanFM.Core
             return ParseChannelList(jsonContent);
         }
 
-        protected virtual async Task<Song[]> GetPlayList(GetPlayListType type)
+        protected virtual async Task<Song[]> GetPlayList(ReportType type)
         {
-            var url = PlayListUrlPattern.Replace("{type}", GetPlayListTypeString.GetString(type));
+            var url = PlayListUrlPattern.Replace("{type}", ReportTypeString.GetString(type));
             var jsonContent = await _serverConnection.Get(url);
             return ParsePlayList(jsonContent);
         }

@@ -15,10 +15,9 @@ namespace Kfstorm.DoubanFM.Core
                     {
                         GroupId = (int)@group["group_id"],
                         GroupName = (string)@group["group_name"],
-                        Channels = ((JArray)@group["chls"]).Select(chl => new Channel
+                        Channels = ((JArray)@group["chls"]).Select(chl => new Channel((int)chl["id"])
                         {
                             Name = (string)chl["name"],
-                            Id = (int)chl["id"],
                             Description = (string)chl["intro"],
                             SongCount = (int)chl["song_num"],
                             CoverUrl = (string)chl["cover"],
@@ -31,11 +30,11 @@ namespace Kfstorm.DoubanFM.Core
         {
             var obj = JObject.Parse(jsonContent);
             return (from song in obj["song"]
-                select new Song
+                select new Song((string)song["sid"])
                 {
                     AlbumUrl = (string)song["album"],
                     PictureUrl = (string)song["picture"],
-                    Ssid = (int)song["ssid"],
+                    Ssid = (string)song["ssid"],
                     Artist = (string)song["artist"],
                     Url = (string)song["url"],
                     Company = (string)song["company"],
@@ -45,8 +44,7 @@ namespace Kfstorm.DoubanFM.Core
                     SubType = (string)song["subtype"],
                     PublishTime = (int)song["public_time"],
                     SongListsCount = (int)song["songlists_count"],
-                    Sid = (int)song["sid"],
-                    Aid = (int)song["aid"],
+                    Aid = (string)song["aid"],
                     Sha256 = (string)song["sha256"],
                     Kbps = (int)song["kbps"],
                     AlbumTitle = (string)song["albumtitle"],
