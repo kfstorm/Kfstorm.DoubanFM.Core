@@ -1,13 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Kfstorm.DoubanFM.Core
 {
     public interface IServerConnection
     {
-        string ClientId { get; }
-        string ClientSecret { get; }
-
-        Task<string> Get(string url);
-        Task<string> Post(string url, byte[] data);
+        IDictionary<string, string> Context { get; }
+        Task<string> Get(Uri uri);
+        Task<string> Post(Uri uri, byte[] data);
     }
 }

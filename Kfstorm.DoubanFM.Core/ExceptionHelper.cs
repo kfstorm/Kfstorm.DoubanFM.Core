@@ -6,7 +6,7 @@ namespace Kfstorm.DoubanFM.Core
 {
     public static class ExceptionHelper
     {
-        public static async Task IgnoreException(ILog logger, Func<Task> action)
+        public static async Task IgnoreExceptionIfAny(ILog logger, Func<Task> action)
         {
             try
             {
@@ -18,7 +18,7 @@ namespace Kfstorm.DoubanFM.Core
             }
         }
 
-        public static async Task<T> IgnoreException<T>(ILog logger, Func<Task<T>> action, T defaultValue = default(T))
+        public static async Task<T> IgnoreExceptionIfAny<T>(ILog logger, Func<Task<T>> action, T defaultValue = default(T))
         {
             try
             {
@@ -31,7 +31,7 @@ namespace Kfstorm.DoubanFM.Core
             }
         }
 
-        public static void IgnoreException(ILog logger, Action action)
+        public static void IgnoreExceptionIfAny(ILog logger, Action action)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Kfstorm.DoubanFM.Core
             }
         }
 
-        public static async Task LogException(ILog logger, Func<Task> action, string message = null)
+        public static async Task LogExceptionIfAny(ILog logger, Func<Task> action, string message = null)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Kfstorm.DoubanFM.Core
             }
         }
 
-        public static async Task<T> LogException<T>(ILog logger, Func<Task<T>> action, string message = null)
+        public static async Task<T> LogExceptionIfAny<T>(ILog logger, Func<Task<T>> action, string message = null)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace Kfstorm.DoubanFM.Core
             }
         }
 
-        public static void LogException(ILog logger, Action action, string message = null)
+        public static void LogExceptionIfAny(ILog logger, Action action, string message = null)
         {
             try
             {

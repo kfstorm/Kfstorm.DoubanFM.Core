@@ -52,14 +52,14 @@ namespace Kfstorm.DoubanFM.Core
             }
             while (ChannelList == null)
             {
-                await LogException(Logger, async () => { ChannelList = await GetChannelList(); }, "Failed to initialize.");
+                await LogExceptionIfAny(Logger, async () => { ChannelList = await GetChannelList(); }, "Failed to initialize.");
             }
             Logger.Info("Initialized.");
         }
 
         public async Task Next(NextCommandType type)
         {
-            await LogException(Logger, async () =>
+            await LogExceptionIfAny(Logger, async () =>
             {
                 switch (type)
                 {
@@ -80,7 +80,7 @@ namespace Kfstorm.DoubanFM.Core
 
         public async Task ChangeChannel(Channel newChannel)
         {
-            await LogException(Logger, async () =>
+            await LogExceptionIfAny(Logger, async () =>
             {
                 if (CurrentChannel != newChannel)
                 {
@@ -100,7 +100,7 @@ namespace Kfstorm.DoubanFM.Core
 
         public async void SetRedHeart(bool redHeart)
         {
-            await IgnoreException(Logger, async () => await Report(redHeart ? ReportType.Like : ReportType.CancelLike));
+            await IgnoreExceptionIfAny(Logger, async () => await Report(redHeart ? ReportType.Like : ReportType.CancelLike));
         }
 
         public void Dispose()

@@ -81,7 +81,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         ///                    &quot;name&quot;: &quot;私人&quot;,
         ///                    &quot;song_num&quot;: 123,
         ///                    &quot;collected&quot;: &quot;disabled&quot;,
-        ///                    &quot;cover&quot;: &quot;http:\/\/img3. [rest of string was truncated]&quot;;.
+        ///                    &quot;cover&quot;: &quot;http:\/\/img3.douban.com\/pic [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ChannelListExample {
             get {
@@ -90,11 +90,42 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {&quot;warning&quot;:&quot;user_is_ananymous&quot;,&quot;r&quot;:0,&quot;version_max&quot;:100,&quot;is_show_quick_start&quot;:1,&quot;song&quot;:[{&quot;album&quot;:&quot;\/subject\/1982398\/&quot;,&quot;picture&quot;:&quot;http:\/\/img3.douban.com\/lpic\/s2338142.jpg&quot;,&quot;ssid&quot;:&quot;5292&quot;,&quot;artist&quot;:&quot;The Bird And The Bee&quot;,&quot;url&quot;:&quot;http:\/\/mr3.douban.com\/201504101620\/81e4f0e73bce5d935531d47617b074f9\/view\/song\/small\/p164666.mp4&quot;,&quot;company&quot;:&quot;EMI&quot;,&quot;title&quot;:&quot;Because&quot;,&quot;rating_avg&quot;:4.041,&quot;length&quot;:218,&quot;subtype&quot;:&quot;&quot;,&quot;public_time&quot;:&quot;2007&quot;,&quot;songlists_count&quot;:6,&quot;sid&quot;:&quot;164666&quot;,&quot;aid&quot;:&quot;1982398&quot;,&quot;sha256&quot;:&quot;42cd018f0016b9d21 [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to {
+        ///	&quot;warning&quot; : &quot;user_is_ananymous&quot;,
+        ///	&quot;r&quot; : 0,
+        ///	&quot;version_max&quot; : 100,
+        ///	&quot;is_show_quick_start&quot; : 1,
+        ///	&quot;song&quot; : [{
+        ///			&quot;album&quot; : &quot;\/subject\/1982398\/&quot;,
+        ///			&quot;picture&quot; : &quot;http:\/\/img3.douban.com\/lpic\/s2338142.jpg&quot;,
+        ///			&quot;ssid&quot; : &quot;5292&quot;,
+        ///			&quot;artist&quot; : &quot;The Bird And The Bee&quot;,
+        ///			&quot;url&quot; : &quot;http:\/\/mr3.douban.com\/201504101620\/81e4f0e73bce5d935531d47617b074f9\/view\/song\/small\/p164666.mp4&quot;,
+        ///			&quot;company&quot; : &quot;EMI&quot;,
+        ///			&quot;title&quot; : &quot;Because&quot;,
+        ///			&quot;rating_avg&quot; : 4.041,
+        ///			&quot;length&quot; : 218,
+        ///			&quot;subtype&quot; : &quot;&quot;,
+        ///		 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PlayList {
             get {
                 return ResourceManager.GetString("PlayList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///	&quot;access_token&quot;: &quot;c908a1375d9e74bc5b19e3a618db5e34&quot;,
+        ///	&quot;douban_user_name&quot;: &quot;K.F.Storm&quot;,
+        ///	&quot;douban_user_id&quot;: &quot;49549004&quot;,
+        ///	&quot;expires_in&quot;: 604800,
+        ///	&quot;refresh_token&quot;: &quot;b92fa09e3d59022b2b8ee1dab80b0681&quot;
+        ///}.
+        /// </summary>
+        internal static string TestOAuthResponse {
+            get {
+                return ResourceManager.GetString("TestOAuthResponse", resourceCulture);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Moq;
 using NUnit.Framework;
 
@@ -11,7 +12,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestInitialization()
         {
             var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(Player.ChannelListUrlPattern)).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(new Uri(Player.ChannelListUrlPattern))).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             var sessonMock = new Mock<ISession>();
             var player = new Player(serverConnectionMock.Object, sessonMock.Object);
             Assert.IsNull(player.ChannelList);
@@ -41,8 +42,8 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestChangeChannel()
         {
             var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(Player.ChannelListUrlPattern)).ReturnsAsync(Resource.ChannelListExample).Verifiable();
-            serverConnectionMock.Setup(s => s.Get(Player.PlayListUrlPattern.Replace("{type}", ReportTypeString.GetString(ReportType.NewChannel)))).ReturnsAsync(Resource.PlayList).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(new Uri(Player.ChannelListUrlPattern))).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(new Uri(Player.PlayListUrlPattern.Replace("{type}", ReportTypeString.GetString(ReportType.NewChannel))))).ReturnsAsync(Resource.PlayList).Verifiable();
             var sessonMock = new Mock<ISession>();
             var player = new Player(serverConnectionMock.Object, sessonMock.Object);
             await player.Initialize();

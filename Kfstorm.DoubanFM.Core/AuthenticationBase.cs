@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Kfstorm.DoubanFM.Core
 {
@@ -7,10 +7,21 @@ namespace Kfstorm.DoubanFM.Core
     {
         protected LogOnResult ParseLogOnResult(string jsonContent)
         {
-            throw new NotImplementedException();
+            var obj = JObject.Parse(jsonContent);
+            return new LogOnResult
+            {
+                UserInfo = new UserInfo
+                {
+                    AccessToken = (string)obj[StringTable.AccessToken],
+                    Username = (string)obj[StringTable.DoubanUsername],
+                    UserId = (long)obj[StringTable.DoubanUserId],
+                    ExpiresIn = (long)obj[StringTable.ExpiresIn],
+                    RefreshToken = (string)obj[StringTable.RefreshToken],
+                }
+            };
         }
 
         public abstract Task<LogOnResult> Authenticate();
-        public abstract Task<bool> UnAuthenticate();
+        public abstract Task<string> UnAuthenticate();
     }
 }
