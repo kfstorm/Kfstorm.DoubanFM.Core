@@ -46,5 +46,10 @@ namespace Kfstorm.DoubanFM.Core
         {
             return !(left == right);
         }
+
+        public override string ToString()
+        {
+            return $"Id: {Id}, Name: {Name}";
+        }
     }
 }

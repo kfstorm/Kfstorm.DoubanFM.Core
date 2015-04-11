@@ -9,14 +9,14 @@ namespace Kfstorm.DoubanFM.Core
 
         protected virtual async Task<ChannelList> GetChannelList()
         {
-            var jsonContent = await _serverConnection.Get(ChannelListUrlPattern);
+            var jsonContent = await ServerConnection.Get(ChannelListUrlPattern);
             return ParseChannelList(jsonContent);
         }
 
         protected virtual async Task<Song[]> GetPlayList(ReportType type)
         {
             var url = PlayListUrlPattern.Replace("{type}", ReportTypeString.GetString(type));
-            var jsonContent = await _serverConnection.Get(url);
+            var jsonContent = await ServerConnection.Get(url);
             return ParsePlayList(jsonContent);
         }
     }

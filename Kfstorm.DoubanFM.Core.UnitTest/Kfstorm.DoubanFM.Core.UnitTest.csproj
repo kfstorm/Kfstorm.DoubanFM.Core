@@ -61,6 +61,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Resources\ChannelListExample.json" />
     <None Include="Resources\PlayList.json" />

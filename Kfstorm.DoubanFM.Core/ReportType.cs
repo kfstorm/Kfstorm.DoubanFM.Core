@@ -1,12 +1,12 @@
 ﻿namespace Kfstorm.DoubanFM.Core
 {
-    internal enum ReportType
+    public enum ReportType
     {
         NewChannel,
-        SkipSong,
-        BanSong,
+        SkipCurrentSong,
+        BanCurrentSong,
         PlayListEmpty,
-        SongEnded,
+        CurrentSongEnded,
         Like,
         CancelLike,
     }

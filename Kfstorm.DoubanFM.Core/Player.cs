@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using log4net;
+using static Kfstorm.DoubanFM.Core.ExceptionHelper;
 
 namespace Kfstorm.DoubanFM.Core
 {
-    internal partial class Player : IPlayer
+    public partial class Player : IPlayer
     {
-        private readonly IServerConnection _serverConnection;
-        private PlayerState _state;
-        private Channel _currentChannel;
+        protected ILog Logger = LogManager.GetLogger(typeof(Player));
+
         private Song _currentSong;
+
+        public ISession Session { get; }
+
+        public IServerConnection ServerConnection { get; }
 
         public Song CurrentSong
         {
@@ -19,103 +24,83 @@ namespace Kfstorm.DoubanFM.Core
                 if (_currentSong != value)
                 {
                     _currentSong = value;
-                    OnSongChanged(new EventArgs<Song>(_currentSong));
-                    if (_currentSong == null)
-                    {
-                        State = PlayerState.Stoped;
-                    }
+                    OnCurrentSongChanged(new EventArgs<Song>(_currentSong));
                 }
             }
         }
 
-        public Queue<Song> NextSongs { get; protected set; }
+        protected Queue<Song> NextSongs { get; set; }
 
         public ChannelList ChannelList { get; protected set; }
 
-        public Channel CurrentChannel
+        public Channel CurrentChannel { get; protected set; }
+
+        public event EventHandler<EventArgs<Song>> CurrentSongChanged;
+        public event EventHandler<EventArgs<Channel>> CurrentChannelChanged;
+
+        public Player(IServerConnection serverConnection, ISession session)
         {
-            get { return _currentChannel; }
-#pragma warning disable 4014
-            set { ChangeChannel(value); }
-#pragma warning restore 4014
+            ServerConnection = serverConnection;
+            Session = session;
         }
 
-        public PlayerState State
+        public async Task Initialize()
         {
-            get { return _state; }
-            protected set
+            if (ChannelList != null)
             {
-                if (_state != value)
+                throw new InvalidOperationException("Already initialized");
+            }
+            while (ChannelList == null)
+            {
+                await LogException(Logger, async () => { ChannelList = await GetChannelList(); }, "Failed to initialize.");
+            }
+            Logger.Info("Initialized.");
+        }
+
+        public async Task Next(NextCommandType type)
+        {
+            await LogException(Logger, async () =>
+            {
+                switch (type)
                 {
-                    _state = value;
-                    OnStateChanged(new EventArgs<PlayerState>(value));
-                }
-            }
+                    case NextCommandType.CurrentSongEnded:
+                        await Report(ReportType.CurrentSongEnded);
+                        break;
+                    case NextCommandType.SkipCurrentSong:
+                        await Report(ReportType.SkipCurrentSong);
+                        break;
+                    case NextCommandType.BanCurrentSong:
+                        await Report(ReportType.BanCurrentSong);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException("type");
+                };
+            });
         }
 
-        public event EventHandler<EventArgs<Song>> SongChanged;
-        public event EventHandler<EventArgs<Channel>> ChannelChanged;
-        public event EventHandler<EventArgs<PlayerState>> StateChanged;
-
-        public Player(IServerConnection serverConnection)
+        public async Task ChangeChannel(Channel newChannel)
         {
-            _serverConnection = serverConnection;
-        }
-
-        public async Task StartInitialize()
-        {
-            if (State != PlayerState.NotInitialized)
+            await LogException(Logger, async () =>
             {
-                throw new InvalidOperationException("Player already initialized");
-            }
-            State = PlayerState.Initializing;
-            var channelList = await GetChannelList();
-            if (channelList != null)
-            {
-                ChannelList = channelList;
-                State = PlayerState.Stoped;
-            }
-            else
-            {
-                State = PlayerState.NotInitialized;
-            }
-        }
-
-        public async Task ChangeChannel(Channel channel)
-        {
-            if (_currentChannel != channel)
-            {
-                _currentChannel = channel;
-                OnChannelChanged(new EventArgs<Channel>(_currentChannel));
-                if (_currentChannel == null)
+                if (CurrentChannel != newChannel)
                 {
-                    ClearSongs();
+                    CurrentChannel = newChannel;
+                    OnCurrentChannelChanged(new EventArgs<Channel>(CurrentChannel));
+                    if (CurrentChannel == null)
+                    {
+                        ClearSongs();
+                    }
+                    else
+                    {
+                        await Report(ReportType.NewChannel);
+                    }
                 }
-                else
-                {
-                    await Report(ReportType.NewChannel, true);
-                }
-            }
+            });
         }
 
-        public void Skip()
+        public async void SetRedHeart(bool redHeart)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Ban()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Next()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetRedHeart(bool redHeart)
-        {
-            throw new NotImplementedException();
+            await IgnoreException(Logger, async () => await Report(redHeart ? ReportType.Like : ReportType.CancelLike));
         }
 
         public void Dispose()
@@ -123,29 +108,35 @@ namespace Kfstorm.DoubanFM.Core
             throw new NotImplementedException();
         }
 
-        protected virtual void OnStateChanged(EventArgs<PlayerState> e)
+        protected virtual void OnCurrentSongChanged(EventArgs<Song> e)
         {
-            StateChanged?.Invoke(this, e);
+            Logger.Info($"Current song changed. {e.Object}");
+            CurrentSongChanged?.Invoke(this, e);
         }
 
-        protected virtual void OnSongChanged(EventArgs<Song> e)
+        protected virtual void OnCurrentChannelChanged(EventArgs<Channel> e)
         {
-            SongChanged?.Invoke(this, e);
+            Logger.Info($"Current channel changed. {e.Object}");
+            CurrentChannelChanged?.Invoke(this, e);
         }
 
-        protected virtual void OnChannelChanged(EventArgs<Channel> e)
+        private async Task Report(ReportType type)
         {
-            ChannelChanged?.Invoke(this, e);
-        }
-
-        private async Task Report(ReportType type, bool changeCurrentSong)
-        {
-            var newPlayList = await GetPlayList(type);
-            if (type == ReportType.SongEnded) return;
-            ChangePlayListSongs(newPlayList);
-            if (changeCurrentSong)
+            try
             {
-                await ChangeCurrentSong();
+                var changeCurrentSong = type == ReportType.SkipCurrentSong || type == ReportType.NewChannel || type == ReportType.BanCurrentSong;
+                var newPlayList = await GetPlayList(type);
+                if (type == ReportType.CurrentSongEnded) return;
+                ChangePlayListSongs(newPlayList);
+                if (changeCurrentSong)
+                {
+                    await ChangeCurrentSong();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Failed to send report to server. Report type: {type}. Current channel: {CurrentChannel}. Current song: {CurrentSong}.", ex);
+                throw;
             }
         }
 
@@ -176,6 +167,16 @@ namespace Kfstorm.DoubanFM.Core
         {
             CurrentSong = null;
             NextSongs = null;
+        }
+
+        async void IPlayer.Initialize()
+        {
+            await Initialize();
+        }
+
+        async void IPlayer.Next(NextCommandType type)
+        {
+            await Next(type);
         }
     }
 }

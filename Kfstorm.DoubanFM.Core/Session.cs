@@ -1,57 +1,71 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using log4net;
 
 namespace Kfstorm.DoubanFM.Core
 {
     public class Session : ISession
     {
-        private SessionState _state;
-
-        public SessionState State
-        {
-            get { return _state; }
-            protected set
-            {
-                if (_state != value)
-                {
-                    _state = value;
-                    OnStateChanged(new EventArgs<SessionState>(_state));
-                }
-            }
-        }
-
-        public event EventHandler<EventArgs<SessionState>> StateChanged;
+        protected ILog Logger = LogManager.GetLogger(typeof(Session));
 
         public UserInfo UserInfo { get; protected set; }
 
+        protected int IsWorking;
+
         public async Task<bool> LogOn(IAuthentication authentication)
         {
-            if (State == SessionState.LoggedOn)
+
+            if (UserInfo != null)
             {
                 throw new InvalidOperationException("Already logged on");
             }
-            State = SessionState.LoggingOn;
-            var result = await authentication.Authenticate();
-            if (result.UserInfo == null)
+            if (Interlocked.CompareExchange(ref IsWorking, 1, 0) == 0)
             {
-                State = SessionState.LoggedOff;
-                return false;
+                try
+                {
+                    var result = await authentication.Authenticate();
+                    Logger.Info($"Authentication result: {result}");
+                    if (result.UserInfo == null)
+                    {
+                        return false;
+                    }
+                    UserInfo = result.UserInfo;
+                    return true;
+                }
+                finally
+                {
+                    Interlocked.CompareExchange(ref IsWorking, 0, 1);
+                }
             }
-            UserInfo = result.UserInfo;
-            State = SessionState.LoggedOn;
-            return true;
+            throw new InvalidOperationException("Another unfinished log on/off request exists.");
         }
 
-        public void LogOff()
+        public async Task<bool> LogOff(IAuthentication authentication)
         {
-            UserInfo = null;
-            State = SessionState.LoggingOff;
-            State = SessionState.LoggedOff;
-        }
-
-        protected virtual void OnStateChanged(EventArgs<SessionState> e)
-        {
-            StateChanged?.Invoke(this, e);
+            if (UserInfo == null)
+            {
+                throw new InvalidOperationException("Already logged off");
+            }
+            if (Interlocked.CompareExchange(ref IsWorking, 1, 0) == 0)
+            {
+                try
+                {
+                    if (await authentication.UnAuthenticate())
+                    {
+                        UserInfo = null;
+                        Logger.Info("Logged off.");
+                        return true;
+                    }
+                    Logger.Warn("Failed to log off.");
+                    return false;
+                }
+                finally
+                {
+                    Interlocked.CompareExchange(ref IsWorking, 0, 1);
+                }
+            }
+            throw new InvalidOperationException("Another unfinished log on/off request exists.");
         }
     }
 }

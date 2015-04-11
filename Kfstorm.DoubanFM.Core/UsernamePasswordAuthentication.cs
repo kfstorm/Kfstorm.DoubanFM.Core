@@ -1,9 +1,9 @@
-﻿using System;
+﻿using System.Text;
 using System.Threading.Tasks;
 
 namespace Kfstorm.DoubanFM.Core
 {
-    public class UsernamePasswordAuthentication : IAuthentication
+    public class UsernamePasswordAuthentication : AuthenticationBase
     {
         private readonly IServerConnection _serverConnection;
         const string LogOnUrl = "https://www.douban.com/service/auth2/token";
@@ -17,14 +17,22 @@ namespace Kfstorm.DoubanFM.Core
 
         public string Password { get; set; }
 
-        protected virtual string GetLogOnPostData(string clientId, string clientSecret)
+        protected virtual byte[] GetLogOnPostData()
         {
-            return $"%3F_v=12674&client_id={clientId}&client_secret={clientSecret}&grant_type=password&password={Password}&redirect_uri=http%3A%2F%2Fwww.douban.com%2Fmobile%2Ffm&username={Password}";
+            var content = $"%3F_v=12674&client_id={_serverConnection.ClientId}&client_secret={_serverConnection.ClientSecret}&grant_type=password&password={Password}&redirect_uri=http%3A%2F%2Fwww.douban.com%2Fmobile%2Ffm&username={Password}";
+            return Encoding.ASCII.GetBytes(content);
         }
 
-        public async Task<LogOnResult> Authenticate()
+        public override async Task<LogOnResult> Authenticate()
         {
-            throw new NotImplementedException();
+            var data = GetLogOnPostData();
+            var jsonContent = await _serverConnection.Post(LogOnUrl, data);
+            return ParseLogOnResult(jsonContent);
+        }
+
+        public override Task<bool> UnAuthenticate()
+        {
+            return Task.FromResult(true);
         }
     }
 }

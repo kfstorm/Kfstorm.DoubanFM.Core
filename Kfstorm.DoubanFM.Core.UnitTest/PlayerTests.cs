@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System.Linq;
+using Moq;
 using NUnit.Framework;
 
 namespace Kfstorm.DoubanFM.Core.UnitTest
@@ -11,11 +12,12 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         {
             var serverConnectionMock = new Mock<IServerConnection>();
             serverConnectionMock.Setup(s => s.Get(Player.ChannelListUrlPattern)).ReturnsAsync(Resource.ChannelListExample).Verifiable();
-            var player = new Player(serverConnectionMock.Object);
-            Assert.AreEqual(PlayerState.NotInitialized, player.State);
-            await player.StartInitialize();
+            var sessonMock = new Mock<ISession>();
+            var player = new Player(serverConnectionMock.Object, sessonMock.Object);
+            Assert.IsNull(player.ChannelList);
+            await player.Initialize();
             serverConnectionMock.Verify();
-            Assert.AreEqual(PlayerState.Stoped, player.State);
+            Assert.IsNotNull(player.ChannelList);
             var channelList = player.ChannelList;
             Assert.IsNotNull(channelList.ChannelGroups);
             Assert.AreEqual(4, channelList.ChannelGroups.Length);
@@ -41,17 +43,18 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             var serverConnectionMock = new Mock<IServerConnection>();
             serverConnectionMock.Setup(s => s.Get(Player.ChannelListUrlPattern)).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             serverConnectionMock.Setup(s => s.Get(Player.PlayListUrlPattern.Replace("{type}", ReportTypeString.GetString(ReportType.NewChannel)))).ReturnsAsync(Resource.PlayList).Verifiable();
-            var player = new Player(serverConnectionMock.Object);
-            await player.StartInitialize();
-            Assert.AreEqual(PlayerState.Stoped, player.State);
-            await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
-            serverConnectionMock.Verify();
-            Assert.AreEqual(PlayerState.Stoped, player.State);
-            ValidateChannel(player.CurrentChannel);
-            ValidateSong(player.CurrentSong);
-            foreach (var song in player.NextSongs)
+            var sessonMock = new Mock<ISession>();
+            var player = new Player(serverConnectionMock.Object, sessonMock.Object);
+            await player.Initialize();
+            Assert.IsNotNull(player.ChannelList);
+            var newChannels = player.ChannelList.ChannelGroups.SelectMany(group => group.Channels).ToArray();
+            foreach (var newChannel in newChannels)
             {
-                ValidateSong(song);
+                await player.ChangeChannel(newChannel);
+                serverConnectionMock.Verify();
+                Assert.AreEqual(newChannel, player.CurrentChannel);
+                ValidateChannel(player.CurrentChannel);
+                ValidateSong(player.CurrentSong);
             }
         }
 
