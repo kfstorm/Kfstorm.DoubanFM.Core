@@ -70,7 +70,7 @@ namespace Kfstorm.DoubanFM.Core
                 var responseStream = response.GetResponseStream();
                 var reader = new StreamReader(responseStream, Encoding.UTF8);
                 var content = await reader.ReadToEndAsync();
-                Logger.Info($"Response: {content}");
+                Logger.Debug($"Response: {content}");
                 return content;
             });
         }

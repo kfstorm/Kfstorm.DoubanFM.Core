@@ -18,6 +18,9 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 { "client_secret", "testClientSecret12345" },
                 { "redirect_uri", "http://www.testRedirectUri.com" },
             });
+            serverConnectionMock.Setup(s => s.ClientId).Returns("testClientId12345");
+            serverConnectionMock.Setup(s => s.ClientSecret).Returns("testClientSecret12345");
+            serverConnectionMock.Setup(s => s.RedirectUri).Returns(new Uri("http://www.testRedirectUri.com"));
             return serverConnectionMock;
         }
 
@@ -32,7 +35,6 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.testRedirectUri.com?code=testCode"))
             };
             var result = await oAuth.Authenticate();
-            serverConnectionMock.VerifyAll();
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.UserInfo);
             Assert.IsNotNull(result.UserInfo.AccessToken);
@@ -40,6 +42,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             Assert.IsNotNull(result.UserInfo.Username);
             Assert.AreNotEqual(0, result.UserInfo.UserId);
             Assert.AreNotEqual(0, result.UserInfo.ExpiresIn);
+            serverConnectionMock.Verify();
         }
 
         [Test]
@@ -112,11 +115,11 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.testRedirectUri.com?code=testCode"))
             };
             var result = await oAuth.Authenticate();
-            serverConnectionMock.VerifyAll();
             Assert.IsNotNull(result);
             Assert.IsNull(result.UserInfo);
             Assert.AreEqual(-1, result.ErrorCode);
             Assert.IsNotEmpty(result.ErrorMessage);
+            serverConnectionMock.Verify();
         }
 
         [Test]
@@ -129,11 +132,11 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.testRedirectUri.com?code=testCode"))
             };
             var result = await oAuth.Authenticate();
-            serverConnectionMock.VerifyAll();
             Assert.IsNotNull(result);
             Assert.IsNull(result.UserInfo);
             Assert.AreEqual(-1, result.ErrorCode);
             Assert.AreEqual("Test message.", result.ErrorMessage);
+            serverConnectionMock.Verify();
         }
 
         [Test]
