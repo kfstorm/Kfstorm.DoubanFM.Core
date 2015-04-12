@@ -11,7 +11,14 @@ namespace Kfstorm.DoubanFM.Core
 
         public UserInfo UserInfo { get; protected set; }
 
+        public IServerConnection ServerConnection { get; }
+
         protected int IsWorking;
+
+        public Session(IServerConnection serverConnection)
+        {
+            ServerConnection = serverConnection;
+        }
 
         public async Task LogOn(IAuthentication authentication)
         {
@@ -31,6 +38,7 @@ namespace Kfstorm.DoubanFM.Core
                         throw new Exception("Null user info is not allowed");
                     }
                     UserInfo = result;
+                    ServerConnection.AccessToken = UserInfo.AccessToken;
                     return;
                 }
                 catch (Exception ex)

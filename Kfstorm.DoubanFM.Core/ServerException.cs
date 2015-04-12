@@ -23,23 +23,43 @@ namespace Kfstorm.DoubanFM.Core
             ErrorMessage = errorMessage;
         }
 
-        public static async Task<T> ThrowIfIsServerException<T>(Func<Task<T>> action)
+        public static async Task<T> TryThrow<T>(Func<Task<T>> action)
         {
             try
             {
                 return await action();
             }
-            catch (Exception ex)
+            catch (WebException ex)
             {
-                var ex2 = ex as WebException;
-                if (ex2 == null) throw;
-                var stream = ex2.Response.GetResponseStream();
+                var stream = ex.Response.GetResponseStream();
                 var reader = new StreamReader(stream, Encoding.UTF8);
                 var jsonContent = await reader.ReadToEndAsync();
                 int code;
                 string message;
                 ParseServerException(jsonContent, out code, out message);
                 throw new ServerException(code, message, ex);
+            }
+        }
+
+        public static void TryThrow(string jsonContent)
+        {
+            try
+            {
+                var obj = JObject.Parse(jsonContent);
+                JToken codeToken;
+                if (obj.TryGetValue("r", out codeToken))
+                {
+                    var code = (int)codeToken;
+                    if (code != 0)
+                    {
+                        var message = (string)obj["err"];
+                        throw new ServerException(code, message);
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore
             }
         }
 

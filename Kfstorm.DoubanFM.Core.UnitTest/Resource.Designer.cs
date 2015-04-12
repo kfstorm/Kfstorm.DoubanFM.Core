@@ -86,22 +86,17 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///	&quot;warning&quot; : &quot;user_is_ananymous&quot;,
-        ///	&quot;r&quot; : 0,
-        ///	&quot;version_max&quot; : 100,
-        ///	&quot;is_show_quick_start&quot; : 1,
-        ///	&quot;song&quot; : [{
-        ///			&quot;album&quot; : &quot;\/subject\/1982398\/&quot;,
-        ///			&quot;picture&quot; : &quot;http:\/\/img3.douban.com\/lpic\/s2338142.jpg&quot;,
-        ///			&quot;ssid&quot; : &quot;5292&quot;,
-        ///			&quot;artist&quot; : &quot;The Bird And The Bee&quot;,
-        ///			&quot;url&quot; : &quot;http:\/\/mr3.douban.com\/201504101620\/81e4f0e73bce5d935531d47617b074f9\/view\/song\/small\/p164666.mp4&quot;,
-        ///			&quot;company&quot; : &quot;EMI&quot;,
-        ///			&quot;title&quot; : &quot;Because&quot;,
-        ///			&quot;rating_avg&quot; : 4.041,
-        ///			&quot;length&quot; : 218,
-        ///			&quot;subtype&quot; : &quot;&quot;,
-        ///		 [rest of string was truncated]&quot;;.
+        ///    &quot;warning&quot;: &quot;user_is_ananymous&quot;,
+        ///    &quot;r&quot;: 0,
+        ///    &quot;version_max&quot;: 100,
+        ///    &quot;is_show_quick_start&quot;: 1,
+        ///    &quot;song&quot;: [
+        ///        {
+        ///            &quot;picture&quot;: &quot;http:\/\/img3.douban.com\/view\/dale-online\/dale_ad\/public\/f8c88e7c33c0e37.jpg&quot;,
+        ///            &quot;albumtitle&quot;: &quot;����FM&quot;,
+        ///            &quot;adtype&quot;: 3,
+        ///            &quot;monitor_url&quot;: &quot;&quot;,
+        ///            &quot;album&quot;: &quot;http:\/\/erebor.douban.com\/redirect\/?ad=122410&amp;uid=&amp;bid=quklsdfso9A&amp;unit=dale_fm_audio&amp;ip=58.208.65.228&amp;crtr=4%3A17725&amp;mark=&amp;hn=gardner2&amp;sig=1391aadc [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PlayList {
             get {

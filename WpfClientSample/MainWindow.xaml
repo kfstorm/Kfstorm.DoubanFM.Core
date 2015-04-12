@@ -9,5 +9,6 @@
     <StackPanel>
         <Button x:Name="BtnOAuthTest" Click="BtnOAuthTest_OnClick">OAuth Login Test</Button>
         <Button x:Name="BtnPasswordTest" Click="BtnPasswordTest_OnClick">Password Login Test</Button>
+        <Button x:Name="BtnPlayerTest" Click="BtnPlayerTest_Click">Player Test</Button>
     </StackPanel>
 </Window>

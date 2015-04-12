@@ -11,6 +11,10 @@ namespace Kfstorm.DoubanFM.Core
         {
             name = Uri.EscapeDataString(name);
             value = Uri.EscapeDataString(value??string.Empty);
+            if (value == string.Empty)
+            {
+                return;
+            }
             var queryToAppend = $"{name}={value}";
 
             if (uriBuilder.Query != null && uriBuilder.Query.Length > 1)
@@ -39,6 +43,13 @@ namespace Kfstorm.DoubanFM.Core
             AppendQuery(uriBuilder, StringTable.ClientId, serverConnection.ClientId);
             AppendQuery(uriBuilder, StringTable.ClientSecret, serverConnection.ClientSecret);
             AppendQuery(uriBuilder, StringTable.RedirectUri, serverConnection.RedirectUri.AbsoluteUri);
+        }
+
+        public static void AppendUsageCommonFields(this UriBuilder uriBuilder, IServerConnection serverConnection)
+        {
+            AppendQuery(uriBuilder, StringTable.ApiKey, serverConnection.ClientId);
+            AppendQuery(uriBuilder, StringTable.AppName, serverConnection.AppName);
+            AppendQuery(uriBuilder, StringTable.Version, serverConnection.AppVersion);
         }
 
         public static IDictionary<string, string> GetQueries(this Uri uri)

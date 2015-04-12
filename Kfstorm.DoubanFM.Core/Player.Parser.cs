@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Kfstorm.DoubanFM.Core
@@ -39,17 +40,33 @@ namespace Kfstorm.DoubanFM.Core
                     Url = (string)song["url"],
                     Company = (string)song["company"],
                     Title = (string)song["title"],
-                    AverageRating = (double)song["rating_avg"],
+                    AverageRating = ParseOptional<double?>(song["rating_avg"]),
                     Length = (int)song["length"],
                     SubType = (string)song["subtype"],
-                    PublishTime = (int)song["public_time"],
-                    SongListsCount = (int)song["songlists_count"],
+                    PublishTime = ParseOptional<int?>(song["public_time"]),
+                    SongListsCount = ParseOptional<int?>(song["songlists_count"]),
                     Aid = (string)song["aid"],
                     Sha256 = (string)song["sha256"],
-                    Kbps = (int)song["kbps"],
+                    Kbps = ParseOptional<int?>(song["kbps"]),
                     AlbumTitle = (string)song["albumtitle"],
-                    Like = (bool)song["like"],
+                    Like = ParseOptional<bool>(song["like"]),
                 }).ToArray();
+        }
+
+        private T ParseOptional<T>(JToken obj)
+        {
+            try
+            {
+                if (obj == null)
+                {
+                    return default(T);
+                }
+                return (T)Convert.ChangeType(obj, typeof(T));
+            }
+            catch (FormatException)
+            {
+                return default(T);
+            }
         }
     }
 }

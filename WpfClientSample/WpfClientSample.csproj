@@ -84,6 +84,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PlayerTestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PasswordTestWindow.xaml.cs">
@@ -91,6 +95,9 @@
     </Compile>
     <Compile Include="OAuthTestWindow.xaml.cs">
       <DependentUpon>OAuthTestWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PlayerTestWindow.xaml.cs">
+      <DependentUpon>PlayerTestWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

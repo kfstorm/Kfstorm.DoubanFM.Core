@@ -13,10 +13,12 @@ namespace Kfstorm.DoubanFM.Core
     {
         protected ILog Logger = LogManager.GetLogger(typeof(ServerConnection));
 
-        public ServerConnection(string clientId, string clientSecret, Uri redirectUri)
+        public ServerConnection(string clientId, string clientSecret, string appName, string appVersion, Uri redirectUri)
         {
             ClientId = clientId;
             ClientSecret = clientSecret;
+            AppName = appName;
+            AppVersion = appVersion;
             RedirectUri = redirectUri;
         }
 
@@ -28,39 +30,95 @@ namespace Kfstorm.DoubanFM.Core
 
         public string ClientId
         {
-            get { return Context[StringTable.ClientId]; }
+            get { return GetContextOptional(StringTable.ClientId); }
             set { Context[StringTable.ClientId] = value; }
         }
 
         public string ClientSecret
         {
-            get { return Context[StringTable.ClientSecret]; }
+            get { return GetContextOptional(StringTable.ClientSecret); }
             set { Context[StringTable.ClientSecret] = value; }
+        }
+
+        public string AppName
+        {
+            get { return GetContextOptional(StringTable.AppName); }
+            set { Context[StringTable.AppName] = value; }
+        }
+
+        public string AppVersion
+        {
+            get { return GetContextOptional(StringTable.Version); }
+            set { Context[StringTable.Version] = value; }
         }
 
         public Uri RedirectUri
         {
-            get { return new Uri(Context[StringTable.RedirectUri]); }
+            get
+            {
+                var uri = GetContextOptional(StringTable.RedirectUri);
+                return uri == null ? null : new Uri(uri);
+            }
             set { Context[StringTable.RedirectUri] = value?.AbsoluteUri; }
         }
 
-        public virtual Task<string> Get(Uri uri)
+        public string AccessToken
         {
-            throw new NotImplementedException();
+            get { return GetContextOptional(StringTable.AccessToken); }
+            set { Context[StringTable.AccessToken] = value; }
+        }
+
+        protected virtual string GetContextOptional(string name)
+        {
+            string temp;
+            if (Context.TryGetValue(name, out temp))
+            {
+                return temp;
+            }
+            return null;
+        }
+
+        public virtual async Task<string> Get(Uri uri)
+        {
+            return await Get(uri, null);
+        }
+
+        public async Task<string> Get(Uri uri, Action<HttpWebRequest> modifier)
+        {
+            Logger.Debug($"GET: {uri}");
+            return await LogExceptionIfAny(Logger, () => ServerException.TryThrow(async () =>
+            {
+                var request = (HttpWebRequest)WebRequest.Create(uri);
+                request.Method = WebRequestMethods.Http.Get;
+                modifier?.Invoke(request);
+                var response = await request.GetResponseAsync();
+                var responseStream = response.GetResponseStream();
+                var reader = new StreamReader(responseStream, Encoding.UTF8);
+                var content = await reader.ReadToEndAsync();
+                Logger.Debug($"Response: {content}");
+                ServerException.TryThrow(content);
+                return content;
+            }));
         }
 
         public virtual async Task<string> Post(Uri uri, byte[] data)
+        {
+            return await Post(uri, data, null);
+        }
+
+        public async Task<string> Post(Uri uri, byte[] data, Action<HttpWebRequest> modifier)
         {
             if (data == null)
             {
                 data = new byte[0];
             }
             Logger.Debug($"POST: {uri}. Data length: {data.Length}");
-            return await LogExceptionIfAny(Logger, () => ServerException.ThrowIfIsServerException(async () =>
+            return await LogExceptionIfAny(Logger, () => ServerException.TryThrow(async () =>
             {
                 var request = (HttpWebRequest)WebRequest.Create(uri);
                 request.Method = WebRequestMethods.Http.Post;
                 request.ContentType = "application/x-www-form-urlencoded";
+                modifier?.Invoke(request);
                 if (data.Length > 0)
                 {
                     var requestStream = await request.GetRequestStreamAsync();
@@ -71,6 +129,7 @@ namespace Kfstorm.DoubanFM.Core
                 var reader = new StreamReader(responseStream, Encoding.UTF8);
                 var content = await reader.ReadToEndAsync();
                 Logger.Debug($"Response: {content}");
+                ServerException.TryThrow(content);
                 return content;
             }));
         }

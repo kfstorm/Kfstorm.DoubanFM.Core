@@ -11,15 +11,15 @@ namespace Kfstorm.DoubanFM.Core
         public string Url { get; set; }
         public string Company { get; set; }
         public string Title { get; set; }
-        public double AverageRating { get; set; }
+        public double? AverageRating { get; set; }
         public int Length { get; set; }
         public string SubType { get; set; }
-        public int PublishTime { get; set; }
-        public int SongListsCount { get; set; }
+        public int? PublishTime { get; set; }
+        public int? SongListsCount { get; set; }
         public string Sid { get; }
         public string Aid { get; set; }
         public string Sha256 { get; set; }
-        public int Kbps { get; set; }
+        public int? Kbps { get; set; }
         public string AlbumTitle { get; set; }
         public bool Like { get; set; }
 
@@ -38,7 +38,7 @@ namespace Kfstorm.DoubanFM.Core
 
         public override int GetHashCode()
         {
-            return Sid.GetHashCode();
+            return Sid?.GetHashCode() ?? 0;
         }
 
         public bool Equals(Song other)
@@ -58,7 +58,7 @@ namespace Kfstorm.DoubanFM.Core
 
         public override string ToString()
         {
-            return $"Title: {Title}, Artist: {Artist}, AlbumTitle: {AlbumTitle}, Ssid: {Ssid}, Sid: {Sid}, Aid: {Aid}";
+            return $"Title: {Title}, Artist: {Artist}, AlbumTitle: {AlbumTitle}, Sid: {Sid}";
         }
     }
 }

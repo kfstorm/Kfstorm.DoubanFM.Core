@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using Moq;
 using NUnit.Framework;
 
@@ -12,7 +13,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestInitialization()
         {
             var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(new Uri(Player.ChannelListUrlPattern))).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.IsAny<Uri>(), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             var sessonMock = new Mock<ISession>();
             var player = new Player(serverConnectionMock.Object, sessonMock.Object);
             Assert.IsNull(player.ChannelList);
@@ -42,8 +43,8 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestChangeChannel()
         {
             var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(new Uri(Player.ChannelListUrlPattern))).ReturnsAsync(Resource.ChannelListExample).Verifiable();
-            serverConnectionMock.Setup(s => s.Get(new Uri(Player.PlayListUrlPattern.Replace("{type}", ReportTypeString.GetString(ReportType.NewChannel))))).ReturnsAsync(Resource.PlayList).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
             var sessonMock = new Mock<ISession>();
             var player = new Player(serverConnectionMock.Object, sessonMock.Object);
             await player.Initialize();
@@ -81,20 +82,23 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             Assert.IsNotNull(song);
             Assert.IsNotEmpty(song.AlbumUrl);
             Assert.IsNotEmpty(song.PictureUrl);
-            Assert.IsNotEmpty(song.Ssid);
             Assert.IsNotEmpty(song.Artist);
             Assert.IsNotEmpty(song.Url);
-            Assert.IsNotEmpty(song.Company);
             Assert.IsNotEmpty(song.Title);
-            Assert.AreNotEqual(0, song.AverageRating);
             Assert.AreNotEqual(0, song.Length);
-            Assert.AreNotEqual(0, song.PublishTime);
-            Assert.AreNotEqual(0, song.SongListsCount);
             Assert.IsNotEmpty(song.Sid);
             Assert.IsNotEmpty(song.Aid);
-            Assert.IsNotEmpty(song.Sha256);
             Assert.AreNotEqual(0, song.Kbps);
             Assert.IsNotEmpty(song.AlbumTitle);
+            if (song.SubType != "T")
+            {
+                Assert.IsNotEmpty(song.Ssid);
+                Assert.IsNotEmpty(song.Company);
+                Assert.AreNotEqual(0, song.AverageRating);
+                Assert.AreNotEqual(0, song.PublishTime);
+                Assert.AreNotEqual(0, song.SongListsCount);
+                Assert.IsNotEmpty(song.Sha256);
+            }
         }
     }
 }

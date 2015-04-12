@@ -35,6 +35,8 @@ namespace Kfstorm.DoubanFM.Core
 
         public Channel CurrentChannel { get; protected set; }
 
+        public IDictionary<string, object> Config { get; } = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+
         public event EventHandler<EventArgs<Song>> CurrentSongChanged;
         public event EventHandler<EventArgs<Channel>> CurrentChannelChanged;
 
@@ -52,9 +54,14 @@ namespace Kfstorm.DoubanFM.Core
             }
             while (ChannelList == null)
             {
-                await LogExceptionIfAny(Logger, async () => { ChannelList = await GetChannelList(); }, "Failed to initialize.");
+                await LogExceptionIfAny(Logger, RefreshChannelList, "Failed to initialize.");
             }
             Logger.Info("Initialized.");
+        }
+
+        public async Task RefreshChannelList()
+        {
+            ChannelList = await GetChannelList();
         }
 
         public async Task Next(NextCommandType type)
@@ -98,14 +105,15 @@ namespace Kfstorm.DoubanFM.Core
             });
         }
 
-        public async void SetRedHeart(bool redHeart)
+        public async Task SetRedHeart(bool redHeart)
         {
             await IgnoreExceptionIfAny(Logger, async () => await Report(redHeart ? ReportType.Like : ReportType.CancelLike));
+            CurrentSong.Like = redHeart;
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            // TODO
         }
 
         protected virtual void OnCurrentSongChanged(EventArgs<Song> e)
@@ -167,16 +175,6 @@ namespace Kfstorm.DoubanFM.Core
         {
             CurrentSong = null;
             NextSongs = null;
-        }
-
-        async void IPlayer.Initialize()
-        {
-            await Initialize();
-        }
-
-        async void IPlayer.Next(NextCommandType type)
-        {
-            await Next(type);
         }
     }
 }

@@ -45,6 +45,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="ServerConnectionTests.cs" />
     <Compile Include="SessionTests.cs" />
   </ItemGroup>
   <ItemGroup>
