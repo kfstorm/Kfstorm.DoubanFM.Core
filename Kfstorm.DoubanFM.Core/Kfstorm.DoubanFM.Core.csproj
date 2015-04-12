@@ -42,14 +42,15 @@
     <Compile Include="ExceptionHelper.cs" />
     <Compile Include="NextCommandType.cs" />
     <Compile Include="OAuthAuthentication.cs" />
+    <Compile Include="PasswordAuthentication.cs" />
     <Compile Include="ReportType.cs" />
     <Compile Include="ReportTypeString.cs" />
     <Compile Include="IAuthentication.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="ISession.cs" />
-    <Compile Include="LogOnResult.cs" />
     <Compile Include="Player.Network.cs" />
     <Compile Include="Player.Parser.cs" />
+    <Compile Include="ServerException.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="Song.cs" />
     <Compile Include="IServerConnection.cs" />

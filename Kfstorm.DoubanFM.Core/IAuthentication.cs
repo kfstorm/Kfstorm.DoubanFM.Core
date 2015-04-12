@@ -4,7 +4,6 @@ namespace Kfstorm.DoubanFM.Core
 {
     public interface IAuthentication
     {
-        Task<LogOnResult> Authenticate();
-        Task<string> UnAuthenticate();
+        Task<UserInfo> Authenticate();
     }
 }

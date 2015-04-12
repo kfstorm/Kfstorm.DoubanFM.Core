@@ -13,7 +13,7 @@ namespace Kfstorm.DoubanFM.Core
 
         protected int IsWorking;
 
-        public async Task<string> LogOn(IAuthentication authentication)
+        public async Task LogOn(IAuthentication authentication)
         {
 
             if (UserInfo != null)
@@ -26,17 +26,17 @@ namespace Kfstorm.DoubanFM.Core
                 {
                     var result = await authentication.Authenticate();
                     Logger.Info($"Authentication result: {result}");
-                    if (result.UserInfo == null)
+                    if (result == null)
                     {
-                        return result.ErrorMessage;
+                        throw new Exception("Null user info is not allowed");
                     }
-                    UserInfo = result.UserInfo;
-                    return null;
+                    UserInfo = result;
+                    return;
                 }
                 catch (Exception ex)
                 {
                     Logger.Error("Exception occurred when trying to log on.", ex);
-                    return ex.Message;
+                    throw;
                 }
                 finally
                 {
@@ -46,7 +46,7 @@ namespace Kfstorm.DoubanFM.Core
             throw new InvalidOperationException("Another unfinished log on/off request exists.");
         }
 
-        public async Task<string> LogOff(IAuthentication authentication)
+        public void LogOff()
         {
             if (UserInfo == null)
             {
@@ -54,26 +54,9 @@ namespace Kfstorm.DoubanFM.Core
             }
             if (Interlocked.CompareExchange(ref IsWorking, 1, 0) == 0)
             {
-                try
-                {
-                    var error = await authentication.UnAuthenticate();
-                    if (error != null)
-                    {
-                        return error;
-                    }
-                    UserInfo = null;
-                    Logger.Info("Logged off.");
-                    return null;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error("Exception occurred when trying to log off.", ex);
-                    return ex.Message;
-                }
-                finally
-                {
-                    Interlocked.CompareExchange(ref IsWorking, 0, 1);
-                }
+                UserInfo = null;
+                Interlocked.CompareExchange(ref IsWorking, 0, 1);
+                return;
             }
             throw new InvalidOperationException("Another unfinished log on/off request exists.");
         }

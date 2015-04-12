@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:WpfClientSample"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <Button Click="Button_Click">OAuth Test</Button>
-    </Grid>
+    <StackPanel>
+        <Button x:Name="BtnOAuthTest" Click="BtnOAuthTest_OnClick">OAuth Login Test</Button>
+        <Button x:Name="BtnPasswordTest" Click="BtnPasswordTest_OnClick">Password Login Test</Button>
+    </StackPanel>
 </Window>

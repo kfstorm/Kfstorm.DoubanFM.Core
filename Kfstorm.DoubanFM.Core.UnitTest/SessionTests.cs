@@ -11,29 +11,19 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
     {
         public IAuthentication BasicAuthenticationMock;
 
-        public LogOnResult SuccessLogOnResult = new LogOnResult
+        public UserInfo UserInfoExample = new UserInfo
         {
-            UserInfo = new UserInfo
-            {
-                AccessToken = "12345678",
-                RefreshToken = "87654321",
-                Username = "TestUser",
-                ExpiresIn = 12345678,
-                UserId = 12345,
-            }
-        };
-
-        public LogOnResult FailureLogOnResult = new LogOnResult
-        {
-            ErrorCode = 1,
-            ErrorMessage = "Test failure message."
+            AccessToken = "12345678",
+            RefreshToken = "87654321",
+            Username = "TestUser",
+            ExpiresIn = 12345678,
+            UserId = 12345,
         };
 
         public SessionTests()
         {
             var mock = new Mock<IAuthentication>();
-            mock.Setup(a => a.Authenticate()).ReturnsAsync(SuccessLogOnResult);
-            mock.Setup(a => a.UnAuthenticate()).ReturnsAsync(null);
+            mock.Setup(a => a.Authenticate()).ReturnsAsync(UserInfoExample);
             BasicAuthenticationMock = mock.Object;
         }
 
@@ -42,8 +32,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         {
             var session = new Session();
             Assert.IsNull(session.UserInfo);
-            var error = await session.LogOn(BasicAuthenticationMock);
-            Assert.IsNull(error);
+            await session.LogOn(BasicAuthenticationMock);
             Assert.IsNotNull(session.UserInfo);
             Assert.IsNotEmpty(session.UserInfo.AccessToken);
             Assert.IsNotEmpty(session.UserInfo.RefreshToken);
@@ -53,26 +42,26 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         }
 
         [Test]
-        public async void TestLogOnFailure()
+        public void TestLogOnFailure()
         {
             var authenticationMock = new Mock<IAuthentication>();
-            authenticationMock.Setup(a => a.Authenticate()).ReturnsAsync(FailureLogOnResult);
+            authenticationMock.Setup(a => a.Authenticate()).ThrowsAsync(new Exception("Test failure."));
             var session = new Session();
             Assert.IsNull(session.UserInfo);
-            var error = await session.LogOn(authenticationMock.Object);
-            Assert.IsNotNull(error);
+            var ex = Assert.Throws<AggregateException>(() => session.LogOn(authenticationMock.Object).Wait()).InnerException;
+            Assert.AreEqual("Test failure.", ex.Message);
             Assert.IsNull(session.UserInfo);
         }
 
         [Test]
-        public async void TestLogOnFailure_Exception()
+        public void TestLogOnFailure_Exception()
         {
             var authenticationMock = new Mock<IAuthentication>();
             authenticationMock.Setup(a => a.Authenticate()).Throws(new Exception("Test failure."));
             var session = new Session();
             Assert.IsNull(session.UserInfo);
-            var error = await session.LogOn(authenticationMock.Object);
-            Assert.AreEqual("Test failure.", error);
+            var ex = Assert.Throws<AggregateException>(() => session.LogOn(authenticationMock.Object).Wait()).InnerException;
+            Assert.AreEqual("Test failure.", ex.Message);
             Assert.IsNull(session.UserInfo);
         }
 
@@ -81,49 +70,17 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         {
             var session = new Session();
             Assert.IsNull(session.UserInfo);
-            var error = await session.LogOn(BasicAuthenticationMock);
-            Assert.IsNull(error);
+            await session.LogOn(BasicAuthenticationMock);
             Assert.IsNotNull(session.UserInfo);
-            await session.LogOff(BasicAuthenticationMock);
+            session.LogOff();
             Assert.IsNull(session.UserInfo);
-        }
-
-        [Test]
-        public async void TestLogOffFailure()
-        {
-            var authenticationMock = new Mock<IAuthentication>();
-            authenticationMock.Setup(a => a.Authenticate()).ReturnsAsync(SuccessLogOnResult);
-            authenticationMock.Setup(a => a.UnAuthenticate()).ReturnsAsync("Test failure.");
-            var session = new Session();
-            Assert.IsNull(session.UserInfo);
-            var error = await session.LogOn(authenticationMock.Object);
-            Assert.IsNull(error);
-            Assert.IsNotNull(session.UserInfo);
-            Assert.AreEqual("Test failure.", await session.LogOff(authenticationMock.Object));
-            Assert.IsNotNull(session.UserInfo);
-        }
-
-        [Test]
-        public async void TestLogOffFailure_Exception()
-        {
-            var authenticationMock = new Mock<IAuthentication>();
-            authenticationMock.Setup(a => a.Authenticate()).ReturnsAsync(SuccessLogOnResult);
-            authenticationMock.Setup(a => a.UnAuthenticate()).Throws(new Exception("Test failure."));
-            var session = new Session();
-            Assert.IsNull(session.UserInfo);
-            var error = await session.LogOn(authenticationMock.Object);
-            Assert.IsNull(error);
-            Assert.IsNotNull(session.UserInfo);
-            Assert.AreEqual("Test failure.", await session.LogOff(authenticationMock.Object));
-            Assert.IsNotNull(session.UserInfo);
         }
 
         [Test]
         public async void TestAlreadyLoggedOn()
         {
             var session = new Session();
-            var error = await session.LogOn(BasicAuthenticationMock);
-            Assert.IsNull(error);
+            await session.LogOn(BasicAuthenticationMock);
             Assert.IsNotNull(session.UserInfo);
             Assert.That(() => session.LogOn(BasicAuthenticationMock).Wait(), Throws.InnerException.TypeOf<InvalidOperationException>());
         }
@@ -133,31 +90,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         {
             var session = new Session();
             Assert.IsNull(session.UserInfo);
-            Assert.That(() => session.LogOff(BasicAuthenticationMock).Wait(), Throws.InnerException.TypeOf<InvalidOperationException>());
-        }
-
-        [Test]
-        public async void TestChangeSessionStateWhenLoggingOff()
-        {
-            var authenticationMock = new Mock<IAuthentication>();
-            authenticationMock.Setup(a => a.Authenticate()).ReturnsAsync(SuccessLogOnResult);
-            var signal = new ManualResetEvent(false);
-            authenticationMock.Setup(a => a.UnAuthenticate()).Returns(Task.Run(() =>
-            {
-                signal.WaitOne();
-                return (string)null;
-            }));
-            var session = new Session();
-            var error = await session.LogOn(authenticationMock.Object);
-            Assert.IsNull(error);
-            Assert.IsNotNull(session.UserInfo);
-            var task = session.LogOff(authenticationMock.Object);
-            Assert.That(() => session.LogOn(authenticationMock.Object).Wait(), Throws.InnerException.TypeOf<InvalidOperationException>());
-            Assert.That(() => session.LogOff(authenticationMock.Object).Wait(), Throws.InnerException.TypeOf<InvalidOperationException>());
-            Assert.IsNotNull(session.UserInfo);
-            signal.Set();
-            Assert.IsNull(await task);
-            Assert.IsNull(session.UserInfo);
+            Assert.That(() => session.LogOff(), Throws.InvalidOperationException);
         }
 
         [Test]
@@ -168,16 +101,16 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             authenticationMock.Setup(a => a.Authenticate()).Returns(Task.Run(() =>
             {
                 signal.WaitOne();
-                return Task.FromResult(SuccessLogOnResult);
+                return Task.FromResult(UserInfoExample);
             }));
             var session = new Session();
             Assert.IsNull(session.UserInfo);
             var task = session.LogOn(authenticationMock.Object);
             Assert.That(() => session.LogOn(authenticationMock.Object).Wait(), Throws.InnerException.TypeOf<InvalidOperationException>());
-            Assert.That(() => session.LogOff(authenticationMock.Object).Wait(), Throws.InnerException.TypeOf<InvalidOperationException>());
+            Assert.That(() => session.LogOff(), Throws.InvalidOperationException);
             Assert.IsNull(session.UserInfo);
             signal.Set();
-            Assert.IsNull(await task);
+            await task;
             Assert.IsNotNull(session.UserInfo);
         }
     }

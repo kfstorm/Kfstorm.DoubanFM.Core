@@ -6,7 +6,7 @@ namespace Kfstorm.DoubanFM.Core
     {
         UserInfo UserInfo { get; }
 
-        Task<string> LogOn(IAuthentication authentication);
-        Task<string> LogOff(IAuthentication authentication);
+        Task LogOn(IAuthentication authentication);
+        void LogOff();
     }
 }

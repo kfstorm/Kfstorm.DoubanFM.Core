@@ -10,6 +10,8 @@
         public const string State = "state";
         public const string GrantType = "grant_type";
         public const string Code = "code";
+        public const string Username = "username";
+        public const string Password = "password";
         public const string RefreshToken = "refresh_token";
         public const string AuthorizationCode = "authorization_code";
         public const string AccessToken = "access_token";

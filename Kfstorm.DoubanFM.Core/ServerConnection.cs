@@ -56,7 +56,7 @@ namespace Kfstorm.DoubanFM.Core
                 data = new byte[0];
             }
             Logger.Debug($"POST: {uri}. Data length: {data.Length}");
-            return await LogExceptionIfAny(Logger, async () =>
+            return await LogExceptionIfAny(Logger, () => ServerException.ThrowIfIsServerException(async () =>
             {
                 var request = (HttpWebRequest)WebRequest.Create(uri);
                 request.Method = WebRequestMethods.Http.Post;
@@ -72,7 +72,7 @@ namespace Kfstorm.DoubanFM.Core
                 var content = await reader.ReadToEndAsync();
                 Logger.Debug($"Response: {content}");
                 return content;
-            });
+            }));
         }
     }
 }

@@ -5,24 +5,17 @@ using Newtonsoft.Json;
 namespace WpfClientSample
 {
     /// <summary>
-    /// Interaction logic for OAuthTestWindow.xaml
+    /// Interaction logic for PasswordTestWindow.xaml
     /// </summary>
-    public partial class OAuthTestWindow : Window
+    public partial class PasswordTestWindow : Window
     {
         public ISession Session { get; } = ((App)Application.Current).Session;
 
-        public OAuthAuthentication OAuth { get; }
+        public PasswordAuthentication PAuth { get; }
 
-        public OAuthTestWindow()
+        public PasswordTestWindow()
         {
-            OAuth = new OAuthAuthentication(((App)Application.Current).ServerConnection)
-            {
-                GetRedirectedUri = async uri =>
-                {
-                    var window = new BrowserWindow(uri, OAuth.RedirectUri);
-                    return await window.GetRedirectUri();
-                }
-            };
+            PAuth = new PasswordAuthentication(((App)Application.Current).ServerConnection);
 
             InitializeComponent();
 
@@ -31,7 +24,9 @@ namespace WpfClientSample
 
         private async void BtnLogOn_Click(object sender, RoutedEventArgs e)
         {
-            await Session.LogOn(OAuth);
+            PAuth.Username = TbUsername.Text;
+            PAuth.Password = PbPassword.Password;
+            await Session.LogOn(PAuth);
             ShowSessionInfo();
         }
 

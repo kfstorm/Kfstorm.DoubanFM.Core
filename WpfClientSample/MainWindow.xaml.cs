@@ -12,10 +12,16 @@ namespace WpfClientSample
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void BtnOAuthTest_OnClick(object sender, RoutedEventArgs e)
         {
             var oAuthWindow = new OAuthTestWindow { Owner = this };
-            oAuthWindow.Show();
+            oAuthWindow.ShowDialog();
+        }
+
+        private void BtnPasswordTest_OnClick(object sender, RoutedEventArgs e)
+        {
+            var passwordWindow = new PasswordTestWindow { Owner = this };
+            passwordWindow.ShowDialog();
         }
     }
 }
