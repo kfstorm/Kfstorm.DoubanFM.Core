@@ -43,23 +43,25 @@ namespace Kfstorm.DoubanFM.Core
 
         public static void TryThrow(string jsonContent)
         {
+            JObject obj;
             try
             {
-                var obj = JObject.Parse(jsonContent);
-                JToken codeToken;
-                if (obj.TryGetValue("r", out codeToken))
-                {
-                    var code = (int)codeToken;
-                    if (code != 0)
-                    {
-                        var message = (string)obj["err"];
-                        throw new ServerException(code, message);
-                    }
-                }
+                obj = JObject.Parse(jsonContent);
             }
             catch
             {
                 // Ignore
+                return;
+            }
+            JToken codeToken;
+            if (obj.TryGetValue("r", out codeToken))
+            {
+                var code = (int)codeToken;
+                if (code != 0)
+                {
+                    var message = (string)obj["err"];
+                    throw new ServerException(code, message);
+                }
             }
         }
 

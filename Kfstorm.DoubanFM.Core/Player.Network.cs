@@ -41,17 +41,17 @@ namespace Kfstorm.DoubanFM.Core
             return newChannelList;
         }
 
-        protected virtual async Task<Song[]> GetPlayList(ReportType type)
+        protected virtual async Task<Song[]> GetPlayList(ReportType type, int channelId, string sid)
         {
             object formats;
             Config.TryGetValue(StringTable.Formats, out formats);
             object kbps;
             Config.TryGetValue(StringTable.Formats, out kbps);
 
-            var uri = CreateGetPlayListUri(CurrentChannel.Id, type, CurrentSong?.Sid, (string)formats, (int?)kbps, null /* TODO: fill played time here */);
+            var uri = CreateGetPlayListUri(channelId, type, sid, (string)formats, (int?)kbps, null /* TODO: fill played time here */);
             var jsonContent = await ServerConnection.Get(uri, RequestModifier);
             var newPlayList = ParsePlayList(jsonContent);
-            Logger.Info($"Got play list. song count: {newPlayList.Length}. Detail: {JsonConvert.SerializeObject(newPlayList)}");
+            Logger.Info($"Got play list. Type: {type}. Channel ID: {channelId}. Sid: {sid}. song count: {newPlayList.Length}. Detail: {JsonConvert.SerializeObject(newPlayList)}");
             return newPlayList;
         }
 
