@@ -22,7 +22,7 @@
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <Label>Channel List</Label>
-            <ListView Grid.Row="1" x:Name="LvChannels" MaxWidth="300" SelectionChanged="LvChannels_OnSelectionChanged"></ListView>
+            <ListView Grid.Row="1" x:Name="LvChannels" Width="240" SelectionChanged="LvChannels_OnSelectionChanged"></ListView>
             <Button Grid.Row="2" x:Name="BtnRefreshChannelList" Margin="10" Padding="5" Click="BtnRefreshChannelList_Click">Refresh Channel List</Button>
         </Grid>
         <Grid Grid.Row="0" Grid.Column="1">

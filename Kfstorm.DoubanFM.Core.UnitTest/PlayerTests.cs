@@ -14,8 +14,8 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         {
             var serverConnectionMock = new Mock<IServerConnection>();
             serverConnectionMock.Setup(s => s.Get(It.IsAny<Uri>(), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
-            var sessonMock = new Mock<ISession>();
-            var player = new Player(serverConnectionMock.Object, sessonMock.Object);
+            var sessionMock = new Mock<ISession>();
+            var player = new Player(serverConnectionMock.Object, sessionMock.Object);
             Assert.IsNull(player.ChannelList);
             await player.Initialize();
             serverConnectionMock.Verify();
@@ -45,8 +45,8 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             var serverConnectionMock = new Mock<IServerConnection>();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
-            var sessonMock = new Mock<ISession>();
-            var player = new Player(serverConnectionMock.Object, sessonMock.Object);
+            var sessionMock = new Mock<ISession>();
+            var player = new Player(serverConnectionMock.Object, sessionMock.Object);
             await player.Initialize();
             Assert.IsNotNull(player.ChannelList);
             var newChannels = player.ChannelList.ChannelGroups.SelectMany(group => group.Channels).ToArray();

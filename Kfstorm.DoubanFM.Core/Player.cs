@@ -102,7 +102,7 @@ namespace Kfstorm.DoubanFM.Core
                         await Report(ReportType.BanCurrentSong, CurrentChannel.Id, CurrentSong?.Sid);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException("type");
+                        throw new ArgumentOutOfRangeException(nameof(type));
                 }
             });
         }
@@ -122,8 +122,8 @@ namespace Kfstorm.DoubanFM.Core
 
                         /*
                         If user called ChangeChannel twice in a short time, say call 1 and call 2.
-                        But call 2 responsed before call 1. Then we want to use call 2's response.
-                        So we need to check AysncExpectedChannelId here because it should be call 2's ID.
+                        But call 2 responded before call 1. Then we want to use call 2's response.
+                        So we need to check AsyncExpectedChannelId here because it should be call 2's ID.
                         */
                         if (AsyncExpectedChannelId == newChannel.Id)
                         {

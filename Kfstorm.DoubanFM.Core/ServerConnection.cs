@@ -93,6 +93,7 @@ namespace Kfstorm.DoubanFM.Core
                 modifier?.Invoke(request);
                 var response = await request.GetResponseAsync();
                 var responseStream = response.GetResponseStream();
+                // ReSharper disable once AssignNullToNotNullAttribute
                 var reader = new StreamReader(responseStream, Encoding.UTF8);
                 var content = await reader.ReadToEndAsync();
                 Logger.Debug($"Response: {content}");
@@ -126,6 +127,7 @@ namespace Kfstorm.DoubanFM.Core
                 }
                 var response = await request.GetResponseAsync();
                 var responseStream = response.GetResponseStream();
+                // ReSharper disable once AssignNullToNotNullAttribute
                 var reader = new StreamReader(responseStream, Encoding.UTF8);
                 var content = await reader.ReadToEndAsync();
                 Logger.Debug($"Response: {content}");

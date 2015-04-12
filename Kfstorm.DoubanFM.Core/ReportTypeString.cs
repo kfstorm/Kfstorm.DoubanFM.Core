@@ -23,7 +23,7 @@ namespace Kfstorm.DoubanFM.Core
             {
                 return stringValue;
             }
-            throw new ArgumentOutOfRangeException("type");
+            throw new ArgumentOutOfRangeException(nameof(type));
         }
     }
 }

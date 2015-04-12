@@ -93,10 +93,10 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         ///    &quot;song&quot;: [
         ///        {
         ///            &quot;picture&quot;: &quot;http:\/\/img3.douban.com\/view\/dale-online\/dale_ad\/public\/f8c88e7c33c0e37.jpg&quot;,
-        ///            &quot;albumtitle&quot;: &quot;����FM&quot;,
+        ///            &quot;albumtitle&quot;: &quot;豆瓣FM&quot;,
         ///            &quot;adtype&quot;: 3,
         ///            &quot;monitor_url&quot;: &quot;&quot;,
-        ///            &quot;album&quot;: &quot;http:\/\/erebor.douban.com\/redirect\/?ad=122410&amp;uid=&amp;bid=quklsdfso9A&amp;unit=dale_fm_audio&amp;ip=58.208.65.228&amp;crtr=4%3A17725&amp;mark=&amp;hn=gardner2&amp;sig=1391aadc [rest of string was truncated]&quot;;.
+        ///            &quot;album&quot;: &quot;http:\/\/erebor.douban.com\/redirect\/?ad=122410&amp;uid=&amp;bid=quklsdfso9A&amp;unit=dale_fm_audio&amp;ip=58.208.65.228&amp;crtr=4%3A17725&amp;mark=&amp;hn=gardner2&amp;sig=1391aadcce [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string PlayList {
             get {

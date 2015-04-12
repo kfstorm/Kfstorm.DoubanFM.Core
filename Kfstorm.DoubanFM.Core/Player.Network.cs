@@ -13,6 +13,7 @@ namespace Kfstorm.DoubanFM.Core
         {
             var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/app_channels");
             uriBuilder.AppendUsageCommonFields(ServerConnection);
+            // ReSharper disable once StringLiteralTypo
             uriBuilder.AppendQuery(StringTable.IconCategory, "xlarge");
             return uriBuilder.Uri;
         }

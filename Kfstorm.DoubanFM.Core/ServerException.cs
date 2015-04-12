@@ -32,6 +32,7 @@ namespace Kfstorm.DoubanFM.Core
             catch (WebException ex)
             {
                 var stream = ex.Response.GetResponseStream();
+                // ReSharper disable once AssignNullToNotNullAttribute
                 var reader = new StreamReader(stream, Encoding.UTF8);
                 var jsonContent = await reader.ReadToEndAsync();
                 int code;

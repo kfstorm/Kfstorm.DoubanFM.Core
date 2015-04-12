@@ -17,7 +17,7 @@ namespace Kfstorm.DoubanFM.Core
             }
             var queryToAppend = $"{name}={value}";
 
-            if (uriBuilder.Query != null && uriBuilder.Query.Length > 1)
+            if (uriBuilder.Query.Length > 1)
             {
                 uriBuilder.Query = uriBuilder.Query.Substring(1) + "&" + queryToAppend;
             }
