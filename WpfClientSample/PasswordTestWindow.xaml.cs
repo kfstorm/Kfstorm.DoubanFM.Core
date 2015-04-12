@@ -7,7 +7,7 @@ namespace WpfClientSample
     /// <summary>
     /// Interaction logic for PasswordTestWindow.xaml
     /// </summary>
-    public partial class PasswordTestWindow : Window
+    public partial class PasswordTestWindow
     {
         public ISession Session { get; } = ((App)Application.Current).Session;
 

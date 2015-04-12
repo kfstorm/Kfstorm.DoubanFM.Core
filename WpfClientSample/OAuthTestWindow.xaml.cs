@@ -7,7 +7,7 @@ namespace WpfClientSample
     /// <summary>
     /// Interaction logic for OAuthTestWindow.xaml
     /// </summary>
-    public partial class OAuthTestWindow : Window
+    public partial class OAuthTestWindow
     {
         public ISession Session { get; } = ((App)Application.Current).Session;
 

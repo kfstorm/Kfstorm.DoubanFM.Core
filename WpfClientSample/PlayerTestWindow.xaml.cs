@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Kfstorm.DoubanFM.Core;
@@ -9,9 +10,11 @@ namespace WpfClientSample
     /// <summary>
     /// Interaction logic for PlayerTestWindow.xaml
     /// </summary>
-    public partial class PlayerTestWindow : Window
+    public partial class PlayerTestWindow
     {
         public IPlayer Player;
+
+        private bool _playing = true;
 
         public PlayerTestWindow()
         {
@@ -19,7 +22,13 @@ namespace WpfClientSample
 
             Player = new Player(((App)Application.Current).ServerConnection, ((App)Application.Current).Session);
             Player.CurrentChannelChanged += (sender, args) => TbCurrentChannel.Text = args.Object?.ToString();
-            Player.CurrentSongChanged += (sender, args) => TbCurrentSong.Text = args.Object != null ? JsonConvert.SerializeObject(args.Object, Formatting.Indented) : null;
+            Player.CurrentSongChanged += (sender, args) =>
+            {
+                TbCurrentSong.Text = args.Object != null ? JsonConvert.SerializeObject(args.Object, Formatting.Indented) : null;
+                MeAudio.Source = args.Object == null ? null : new Uri(args.Object.Url);
+                MeAudio.Play();
+                _playing = true;
+            };
         }
 
         private async void BtnLike_Click(object sender, RoutedEventArgs e)
@@ -35,7 +44,15 @@ namespace WpfClientSample
 
         private void BtnPlay_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            if (_playing)
+            {
+                MeAudio.Pause();
+            }
+            else
+            {
+                MeAudio.Play();
+            }
+            _playing = !_playing;
         }
 
         private async void Next_Click(object sender, RoutedEventArgs e)

@@ -9,7 +9,7 @@ namespace WpfClientSample
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         public string ClientId { get; } = "02646d3fb69a52ff072d47bf23cef8fd";
         public string ClientSecret { get; } = "cde5d61429abcd7c";

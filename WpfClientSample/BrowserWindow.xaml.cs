@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Navigation;
 
 namespace WpfClientSample
@@ -8,7 +7,7 @@ namespace WpfClientSample
     /// <summary>
     /// Interaction logic for BrowserWindow.xaml
     /// </summary>
-    public partial class BrowserWindow : Window
+    public partial class BrowserWindow
     {
         public BrowserWindow(Uri navigateUri, Uri expectedRedirectUri)
         {

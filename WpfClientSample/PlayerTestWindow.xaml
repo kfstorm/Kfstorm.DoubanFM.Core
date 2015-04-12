@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfClientSample"
         mc:Ignorable="d"
         Title="PlayerTestWindow" Height="600" Width="800">
     <Grid>
@@ -15,7 +14,8 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid>
+        <MediaElement Visibility="Hidden" x:Name="MeAudio" LoadedBehavior="Manual"></MediaElement>
+        <Grid Grid.Row="0" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition></RowDefinition>
@@ -25,7 +25,7 @@
             <ListView Grid.Row="1" x:Name="LvChannels" MaxWidth="300" SelectionChanged="LvChannels_OnSelectionChanged"></ListView>
             <Button Grid.Row="2" x:Name="BtnRefreshChannelList" Margin="10" Padding="5" Click="BtnRefreshChannelList_Click">Refresh Channel List</Button>
         </Grid>
-        <Grid Grid.Column="1">
+        <Grid Grid.Row="0" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition></RowDefinition>
@@ -53,6 +53,7 @@
                 <Button Grid.Column="3" x:Name="Next" Margin="10,0" Padding="5" MinWidth="50" Click="Next_Click">Next</Button>
             </Grid>
         </Grid>
-        <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="20" IsIndeterminate="True"></ProgressBar>
+        <Label Grid.Row="1" Grid.Column="0">Progress bar to see if blocked</Label>
+        <ProgressBar Grid.Row="1" Grid.Column="1" IsIndeterminate="True"></ProgressBar>
     </Grid>
 </Window>
