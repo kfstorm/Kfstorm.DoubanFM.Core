@@ -1,0 +1,22 @@
+﻿<Window x:Class="WpfClientSample.OAuthTestWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfClientSample"
+        mc:Ignorable="d"
+        Title="OAuthTestWindow" Height="300" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="BtnLogOn" Click="BtnLogOn_Click">Log in</Button>
+        <Button Grid.Row="0" Grid.Column="1" x:Name="BtnLogOff" Click="BtnLogOff_Click">Sign off</Button>
+        <TextBox Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" x:Name="TbSessionInfo"></TextBox>
+    </Grid>
+</Window>

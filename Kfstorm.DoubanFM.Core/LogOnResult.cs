@@ -1,4 +1,6 @@
-﻿namespace Kfstorm.DoubanFM.Core
+﻿using Newtonsoft.Json;
+
+namespace Kfstorm.DoubanFM.Core
 {
     public class LogOnResult
     {
@@ -7,5 +9,10 @@
         public int ErrorCode { get; set; }
 
         public string ErrorMessage { get; set; }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
     }
 }

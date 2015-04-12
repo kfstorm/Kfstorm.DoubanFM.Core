@@ -8,12 +8,12 @@ namespace Kfstorm.DoubanFM.Core
     {
         protected ILog Logger = LogManager.GetLogger(typeof(OAuthAuthentication));
         private readonly IServerConnection _serverConnection;
-        private readonly Uri _redirectUri;
 
-        public OAuthAuthentication(IServerConnection serverConnection, Uri redirectUri)
+        public Uri RedirectUri => _serverConnection.RedirectUri;
+
+        public OAuthAuthentication(IServerConnection serverConnection)
         {
             _serverConnection = serverConnection;
-            _redirectUri = redirectUri;
         }
 
         public Func<Uri, Task<Uri>> GetRedirectedUri { get; set; }
@@ -21,8 +21,8 @@ namespace Kfstorm.DoubanFM.Core
         public override async Task<LogOnResult> Authenticate()
         {
             var uriBuilder = new UriBuilder("https://www.douban.com/service/auth2/auth");
-            uriBuilder.AppendQuery(StringTable.ClientId, _serverConnection.Context[StringTable.ClientId]);
-            uriBuilder.AppendQuery(StringTable.RedirectUri, _redirectUri.AbsoluteUri);
+            uriBuilder.AppendQuery(StringTable.ClientId, _serverConnection.ClientId);
+            uriBuilder.AppendQuery(StringTable.RedirectUri, _serverConnection.RedirectUri.AbsoluteUri);
             uriBuilder.AppendQuery(StringTable.ResponseType, StringTable.Code);
             try
             {
@@ -34,9 +34,9 @@ namespace Kfstorm.DoubanFM.Core
                     if (queries.TryGetValue(StringTable.Code, out code) && !string.IsNullOrEmpty(code))
                     {
                         var tokenUrl = new UriBuilder("https://www.douban.com/service/auth2/token");
-                        tokenUrl.AppendQuery(StringTable.ClientId, _serverConnection.Context[StringTable.ClientId]);
-                        tokenUrl.AppendQuery(StringTable.ClientSecret, _serverConnection.Context[StringTable.ClientSecret]);
-                        tokenUrl.AppendQuery(StringTable.RedirectUri, _redirectUri.AbsoluteUri);
+                        tokenUrl.AppendQuery(StringTable.ClientId, _serverConnection.ClientId);
+                        tokenUrl.AppendQuery(StringTable.ClientSecret, _serverConnection.ClientSecret);
+                        tokenUrl.AppendQuery(StringTable.RedirectUri, _serverConnection.RedirectUri.AbsoluteUri);
                         tokenUrl.AppendQuery(StringTable.GrantType, StringTable.AuthorizationCode);
                         tokenUrl.AppendQuery(StringTable.Code, code);
                         var jsonContent = await _serverConnection.Post(tokenUrl.Uri, null);

@@ -13,13 +13,36 @@ namespace Kfstorm.DoubanFM.Core
     {
         protected ILog Logger = LogManager.GetLogger(typeof(ServerConnection));
 
-        public ServerConnection(string clientId, string clientSecret)
+        public ServerConnection(string clientId, string clientSecret, Uri redirectUri)
         {
-            Context[StringTable.ClientId] = clientId;
-            Context[StringTable.ClientSecret] = clientSecret;
+            ClientId = clientId;
+            ClientSecret = clientSecret;
+            RedirectUri = redirectUri;
+        }
+
+        public ServerConnection()
+        {
         }
 
         public IDictionary<string, string> Context { get; } = new Dictionary<string, string>();
+
+        public string ClientId
+        {
+            get { return Context[StringTable.ClientId]; }
+            set { Context[StringTable.ClientId] = value; }
+        }
+
+        public string ClientSecret
+        {
+            get { return Context[StringTable.ClientSecret]; }
+            set { Context[StringTable.ClientSecret] = value; }
+        }
+
+        public Uri RedirectUri
+        {
+            get { return new Uri(Context[StringTable.RedirectUri]); }
+            set { Context[StringTable.RedirectUri] = value?.AbsoluteUri; }
+        }
 
         public virtual Task<string> Get(Uri uri)
         {

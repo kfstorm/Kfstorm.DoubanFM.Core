@@ -15,7 +15,8 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             serverConnectionMock.Setup(s => s.Context).Returns(new Dictionary<string, string>
             {
                 { "client_id", "testClientId12345" },
-                { "client_secret", "testClientSecret12345" }
+                { "client_secret", "testClientSecret12345" },
+                { "redirect_uri", "http://www.testRedirectUri.com" },
             });
             return serverConnectionMock;
         }
@@ -26,7 +27,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             var expectedPostUri = new Uri("https://www.douban.com/service/auth2/token?client_id=testClientId12345&client_secret=testClientSecret12345&redirect_uri=http%3A%2F%2Fwww.testredirecturi.com%2F&grant_type=authorization_code&code=testCode");
             serverConnectionMock.Setup(s => s.Post(It.Is<Uri>(u=>u == expectedPostUri), null)).ReturnsAsync(Resource.TestOAuthResponse).Verifiable();
-            var oAuth = new OAuthAuthentication(serverConnectionMock.Object, new Uri("http://www.testRedirectUri.com"))
+            var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.testRedirectUri.com?code=testCode"))
             };
@@ -45,7 +46,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestAuthenticateFailure_FailedToGetAuthorizationCode_ErrorMessage()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
-            var oAuth = new OAuthAuthentication(serverConnectionMock.Object, new Uri("http://www.testRedirectUri.com"))
+            var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.testRedirectUri.com?error=access_denied"))
             };
@@ -60,7 +61,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestAuthenticateFailure_FailedToGetAuthorizationCode_NullResponseUri()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
-            var oAuth = new OAuthAuthentication(serverConnectionMock.Object, new Uri("http://www.testRedirectUri.com"))
+            var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = uri => Task.FromResult((Uri)null)
             };
@@ -75,7 +76,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestAuthenticateFailure_FailedToGetAuthorizationCode_UnknownResponseUri()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
-            var oAuth = new OAuthAuthentication(serverConnectionMock.Object, new Uri("http://www.testRedirectUri.com"))
+            var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.unknown.com"))
             };
@@ -90,7 +91,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestAuthenticateFailure_FailedToGetAuthorizationCode_Exception()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
-            var oAuth = new OAuthAuthentication(serverConnectionMock.Object, new Uri("http://www.testRedirectUri.com"))
+            var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = async uri => await Task.Run(new Func<Task<Uri>>(() => { throw new Exception("Test message."); })),
             };
@@ -106,7 +107,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             serverConnectionMock.Setup(s => s.Post(It.IsAny<Uri>(), null)).ReturnsAsync("###").Verifiable();
-            var oAuth = new OAuthAuthentication(serverConnectionMock.Object, new Uri("http://www.testRedirectUri.com"))
+            var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.testRedirectUri.com?code=testCode"))
             };
@@ -123,7 +124,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             serverConnectionMock.Setup(s => s.Post(It.IsAny<Uri>(), null)).ThrowsAsync(new Exception("Test message.")).Verifiable();
-            var oAuth = new OAuthAuthentication(serverConnectionMock.Object, new Uri("http://www.testRedirectUri.com"))
+            var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.testRedirectUri.com?code=testCode"))
             };
@@ -139,7 +140,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestUnAuthenticateSuccess()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
-            var oAuth = new OAuthAuthentication(serverConnectionMock.Object, null);
+            var oAuth = new OAuthAuthentication(serverConnectionMock.Object);
             Assert.IsNull(await oAuth.UnAuthenticate());
         }
     }
