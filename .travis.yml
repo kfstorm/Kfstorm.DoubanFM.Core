@@ -1,0 +1,8 @@
+language: csharp
+solution: Kfstorm.DoubanFM.Core.sln
+install:
+  - nuget restore Kfstorm.DoubanFM.Core.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release Kfstorm.DoubanFM.Core.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Kfstorm.DoubanFM.Core.UnitTest/bin/Release/Kfstorm.DoubanFM.Core.UnitTest.dll
