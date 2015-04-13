@@ -20,7 +20,7 @@ namespace WpfClientSample
         {
             InitializeComponent();
 
-            Player = new Player(((App)Application.Current).ServerConnection, ((App)Application.Current).Session);
+            Player = new Player(((App)Application.Current).Session);
             Player.CurrentChannelChanged += (sender, args) => TbCurrentChannel.Text = args.Object?.ToString();
             Player.CurrentSongChanged += (sender, args) =>
             {

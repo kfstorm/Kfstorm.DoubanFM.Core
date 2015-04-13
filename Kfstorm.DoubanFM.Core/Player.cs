@@ -60,9 +60,9 @@ namespace Kfstorm.DoubanFM.Core
         public event EventHandler<EventArgs<Song>> CurrentSongChanged;
         public event EventHandler<EventArgs<Channel>> CurrentChannelChanged;
 
-        public Player(IServerConnection serverConnection, ISession session)
+        public Player(ISession session)
         {
-            ServerConnection = serverConnection;
+            ServerConnection = session.ServerConnection;
             Session = session;
         }
 
