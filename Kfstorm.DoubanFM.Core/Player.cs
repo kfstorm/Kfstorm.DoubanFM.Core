@@ -167,32 +167,31 @@ namespace Kfstorm.DoubanFM.Core
         {
             try
             {
-                var changeCurrentSong = type == ReportType.SkipCurrentSong || type == ReportType.NewChannel || type == ReportType.BanCurrentSong;
+                var changeCurrentSong = type == ReportType.SkipCurrentSong || type == ReportType.NewChannel || type == ReportType.BanCurrentSong || type == ReportType.CurrentSongEnded;
                 if (changeCurrentSong)
                 {
                     CurrentSong = null;
                 }
                 var newPlayList = await GetPlayList(type, channelId, sid);
-                if (type == ReportType.CurrentSongEnded) return;
+                if (channelId == AsyncExpectedChannelId)
                 {
-                    if (channelId == AsyncExpectedChannelId)
+                    if (type != ReportType.CurrentSongEnded)
                     {
                         ChangePlayListSongs(newPlayList);
-                        if (changeCurrentSong)
-                        {
-                            await ChangeCurrentSong(channelId, sid);
-                        }
                     }
-                    else
+                    if (changeCurrentSong)
                     {
-                        // TODO: throw exception or not?
+                        await ChangeCurrentSong(channelId, sid);
                     }
+                }
+                else
+                {
+                    // TODO: throw exception or not?
                 }
             }
             catch (Exception ex)
             {
-                Logger.Error($"Failed to send report to server. Report type: {type}. Current channel: {CurrentChannel}. Current song: {CurrentSong}.",ex)
-                ;
+                Logger.Error($"Failed to send report to server. Report type: {type}. Current channel: {CurrentChannel}. Current song: {CurrentSong}.", ex);
                 throw;
             }
         }

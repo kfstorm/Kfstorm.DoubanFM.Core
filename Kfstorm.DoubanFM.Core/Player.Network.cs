@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Kfstorm.DoubanFM.Core
 {
@@ -24,7 +24,6 @@ namespace Kfstorm.DoubanFM.Core
             uriBuilder.AppendUsageCommonFields(ServerConnection);
             uriBuilder.AppendQuery(StringTable.Channel, channelId.ToString(CultureInfo.InvariantCulture));
             uriBuilder.AppendQuery(StringTable.Type, ReportTypeString.GetString(type));
-            uriBuilder.AppendQuery(StringTable.Sid, sid);
             uriBuilder.AppendQuery(StringTable.Sid, sid);
             uriBuilder.AppendQuery(StringTable.Formats, formats);
             uriBuilder.AppendQuery(StringTable.Kbps, kbps?.ToString(CultureInfo.InvariantCulture));

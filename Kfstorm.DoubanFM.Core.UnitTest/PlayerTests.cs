@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Moq;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace Kfstorm.DoubanFM.Core.UnitTest
@@ -58,6 +61,88 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 ValidateChannel(player.CurrentChannel);
                 ValidateSong(player.CurrentSong);
             }
+        }
+
+        private readonly JObject _defaultPlayList = JObject.Parse(Resource.PlayList);
+
+        [TestCase(NextCommandType.SkipCurrentSong)]
+        [TestCase(NextCommandType.BanCurrentSong)]
+        [TestCase(NextCommandType.CurrentSongEnded)]
+        public async void TestNext(NextCommandType type)
+        {
+            var playList = _defaultPlayList.DeepClone();
+            string reportType;
+            switch (type)
+            {
+                case NextCommandType.SkipCurrentSong:
+                    reportType = "s";
+                    break;
+                case NextCommandType.BanCurrentSong:
+                    reportType = "b";
+                    break;
+                case NextCommandType.CurrentSongEnded:
+                    reportType = "e";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type));
+            }
+
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")
+                                                                  && (u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))
+                                                                      || u.GetQueries().Contains(new KeyValuePair<string, string>("type", reportType)))),
+                It.IsAny<Action<HttpWebRequest>>())).Returns(() => Task.FromResult(playList.ToString())).Callback(
+                    () =>
+                    {
+                        if (type == NextCommandType.CurrentSongEnded)
+                        {
+                            playList["song"] = new JArray();
+                        }
+                        else
+                        {
+                            var first = playList["song"][0];
+                            first.Remove();
+                            playList["song"].Last.AddAfterSelf(first);
+                        }
+                    }).Verifiable();
+            var player = new Player(new Session(serverConnectionMock.Object));
+            await player.Initialize();
+            await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
+
+            var originalSong = player.CurrentSong;
+            for (var i = 0; i < 5; ++i)
+            {
+                await player.Next(type);
+                var newSong = player.CurrentSong;
+                Assert.AreNotEqual(newSong, originalSong);
+                originalSong = newSong;
+            }
+            serverConnectionMock.Verify();
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async void TestSetRedHeart(bool redHeart)
+        {
+            string reportType = redHeart ? "r" : "u";
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")
+                                                                  && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
+            var player = new Player(new Session(serverConnectionMock.Object));
+            await player.Initialize();
+            await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
+
+            var originalSong = player.CurrentSong;
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")
+                                                                  && u.GetQueries().Contains(new KeyValuePair<string, string>("type", reportType))
+                                                                  && u.GetQueries().Contains(new KeyValuePair<string, string>("sid", player.CurrentSong.Sid))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
+            await player.SetRedHeart(redHeart);
+            Assert.AreEqual(originalSong, player.CurrentSong);
+            serverConnectionMock.Verify();
         }
 
         private void ValidateChannel(Channel channel)
