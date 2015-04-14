@@ -75,6 +75,7 @@
     </None>
     <None Include="packages.config" />
     <None Include="Resources\ChannelListExample.json" />
+    <None Include="Resources\ErrorResponseSample_OldApi.json" />
     <None Include="Resources\PlayList.json" />
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +93,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TestOAuthResponse.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ErrorResponseSample.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

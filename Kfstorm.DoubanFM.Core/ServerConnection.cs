@@ -78,6 +78,11 @@ namespace Kfstorm.DoubanFM.Core
             return null;
         }
 
+        protected virtual HttpWebRequest CreateRequest(Uri uri)
+        {
+            return WebRequest.CreateHttp(uri);
+        }
+
         public virtual async Task<string> Get(Uri uri)
         {
             return await Get(uri, null);
@@ -88,7 +93,7 @@ namespace Kfstorm.DoubanFM.Core
             Logger.Debug($"GET: {uri}");
             return await LogExceptionIfAny(Logger, () => ServerException.TryThrow(async () =>
             {
-                var request = (HttpWebRequest)WebRequest.Create(uri);
+                var request = CreateRequest(uri);
                 request.Method = WebRequestMethods.Http.Get;
                 modifier?.Invoke(request);
                 var response = await request.GetResponseAsync();
@@ -116,7 +121,7 @@ namespace Kfstorm.DoubanFM.Core
             Logger.Debug($"POST: {uri}. Data length: {data.Length}");
             return await LogExceptionIfAny(Logger, () => ServerException.TryThrow(async () =>
             {
-                var request = (HttpWebRequest)WebRequest.Create(uri);
+                var request = CreateRequest(uri);
                 request.Method = WebRequestMethods.Http.Post;
                 request.ContentType = "application/x-www-form-urlencoded";
                 modifier?.Invoke(request);

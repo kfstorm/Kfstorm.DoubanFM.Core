@@ -1,6 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
+using System.Text;
+using Moq;
+using Moq.Protected;
 using NUnit.Framework;
 
 namespace Kfstorm.DoubanFM.Core.UnitTest
@@ -20,6 +25,70 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 Assert.AreEqual(value, property.GetValue(serverConnection));
             }
             Assert.AreEqual(properties.Count, serverConnection.Context.Count);
+        }
+
+        [Test]
+        public void TestServerException_Get()
+        {
+            var serverConnection = new Mock<ServerConnection> {CallBase = true};
+            var requestMock = new Mock<HttpWebRequest>();
+            var responseMock = new Mock<HttpWebResponse>();
+            requestMock.Setup(r => r.GetResponseAsync()).ThrowsAsync(new WebException("Test message", null, WebExceptionStatus.ProtocolError, responseMock.Object));
+            responseMock.Setup(r => r.GetResponseStream()).Returns(new MemoryStream(Encoding.UTF8.GetBytes(Resource.ErrorResponseSample)));
+            serverConnection.Protected().Setup<HttpWebRequest>("CreateRequest", ItExpr.IsAny<Uri>()).Returns(requestMock.Object);
+
+            var ex = Assert.Throws<AggregateException>(() => serverConnection.Object.Get(new Uri("http://anyUri.com")).Wait()).InnerException as ServerException;
+            Assert.IsNotNull(ex);
+            Assert.AreEqual(123, ex.Code);
+            Assert.IsNotEmpty(ex.ErrorMessage);
+        }
+
+        [Test]
+        public void TestServerException_Get_OldApi()
+        {
+            var serverConnection = new Mock<ServerConnection> { CallBase = true };
+            var requestMock = new Mock<HttpWebRequest>();
+            var responseMock = new Mock<HttpWebResponse>();
+            requestMock.Setup(r => r.GetResponseAsync()).ReturnsAsync(responseMock.Object);
+            responseMock.Setup(r => r.GetResponseStream()).Returns(new MemoryStream(Encoding.UTF8.GetBytes(Resource.ErrorResponseSample_OldApi)));
+            serverConnection.Protected().Setup<HttpWebRequest>("CreateRequest", ItExpr.IsAny<Uri>()).Returns(requestMock.Object);
+
+            var ex = Assert.Throws<AggregateException>(() => serverConnection.Object.Get(new Uri("http://anyUri.com")).Wait()).InnerException as ServerException;
+            Assert.IsNotNull(ex);
+            Assert.AreEqual(123, ex.Code);
+            Assert.IsNotEmpty(ex.ErrorMessage);
+        }
+
+        [Test]
+        public void TestServerException_Post()
+        {
+            var serverConnection = new Mock<ServerConnection> { CallBase = true };
+            var requestMock = new Mock<HttpWebRequest>();
+            var responseMock = new Mock<HttpWebResponse>();
+            requestMock.Setup(r => r.GetResponseAsync()).ThrowsAsync(new WebException("Test message", null, WebExceptionStatus.ProtocolError, responseMock.Object));
+            responseMock.Setup(r => r.GetResponseStream()).Returns(new MemoryStream(Encoding.UTF8.GetBytes(Resource.ErrorResponseSample)));
+            serverConnection.Protected().Setup<HttpWebRequest>("CreateRequest", ItExpr.IsAny<Uri>()).Returns(requestMock.Object);
+
+            var ex = Assert.Throws<AggregateException>(() => serverConnection.Object.Post(new Uri("http://anyUri.com"), null).Wait()).InnerException as ServerException;
+            Assert.IsNotNull(ex);
+            Assert.AreEqual(123, ex.Code);
+            Assert.IsNotEmpty(ex.ErrorMessage);
+        }
+
+        [Test]
+        public void TestServerException_Post_OldApi()
+        {
+            var serverConnection = new Mock<ServerConnection> { CallBase = true };
+            var requestMock = new Mock<HttpWebRequest>();
+            var responseMock = new Mock<HttpWebResponse>();
+            requestMock.Setup(r => r.GetResponseAsync()).ReturnsAsync(responseMock.Object);
+            responseMock.Setup(r => r.GetResponseStream()).Returns(new MemoryStream(Encoding.UTF8.GetBytes(Resource.ErrorResponseSample_OldApi)));
+            serverConnection.Protected().Setup<HttpWebRequest>("CreateRequest", ItExpr.IsAny<Uri>()).Returns(requestMock.Object);
+
+            var ex = Assert.Throws<AggregateException>(() => serverConnection.Object.Post(new Uri("http://anyUri.com"), null).Wait()).InnerException as ServerException;
+            Assert.IsNotNull(ex);
+            Assert.AreEqual(123, ex.Code);
+            Assert.IsNotEmpty(ex.ErrorMessage);
         }
 
         private object GetTestValue(PropertyInfo property)

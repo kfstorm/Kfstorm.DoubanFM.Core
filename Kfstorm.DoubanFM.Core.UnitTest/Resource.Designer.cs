@@ -76,11 +76,36 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         ///                    &quot;name&quot;: &quot;私人&quot;,
         ///                    &quot;song_num&quot;: 123,
         ///                    &quot;collected&quot;: &quot;disabled&quot;,
-        ///                    &quot;cover&quot;: &quot;http:\/\/img3.douban.com\/pic [rest of string was truncated]&quot;;.
+        ///                    &quot;cover&quot;: &quot;http:\/\/img3. [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ChannelListExample {
             get {
                 return ResourceManager.GetString("ChannelListExample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///    &quot;code&quot; : 123,
+        ///    &quot;msg&quot; : &quot;Sample error&quot;,
+        ///    &quot;path&quot; : &quot;sample/path&quot;
+        ///}.
+        /// </summary>
+        internal static string ErrorResponseSample {
+            get {
+                return ResourceManager.GetString("ErrorResponseSample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///    &quot;r&quot; : 123,
+        ///    &quot;err&quot; : &quot;Sample error&quot;
+        ///}.
+        /// </summary>
+        internal static string ErrorResponseSample_OldApi {
+            get {
+                return ResourceManager.GetString("ErrorResponseSample_OldApi", resourceCulture);
             }
         }
         

@@ -43,6 +43,19 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         }
 
         [Test]
+        public async void TestAlreadyInitialized()
+        {
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.IsAny<Uri>(), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            var session = new Session(serverConnectionMock.Object);
+            var player = new Player(session);
+            Assert.IsNull(player.ChannelList);
+            await player.Initialize();
+            serverConnectionMock.Verify();
+            Assert.That(() => player.Initialize().Wait(), Throws.InnerException.TypeOf<InvalidOperationException>());
+        }
+
+        [Test]
         public async void TestChangeChannel()
         {
             var serverConnectionMock = new Mock<IServerConnection>();

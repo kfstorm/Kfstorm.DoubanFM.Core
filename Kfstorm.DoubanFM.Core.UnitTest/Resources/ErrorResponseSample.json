@@ -1,0 +1,5 @@
+{
+    "code" : 123,
+    "msg" : "Sample error",
+    "path" : "sample/path"
+}

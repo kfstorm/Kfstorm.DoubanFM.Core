@@ -116,5 +116,12 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             await task;
             Assert.IsNotNull(session.UserInfo);
         }
+
+        [Test]
+        public void TestNullUserInfoNotAllowed()
+        {
+            var session = new Session(new Mock<IServerConnection>().Object);
+            Assert.That(()=>session.LogOn(new Mock<IAuthentication>().Object).Wait(), Throws.InnerException.Message.Contains("not allowed"));
+        }
     }
 }
