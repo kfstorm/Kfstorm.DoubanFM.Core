@@ -6,18 +6,6 @@ namespace Kfstorm.DoubanFM.Core
 {
     public static class ExceptionHelper
     {
-        public static async Task IgnoreExceptionIfAny(ILog logger, Func<Task> action)
-        {
-            try
-            {
-                await action();
-            }
-            catch (Exception ex)
-            {
-                logger.Warn("Exception ignored.", ex);
-            }
-        }
-
         public static async Task LogExceptionIfAny(ILog logger, Func<Task> action, string message = null)
         {
             try

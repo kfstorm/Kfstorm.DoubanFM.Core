@@ -42,6 +42,7 @@
     <Compile Include="EventArgs{T}.cs" />
     <Compile Include="ExceptionHelper.cs" />
     <Compile Include="NextCommandType.cs" />
+    <Compile Include="NoAvailableSongsException.cs" />
     <Compile Include="OAuthAuthentication.cs" />
     <Compile Include="PasswordAuthentication.cs" />
     <Compile Include="ReportType.cs" />

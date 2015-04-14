@@ -84,21 +84,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         public async void TestNext(NextCommandType type)
         {
             var playList = _defaultPlayList.DeepClone();
-            string reportType;
-            switch (type)
-            {
-                case NextCommandType.SkipCurrentSong:
-                    reportType = "s";
-                    break;
-                case NextCommandType.BanCurrentSong:
-                    reportType = "b";
-                    break;
-                case NextCommandType.CurrentSongEnded:
-                    reportType = "e";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type));
-            }
+            string reportType = GetReportTypeStringByNextCommandType(type);
 
             var serverConnectionMock = new Mock<IServerConnection>();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
@@ -134,11 +120,32 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             serverConnectionMock.Verify();
         }
 
+        private static string GetReportTypeStringByNextCommandType(NextCommandType type)
+        {
+            string reportType;
+            switch (type)
+            {
+                case NextCommandType.SkipCurrentSong:
+                    reportType = "s";
+                    break;
+                case NextCommandType.BanCurrentSong:
+                    reportType = "b";
+                    break;
+                case NextCommandType.CurrentSongEnded:
+                    reportType = "e";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type));
+            }
+
+            return reportType;
+        }
+
         [TestCase(true)]
         [TestCase(false)]
         public async void TestSetRedHeart(bool redHeart)
         {
-            string reportType = redHeart ? "r" : "u";
+            string reportType = GetReportTypeStringByRedHeart(redHeart);
             var serverConnectionMock = new Mock<IServerConnection>();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")
@@ -155,6 +162,93 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
             await player.SetRedHeart(redHeart);
             Assert.AreEqual(originalSong, player.CurrentSong);
+            serverConnectionMock.Verify();
+        }
+
+        private static string GetReportTypeStringByRedHeart(bool redHeart)
+        {
+            return redHeart ? "r" : "u";
+        }
+
+        [Test]
+        public async void TestSongEnded()
+        {
+            var playList = _defaultPlayList.DeepClone();
+            var emptyPlayList = _defaultPlayList.DeepClone();
+            emptyPlayList["song"] = new JArray();
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(playList.ToString()).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "p"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(playList.ToString()).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "e"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
+
+            var player = new Player(new Session(serverConnectionMock.Object));
+            await player.Initialize();
+            await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
+            var songCount = playList["song"].Count();
+            for (var i = 0; i < songCount*2; ++i)
+            {
+                await player.Next(NextCommandType.CurrentSongEnded);
+            }
+            serverConnectionMock.Verify();
+        }
+
+        [Test]
+        public async void TestNoAvailableSongs_ChangeChannel()
+        {
+            var emptyPlayList = _defaultPlayList.DeepClone();
+            emptyPlayList["song"] = new JArray();
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
+
+            var player = new Player(new Session(serverConnectionMock.Object));
+            await player.Initialize();
+            Assert.That(()=>player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]).Wait(), Throws.InnerException.TypeOf<NoAvailableSongsException>());
+            serverConnectionMock.Verify();
+        }
+
+        [TestCase(NextCommandType.SkipCurrentSong)]
+        [TestCase(NextCommandType.BanCurrentSong)]
+        public async void TestNoAvailableSongs_Next(NextCommandType type)
+        {
+            var emptyPlayList = _defaultPlayList.DeepClone();
+            emptyPlayList["song"] = new JArray();
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", GetReportTypeStringByNextCommandType(type)))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
+
+            var player = new Player(new Session(serverConnectionMock.Object));
+            await player.Initialize();
+            await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
+            Assert.That(() => player.Next(type).Wait(), Throws.InnerException.TypeOf<NoAvailableSongsException>());
+            serverConnectionMock.Verify();
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public async void TestNoAvailableSongs_SetRedHeart(bool redHeart)
+        {
+            var emptyPlayList = _defaultPlayList.DeepClone();
+            emptyPlayList["song"] = new JArray();
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", GetReportTypeStringByRedHeart(redHeart)))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
+
+            var player = new Player(new Session(serverConnectionMock.Object));
+            await player.Initialize();
+            await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
+            Assert.That(() => player.SetRedHeart(redHeart).Wait(), Throws.InnerException.TypeOf<NoAvailableSongsException>());
             serverConnectionMock.Verify();
         }
 

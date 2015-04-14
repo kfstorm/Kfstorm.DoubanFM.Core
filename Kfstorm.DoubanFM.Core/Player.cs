@@ -139,7 +139,7 @@ namespace Kfstorm.DoubanFM.Core
             ThrowExceptionIfNoChannel();
             ThrowExceptionIfNoSong();
             var sid = CurrentSong.Sid;
-            await IgnoreExceptionIfAny(Logger, async () => await Report(redHeart ? ReportType.Like : ReportType.CancelLike, CurrentChannel.Id, CurrentSong?.Sid));
+            await LogExceptionIfAny(Logger, async () => await Report(redHeart ? ReportType.Like : ReportType.CancelLike, CurrentChannel.Id, CurrentSong?.Sid));
             if (CurrentSong != null && CurrentSong.Sid == sid)
             {
                 CurrentSong.Like = redHeart;
@@ -167,21 +167,41 @@ namespace Kfstorm.DoubanFM.Core
         {
             try
             {
-                var changeCurrentSong = type == ReportType.SkipCurrentSong || type == ReportType.NewChannel || type == ReportType.BanCurrentSong || type == ReportType.CurrentSongEnded;
+                var changeCurrentSong = !(type == ReportType.Like || type == ReportType.CancelLike);
                 if (changeCurrentSong)
                 {
                     CurrentSong = null;
                 }
                 var newPlayList = await GetPlayList(type, channelId, sid);
-                if (channelId == AsyncExpectedChannelId)
+                if (newPlayList.Length == 0)
                 {
                     if (type != ReportType.CurrentSongEnded)
                     {
-                        ChangePlayListSongs(newPlayList);
+                        throw new NoAvailableSongsException();
+                    }
+                    if (_nextSongs.Count == 0)
+                    {
+                        await Report(ReportType.PlayListEmpty, channelId, sid);
+                        return;
+                    }
+                }
+                if (channelId == AsyncExpectedChannelId)
+                {
+                    if (newPlayList.Length != 0)
+                    {
+                        if (_nextSongs == null)
+                        {
+                            _nextSongs = new Queue<Song>();
+                        }
+                        _nextSongs.Clear();
+                        foreach (var song in newPlayList)
+                        {
+                            _nextSongs.Enqueue(song);
+                        }
                     }
                     if (changeCurrentSong)
                     {
-                        await ChangeCurrentSong(channelId, sid);
+                        CurrentSong = _nextSongs.Dequeue();
                     }
                 }
                 else
@@ -193,38 +213,6 @@ namespace Kfstorm.DoubanFM.Core
             {
                 Logger.Error($"Failed to send report to server. Report type: {type}. Current channel: {CurrentChannel}. Current song: {CurrentSong}.", ex);
                 throw;
-            }
-        }
-
-        private async Task ChangeCurrentSong(int channelId, string sid)
-        {
-            CurrentSong = null;
-            while (_nextSongs == null || _nextSongs.Count == 0)
-            {
-                var newPlayList = await GetPlayList(ReportType.PlayListEmpty, channelId, sid);
-                if (channelId == AsyncExpectedChannelId)
-                {
-                    ChangePlayListSongs(newPlayList);
-                }
-                else
-                {
-                    // TODO: throw exception or not?
-                    return;
-                }
-            }
-            CurrentSong = _nextSongs.Dequeue();
-        }
-
-        private void ChangePlayListSongs(Song[] newPlayList)
-        {
-            if (_nextSongs == null)
-            {
-                _nextSongs = new Queue<Song>();
-            }
-            _nextSongs.Clear();
-            foreach (var song in newPlayList)
-            {
-                _nextSongs.Enqueue(song);
             }
         }
 
