@@ -1,5 +1,6 @@
 ﻿using System;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Kfstorm.DoubanFM.Core.UnitTest
@@ -29,29 +30,29 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         }
 
         [Test]
-        public void TestAuthenticateFailure_EmptyUsername()
+        public async void TestAuthenticateFailure_EmptyUsername()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             var pAuth = new PasswordAuthentication(serverConnectionMock.Object)
             {
                 Password = "anyPassword",
             };
-            Assert.That(()=> pAuth.Authenticate().Wait(), Throws.InnerException.TypeOf<InvalidOperationException>());
+            await AssertEx.ThrowsAsync<InvalidOperationException>(async () => await pAuth.Authenticate());
         }
 
         [Test]
-        public void TestAuthenticateFailure_EmptyPassword()
+        public async void TestAuthenticateFailure_EmptyPassword()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             var pAuth = new PasswordAuthentication(serverConnectionMock.Object)
             {
                 Username = "anyUsername",
             };
-            Assert.That(() => pAuth.Authenticate().Wait(), Throws.InnerException.TypeOf<InvalidOperationException>());
+            await AssertEx.ThrowsAsync<InvalidOperationException>(async () => await pAuth.Authenticate());
         }
 
         [Test]
-        public void TestAuthenticateFailure_InvalidJson()
+        public async void TestAuthenticateFailure_InvalidJson()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             var expectedPostUri = new Uri("https://www.douban.com/service/auth2/token");
@@ -61,12 +62,12 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 Username = "anyUsername",
                 Password = "anyPassword",
             };
-            Assert.Throws<AggregateException>(() => pAuth.Authenticate().Wait());
+            await AssertEx.ThrowsAsync<JsonReaderException>(async () => await pAuth.Authenticate());
             serverConnectionMock.Verify();
         }
 
         [Test]
-        public void TestAuthenticateFailure_Exception()
+        public async void TestAuthenticateFailure_Exception()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             var expectedPostUri = new Uri("https://www.douban.com/service/auth2/token");
@@ -76,7 +77,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 Username = "anyUsername",
                 Password = "anyPassword",
             };
-            var ex = Assert.Throws<AggregateException>(() => pAuth.Authenticate().Wait()).InnerException;
+            var ex = await AssertEx.ThrowsAsync<Exception>(async () => await pAuth.Authenticate());
             Assert.AreEqual("Test message.", ex.Message);
             serverConnectionMock.Verify();
         }

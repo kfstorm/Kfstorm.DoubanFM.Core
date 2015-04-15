@@ -27,7 +27,7 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
         public async void TestNoServerExceptionWhenChannelIsEmpty()
         {
             var player = Generator.DefaultPlayer;
-            await player.ChangeChannel(new Channel(-3)); // 红心 channel
+            await AssertEx.ThrowsAsync<NoAvailableSongsException>(async () => await player.ChangeChannel(new Channel(-3))); // 红心 channel is empty for anonymous users.
         }
     }
 }

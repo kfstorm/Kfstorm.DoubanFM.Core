@@ -34,6 +34,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AssertEx.cs" />
     <Compile Include="AuthenticationTestsBase.cs" />
     <Compile Include="GetPlayListTypeTests.cs" />
     <Compile Include="OAuthAuthenticationTests.cs" />

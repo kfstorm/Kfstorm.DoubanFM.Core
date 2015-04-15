@@ -52,7 +52,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             Assert.IsNull(player.ChannelList);
             await player.Initialize();
             serverConnectionMock.Verify();
-            Assert.That(() => player.Initialize().Wait(), Throws.InnerException.TypeOf<InvalidOperationException>());
+            await AssertEx.ThrowsAsync<InvalidOperationException>(async () => await player.Initialize());
         }
 
         [Test]
@@ -208,7 +208,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
 
             var player = new Player(new Session(serverConnectionMock.Object));
             await player.Initialize();
-            Assert.That(()=>player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]).Wait(), Throws.InnerException.TypeOf<NoAvailableSongsException>());
+            await AssertEx.ThrowsAsync<NoAvailableSongsException>(async () => await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]));
             serverConnectionMock.Verify();
         }
 
@@ -228,7 +228,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             var player = new Player(new Session(serverConnectionMock.Object));
             await player.Initialize();
             await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
-            Assert.That(() => player.Next(type).Wait(), Throws.InnerException.TypeOf<NoAvailableSongsException>());
+            await AssertEx.ThrowsAsync<NoAvailableSongsException>(async () => await player.Next(type));
             serverConnectionMock.Verify();
         }
 
@@ -248,7 +248,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             var player = new Player(new Session(serverConnectionMock.Object));
             await player.Initialize();
             await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
-            Assert.That(() => player.SetRedHeart(redHeart).Wait(), Throws.InnerException.TypeOf<NoAvailableSongsException>());
+            await AssertEx.ThrowsAsync<NoAvailableSongsException>(async () => await player.SetRedHeart(redHeart));
             serverConnectionMock.Verify();
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Moq;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Kfstorm.DoubanFM.Core.UnitTest
@@ -38,57 +39,55 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         }
 
         [Test]
-        public void TestAuthenticateFailure_FailedToGetAuthorizationCode_ErrorMessage()
+        public async void TestAuthenticateFailure_FailedToGetAuthorizationCode_ErrorMessage()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.testRedirectUri.com?error=access_denied"))
             };
-            var ex = Assert.Throws<AggregateException>(()=> oAuth.Authenticate().Wait()).InnerException as ServerException;
+            var ex = await AssertEx.ThrowsAsync<ServerException>(async () => await oAuth.Authenticate());
             Assert.IsNotNull(ex);
             Assert.AreEqual(-1, ex.Code);
             Assert.AreEqual("access_denied", ex.ErrorMessage);
         }
 
         [Test]
-        public void TestAuthenticateFailure_FailedToGetAuthorizationCode_NullResponseUri()
+        public async void TestAuthenticateFailure_FailedToGetAuthorizationCode_NullResponseUri()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = uri => Task.FromResult((Uri)null)
             };
-            var ex = Assert.Throws<AggregateException>(() => oAuth.Authenticate().Wait()).InnerException;
-            Assert.IsInstanceOf<OperationCanceledException>(ex);
+            await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await oAuth.Authenticate());
         }
 
         [Test]
-        public void TestAuthenticateFailure_FailedToGetAuthorizationCode_UnknownResponseUri()
+        public async void TestAuthenticateFailure_FailedToGetAuthorizationCode_UnknownResponseUri()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.unknown.com"))
             };
-            var ex = Assert.Throws<AggregateException>(() => oAuth.Authenticate().Wait()).InnerException;
-            Assert.IsInstanceOf<OperationCanceledException>(ex);
+            await AssertEx.ThrowsAsync<OperationCanceledException>(async () => await oAuth.Authenticate());
         }
 
         [Test]
-        public void TestAuthenticateFailure_FailedToGetAuthorizationCode_Exception()
+        public async void TestAuthenticateFailure_FailedToGetAuthorizationCode_Exception()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             var oAuth = new OAuthAuthentication(serverConnectionMock.Object)
             {
                 GetRedirectedUri = async uri => await Task.Run(new Func<Task<Uri>>(() => { throw new Exception("Test message."); })),
             };
-            var ex = Assert.Throws<AggregateException>(() => oAuth.Authenticate().Wait()).InnerException;
+            var ex = await AssertEx.ThrowsAsync<Exception>(async () => await oAuth.Authenticate());
             Assert.AreEqual("Test message.", ex.Message);
         }
 
         [Test]
-        public void TestAuthenticateFailure_FailedToGetAccessToken_InvalidJson()
+        public async void TestAuthenticateFailure_FailedToGetAccessToken_InvalidJson()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             serverConnectionMock.Setup(s => s.Post(It.IsAny<Uri>(), null)).ReturnsAsync("###").Verifiable();
@@ -96,12 +95,12 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             {
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.testRedirectUri.com?code=testCode"))
             };
-            Assert.Throws<AggregateException>(() => oAuth.Authenticate().Wait());
+            await AssertEx.ThrowsAsync<JsonReaderException>(async () => await oAuth.Authenticate());
             serverConnectionMock.Verify();
         }
 
         [Test]
-        public void TestAuthenticateFailure_FailedToGetAccessToken_Exception()
+        public async void TestAuthenticateFailure_FailedToGetAccessToken_Exception()
         {
             var serverConnectionMock = CreateServerConnectionMockWithContext();
             serverConnectionMock.Setup(s => s.Post(It.IsAny<Uri>(), null)).ThrowsAsync(new Exception("Test message.")).Verifiable();
@@ -109,7 +108,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             {
                 GetRedirectedUri = uri => Task.FromResult(new Uri("http://www.testRedirectUri.com?code=testCode"))
             };
-            var ex = Assert.Throws<AggregateException>(() => oAuth.Authenticate().Wait()).InnerException;
+            var ex = await AssertEx.ThrowsAsync<Exception>(async () => await oAuth.Authenticate());
             Assert.AreEqual("Test message.", ex.Message);
             serverConnectionMock.Verify();
         }
