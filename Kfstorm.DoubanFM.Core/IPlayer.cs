@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Kfstorm.DoubanFM.Core
 {
-    public interface IPlayer : IDisposable
+    public interface IPlayer
     {
         ISession Session { get; }
         IServerConnection ServerConnection { get; }

@@ -146,11 +146,6 @@ namespace Kfstorm.DoubanFM.Core
             }
         }
 
-        public void Dispose()
-        {
-            // TODO
-        }
-
         protected virtual void OnCurrentSongChanged(EventArgs<Song> e)
         {
             Logger.Info($"Current song changed. {e.Object}");

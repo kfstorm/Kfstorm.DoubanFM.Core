@@ -121,18 +121,15 @@ namespace Kfstorm.DoubanFM.Core
 
         public async Task<string> Post(Uri uri, byte[] data, Action<HttpWebRequest> modifier)
         {
-            if (data == null)
-            {
-                data = new byte[0];
-            }
-            Logger.Debug($"POST: {uri}. Data length: {data.Length}");
+            var dataLength = data?.Length ?? 0;
+            Logger.Debug($"POST: {uri}. Data length: {dataLength}");
             return await LogExceptionIfAny(Logger, () => ServerException.TryThrow(async () =>
             {
                 var request = CreateRequest(uri);
                 request.Method = WebRequestMethods.Http.Post;
                 request.ContentType = "application/x-www-form-urlencoded";
                 modifier?.Invoke(request);
-                if (data.Length > 0)
+                if (data != null && data.Length > 0)
                 {
                     var requestStream = await request.GetRequestStreamAsync();
                     requestStream.Write(data, 0, data.Length);
