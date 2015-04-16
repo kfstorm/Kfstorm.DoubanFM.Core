@@ -14,8 +14,8 @@ namespace Kfstorm.DoubanFM.Core
         string AppVersion { get; set; }
         Uri RedirectUri { get; set; }
         string AccessToken { get; set; }
+        string Udid { get; set; }
 
-        Task<string> Get(Uri uri);
         Task<string> Get(Uri uri, Action<HttpWebRequest> modifier);
         Task<string> Post(Uri uri, byte[] data);
         Task<string> Post(Uri uri, byte[] data, Action<HttpWebRequest> modifier);

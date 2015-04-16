@@ -50,6 +50,7 @@ namespace Kfstorm.DoubanFM.Core
             AppendQuery(uriBuilder, StringTable.ApiKey, serverConnection.ClientId);
             AppendQuery(uriBuilder, StringTable.AppName, serverConnection.AppName);
             AppendQuery(uriBuilder, StringTable.Version, serverConnection.AppVersion);
+            AppendQuery(uriBuilder, StringTable.Udid, serverConnection.Udid);
         }
 
         public static IDictionary<string, string> GetQueries(this Uri uri)

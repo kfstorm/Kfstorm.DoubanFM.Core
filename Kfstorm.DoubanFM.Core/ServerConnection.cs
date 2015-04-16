@@ -13,13 +13,14 @@ namespace Kfstorm.DoubanFM.Core
     {
         protected ILog Logger = LogManager.GetLogger(typeof(ServerConnection));
 
-        public ServerConnection(string clientId, string clientSecret, string appName, string appVersion, Uri redirectUri)
+        public ServerConnection(string clientId, string clientSecret, string appName, string appVersion, Uri redirectUri, string udid)
         {
             ClientId = clientId;
             ClientSecret = clientSecret;
             AppName = appName;
             AppVersion = appVersion;
             RedirectUri = redirectUri;
+            Udid = udid;
         }
 
         public ServerConnection()
@@ -66,6 +67,12 @@ namespace Kfstorm.DoubanFM.Core
         {
             get { return GetContextOptional(StringTable.AccessToken); }
             set { Context[StringTable.AccessToken] = value; }
+        }
+
+        public string Udid
+        {
+            get { return GetContextOptional(StringTable.Udid); }
+            set { Context[StringTable.Udid] = value; }
         }
 
         protected virtual string GetContextOptional(string name)

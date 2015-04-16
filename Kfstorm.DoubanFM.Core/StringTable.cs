@@ -29,5 +29,6 @@
         public const string PlayedTime = "pt";
         public const string Sid = "sid";
         public const string Type = "type";
+        public const string Udid = "udid";
     }
 }

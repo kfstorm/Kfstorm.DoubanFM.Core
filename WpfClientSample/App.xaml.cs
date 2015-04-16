@@ -16,12 +16,13 @@ namespace WpfClientSample
         public Uri RedirectUri { get; } = new Uri("http://www.douban.com/mobile/fm");
         public string AppName { get; } = "radio_iphone";
         public string AppVersion { get; } = "100";
+        public string Udid { get; } = Guid.NewGuid().ToString("N");
         public IServerConnection ServerConnection { get; }
         public ISession Session { get; }
 
         public App()
         {
-            ServerConnection = new ServerConnection(ClientId, ClientSecret, AppName, AppVersion, RedirectUri);
+            ServerConnection = new ServerConnection(ClientId, ClientSecret, AppName, AppVersion, RedirectUri, Udid);
             Session = new Session(ServerConnection);
 
             Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;

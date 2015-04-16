@@ -10,7 +10,8 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
         public static Uri RedirectUri => new Uri(ConfigurationManager.AppSettings["RedirectUri"]);
         public static string AppName => ConfigurationManager.AppSettings["AppName"];
         public static string AppVersion => ConfigurationManager.AppSettings["AppVersion"];
-        public static IServerConnection ServerConnection => new ServerConnection(ClientId, ClientSecret, AppName, AppVersion, RedirectUri);
+        public static string Udid => Guid.NewGuid().ToString("N");
+        public static IServerConnection ServerConnection => new ServerConnection(ClientId, ClientSecret, AppName, AppVersion, RedirectUri, Udid);
         public static ISession Session => new Session(ServerConnection);
         public static IPlayer Player => new Player(Session);
 
