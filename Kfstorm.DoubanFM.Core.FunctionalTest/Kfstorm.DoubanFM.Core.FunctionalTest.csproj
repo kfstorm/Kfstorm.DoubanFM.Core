@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="AssertEx.cs" />
     <Compile Include="Generator.cs" />
+    <Compile Include="PasswordAuthenticationTests.cs" />
     <Compile Include="PlayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Setup.cs" />
