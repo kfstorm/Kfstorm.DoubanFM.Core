@@ -16,7 +16,6 @@ namespace Kfstorm.DoubanFM.Core
         event EventHandler<EventArgs<Song>> CurrentSongChanged;
         event EventHandler<EventArgs<Channel>> CurrentChannelChanged;
 
-        Task Initialize();
         Task RefreshChannelList();
         Task ChangeChannel(Channel newChannel);
         Task Next(NextCommandType type);

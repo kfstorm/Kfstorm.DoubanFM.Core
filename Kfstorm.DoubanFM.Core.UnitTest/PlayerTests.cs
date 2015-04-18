@@ -20,7 +20,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             var session = new Session(serverConnectionMock.Object);
             var player = new Player(session);
             Assert.IsNull(player.ChannelList);
-            await player.Initialize();
+            await player.RefreshChannelList();
             serverConnectionMock.Verify();
             Assert.IsNotNull(player.ChannelList);
             var channelList = player.ChannelList;
@@ -43,19 +43,6 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         }
 
         [Test]
-        public async void TestAlreadyInitialized()
-        {
-            var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(It.IsAny<Uri>(), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
-            var session = new Session(serverConnectionMock.Object);
-            var player = new Player(session);
-            Assert.IsNull(player.ChannelList);
-            await player.Initialize();
-            serverConnectionMock.Verify();
-            await AssertEx.ThrowsAsync<InvalidOperationException>(async () => await player.Initialize());
-        }
-
-        [Test]
         public async void TestChangeChannel()
         {
             var serverConnectionMock = new Mock<IServerConnection>();
@@ -63,7 +50,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
             var session = new Session(serverConnectionMock.Object);
             var player = new Player(session);
-            await player.Initialize();
+            await player.RefreshChannelList();
             Assert.IsNotNull(player.ChannelList);
             var newChannels = player.ChannelList.ChannelGroups.SelectMany(group => group.Channels).ToArray();
             foreach (var newChannel in newChannels)
@@ -106,7 +93,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                         }
                     }).Verifiable();
             var player = new Player(new Session(serverConnectionMock.Object));
-            await player.Initialize();
+            await player.RefreshChannelList();
             await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
 
             var originalSong = player.CurrentSong;
@@ -152,7 +139,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                                                                   && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
             var player = new Player(new Session(serverConnectionMock.Object));
-            await player.Initialize();
+            await player.RefreshChannelList();
             await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
 
             var originalSong = player.CurrentSong;
@@ -186,7 +173,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
 
             var player = new Player(new Session(serverConnectionMock.Object));
-            await player.Initialize();
+            await player.RefreshChannelList();
             await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
             var songCount = playList["song"].Count();
             for (var i = 0; i < songCount*2; ++i)
@@ -194,6 +181,62 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 await player.Next(NextCommandType.CurrentSongEnded);
             }
             serverConnectionMock.Verify();
+        }
+
+        [Test]
+        public async void TestChannelNotSelectedException()
+        {
+            var serverConnectionMock = new Mock<IServerConnection>();
+            var session = new Session(serverConnectionMock.Object);
+            var player = new Player(session);
+            await AssertEx.ThrowsAsync<ChannelNotSelectedException>(async () => await player.Next(NextCommandType.SkipCurrentSong));
+        }
+
+        [Test]
+        public async void TestNoAvailableSongsThenRecover()
+        {
+            var playList = _defaultPlayList.DeepClone();
+            var emptyPlayList = _defaultPlayList.DeepClone();
+            emptyPlayList["song"] = new JArray();
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(playList.ToString()).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "p"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(playList.ToString()).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "s"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
+
+            var session = new Session(serverConnectionMock.Object);
+            var player = new Player(session);
+            await player.ChangeChannel(new Channel(0));
+            await AssertEx.ThrowsAsync<NoAvailableSongsException>(async () => await player.Next(NextCommandType.SkipCurrentSong));
+            Assert.IsNotNull(player.CurrentChannel);
+            Assert.IsNull(player.CurrentSong);
+            await player.Next(NextCommandType.SkipCurrentSong);
+            Assert.IsNotNull(player.CurrentSong);
+        }
+
+        [Test]
+        public async void TestSongNotSelectedException()
+        {
+            var playList = _defaultPlayList.DeepClone();
+            var emptyPlayList = _defaultPlayList.DeepClone();
+            emptyPlayList["song"] = new JArray();
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(playList.ToString()).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "p"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(playList.ToString()).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "s"))),
+                It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
+
+            var session = new Session(serverConnectionMock.Object);
+            var player = new Player(session);
+            await player.ChangeChannel(new Channel(0));
+            await AssertEx.ThrowsAsync<NoAvailableSongsException>(async () => await player.Next(NextCommandType.SkipCurrentSong));
+            Assert.IsNotNull(player.CurrentChannel);
+            Assert.IsNull(player.CurrentSong);
+            await AssertEx.ThrowsAsync<SongNotSelectedException>(async () => await player.SetRedHeart(true));
         }
 
         [Test]
@@ -207,7 +250,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
 
             var player = new Player(new Session(serverConnectionMock.Object));
-            await player.Initialize();
+            await player.RefreshChannelList();
             await AssertEx.ThrowsAsync<NoAvailableSongsException>(async () => await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]));
             serverConnectionMock.Verify();
         }
@@ -226,7 +269,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
 
             var player = new Player(new Session(serverConnectionMock.Object));
-            await player.Initialize();
+            await player.RefreshChannelList();
             await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
             await AssertEx.ThrowsAsync<NoAvailableSongsException>(async () => await player.Next(type));
             serverConnectionMock.Verify();
@@ -246,7 +289,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
 
             var player = new Player(new Session(serverConnectionMock.Object));
-            await player.Initialize();
+            await player.RefreshChannelList();
             await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
             await AssertEx.ThrowsAsync<NoAvailableSongsException>(async () => await player.SetRedHeart(redHeart));
             serverConnectionMock.Verify();

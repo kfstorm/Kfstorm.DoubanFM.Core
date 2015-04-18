@@ -66,45 +66,39 @@ namespace Kfstorm.DoubanFM.Core
             Session = session;
         }
 
-        public async Task Initialize()
-        {
-            if (ChannelList != null)
-            {
-                throw new InvalidOperationException("Already initialized");
-            }
-            while (ChannelList == null)
-            {
-                await LogExceptionIfAny(Logger, RefreshChannelList, "Failed to initialize.");
-            }
-            Logger.Info("Initialized.");
-        }
-
         public async Task RefreshChannelList()
         {
-            ChannelList = await GetChannelList();
+            await LogExceptionIfAny(Logger, async () => ChannelList = await GetChannelList());
+            Logger.Info("Channel list refreshed.");
         }
 
         public async Task Next(NextCommandType type)
         {
             ThrowExceptionIfNoChannel();
-            ThrowExceptionIfNoSong();
-            await LogExceptionIfAny(Logger, async () =>
+            ReportType reportType;
+            if (CurrentSong == null)
+            {
+                reportType = ReportType.PlayListEmpty;
+            }
+            else
             {
                 switch (type)
                 {
                     case NextCommandType.CurrentSongEnded:
-                        await Report(ReportType.CurrentSongEnded, CurrentChannel.Id, CurrentSong?.Sid);
+                        reportType = ReportType.CurrentSongEnded;
                         break;
                     case NextCommandType.SkipCurrentSong:
-                        await Report(ReportType.SkipCurrentSong, CurrentChannel.Id, CurrentSong?.Sid);
+                        reportType = ReportType.SkipCurrentSong;
                         break;
                     case NextCommandType.BanCurrentSong:
-                        await Report(ReportType.BanCurrentSong, CurrentChannel.Id, CurrentSong?.Sid);
+                        reportType = ReportType.BanCurrentSong;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(type));
+                        throw new ArgumentOutOfRangeException(nameof(type), type, null);
                 }
-            });
+            }
+
+            await LogExceptionIfAny(Logger, async () => await Report(reportType, CurrentChannel.Id, CurrentSong?.Sid));
         }
 
         public async Task ChangeChannel(Channel newChannel)

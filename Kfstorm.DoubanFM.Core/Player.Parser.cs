@@ -30,27 +30,32 @@ namespace Kfstorm.DoubanFM.Core
         protected virtual Song[] ParsePlayList(string jsonContent)
         {
             var obj = JObject.Parse(jsonContent);
-            return (from song in obj["song"]
-                select new Song((string)song["sid"])
-                {
-                    AlbumUrl = (string)song["album"],
-                    PictureUrl = (string)song["picture"],
-                    Ssid = (string)song["ssid"],
-                    Artist = (string)song["artist"],
-                    Url = (string)song["url"],
-                    Company = (string)song["company"],
-                    Title = (string)song["title"],
-                    AverageRating = ParseOptional<double?>(song["rating_avg"]),
-                    Length = (int)song["length"],
-                    SubType = (string)song["subtype"],
-                    PublishTime = ParseOptional<int?>(song["public_time"]),
-                    SongListsCount = ParseOptional<int?>(song["songlists_count"]),
-                    Aid = (string)song["aid"],
-                    Sha256 = (string)song["sha256"],
-                    Kbps = ParseOptional<int?>(song["kbps"]),
-                    AlbumTitle = (string)song["albumtitle"],
-                    Like = ParseOptional<bool>(song["like"]),
-                }).ToArray();
+            JToken songs;
+            if (obj.TryGetValue("song", out songs) && songs != null)
+            {
+                return (from song in songs
+                    select new Song((string) song["sid"])
+                    {
+                        AlbumUrl = (string) song["album"],
+                        PictureUrl = (string) song["picture"],
+                        Ssid = (string) song["ssid"],
+                        Artist = (string) song["artist"],
+                        Url = (string) song["url"],
+                        Company = (string) song["company"],
+                        Title = (string) song["title"],
+                        AverageRating = ParseOptional<double?>(song["rating_avg"]),
+                        Length = (int) song["length"],
+                        SubType = (string) song["subtype"],
+                        PublishTime = ParseOptional<int?>(song["public_time"]),
+                        SongListsCount = ParseOptional<int?>(song["songlists_count"]),
+                        Aid = (string) song["aid"],
+                        Sha256 = (string) song["sha256"],
+                        Kbps = ParseOptional<int?>(song["kbps"]),
+                        AlbumTitle = (string) song["albumtitle"],
+                        Like = ParseOptional<bool>(song["like"]),
+                    }).ToArray();
+            }
+            return new Song[0];
         }
 
         private T ParseOptional<T>(JToken obj)

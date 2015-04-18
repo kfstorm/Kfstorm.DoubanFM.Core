@@ -11,7 +11,6 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             try
             {
                 await code();
-                Assert.Fail($"Expected exception of type {typeof (TException)} not found.");
             }
             catch (TException ex)
             {
@@ -21,6 +20,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             {
                 Assert.Fail($"Expected exception of type {typeof(TException)} not found. Found exception of type {ex.GetType()} instead.");
             }
+            Assert.Fail($"Expected exception of type {typeof(TException)} not found.");
             return null; // To pass build
         }
     }
