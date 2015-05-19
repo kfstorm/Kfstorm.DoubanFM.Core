@@ -3,16 +3,41 @@ using System.Threading.Tasks;
 
 namespace Kfstorm.DoubanFM.Core
 {
+    /// <summary>
+    /// OAuth authentication method
+    /// </summary>
     public class OAuthAuthentication : AuthenticationBase
     {
+        /// <summary>
+        /// Gets or sets the redirect URI.
+        /// </summary>
+        /// <value>
+        /// The redirect URI.
+        /// </value>
         public Uri RedirectUri => ServerConnection.RedirectUri;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OAuthAuthentication" /> class.
+        /// </summary>
+        /// <param name="serverConnection">The server connection.</param>
         public OAuthAuthentication(IServerConnection serverConnection) : base(serverConnection)
         {
         }
 
+        /// <summary>
+        /// Gets or sets the delegate of getting the redirected URI.
+        /// </summary>
+        /// <value>
+        /// The delegate of getting the redirected URI.
+        /// </value>
         public Func<Uri, Task<Uri>> GetRedirectedUri { get; set; }
 
+        /// <summary>
+        /// Authenticates and returns user info.
+        /// </summary>
+        /// <returns>
+        /// The user info, including username and token.
+        /// </returns>
         public override async Task<UserInfo> Authenticate()
         {
             Logger.Info("Start OAuth authentication.");

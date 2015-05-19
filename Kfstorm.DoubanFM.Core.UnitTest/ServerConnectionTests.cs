@@ -37,7 +37,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             responseMock.Setup(r => r.GetResponseStream()).Returns(new MemoryStream(Encoding.UTF8.GetBytes(Resource.ErrorResponseSample)));
             serverConnection.Protected().Setup<HttpWebRequest>("CreateRequest", ItExpr.IsAny<Uri>()).Returns(requestMock.Object);
 
-            var ex = await AssertEx.ThrowsAsync<ServerException>(async () => await serverConnection.Object.Get(new Uri("http://anyUri.com")));
+            var ex = await AssertEx.ThrowsAsync<ServerException>(async () => await serverConnection.Object.Get(new Uri("http://anyUri.com"), null));
             Assert.IsNotNull(ex);
             Assert.AreEqual(123, ex.Code);
             Assert.IsNotEmpty(ex.ErrorMessage);
@@ -53,7 +53,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             responseMock.Setup(r => r.GetResponseStream()).Returns(new MemoryStream(Encoding.UTF8.GetBytes(Resource.ErrorResponseSample_OldApi)));
             serverConnection.Protected().Setup<HttpWebRequest>("CreateRequest", ItExpr.IsAny<Uri>()).Returns(requestMock.Object);
 
-            var ex = await AssertEx.ThrowsAsync<ServerException>(async () => await serverConnection.Object.Get(new Uri("http://anyUri.com")));
+            var ex = await AssertEx.ThrowsAsync<ServerException>(async () => await serverConnection.Object.Get(new Uri("http://anyUri.com"), null));
             Assert.IsNotNull(ex);
             Assert.AreEqual(123, ex.Code);
             Assert.IsNotEmpty(ex.ErrorMessage);
@@ -69,7 +69,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             responseMock.Setup(r => r.GetResponseStream()).Returns(new MemoryStream(Encoding.UTF8.GetBytes(Resource.ErrorResponseSample)));
             serverConnection.Protected().Setup<HttpWebRequest>("CreateRequest", ItExpr.IsAny<Uri>()).Returns(requestMock.Object);
 
-            var ex = await AssertEx.ThrowsAsync<ServerException>(async () => await serverConnection.Object.Get(new Uri("http://anyUri.com")));
+            var ex = await AssertEx.ThrowsAsync<ServerException>(async () => await serverConnection.Object.Get(new Uri("http://anyUri.com"), null));
             Assert.IsNotNull(ex);
             Assert.AreEqual(123, ex.Code);
             Assert.IsNotEmpty(ex.ErrorMessage);
@@ -85,7 +85,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             responseMock.Setup(r => r.GetResponseStream()).Returns(new MemoryStream(Encoding.UTF8.GetBytes(Resource.ErrorResponseSample_OldApi)));
             serverConnection.Protected().Setup<HttpWebRequest>("CreateRequest", ItExpr.IsAny<Uri>()).Returns(requestMock.Object);
 
-            var ex = await AssertEx.ThrowsAsync<ServerException>(async () => await serverConnection.Object.Get(new Uri("http://anyUri.com")));
+            var ex = await AssertEx.ThrowsAsync<ServerException>(async () => await serverConnection.Object.Get(new Uri("http://anyUri.com"), null));
             Assert.IsNotNull(ex);
             Assert.AreEqual(123, ex.Code);
             Assert.IsNotEmpty(ex.ErrorMessage);

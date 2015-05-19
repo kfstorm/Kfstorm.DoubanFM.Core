@@ -9,10 +9,25 @@ using static Kfstorm.DoubanFM.Core.ExceptionHelper;
 
 namespace Kfstorm.DoubanFM.Core
 {
+    /// <summary>
+    /// The default implementation of <see cref="IServerConnection"/>
+    /// </summary>
     public class ServerConnection : IServerConnection
     {
+        /// <summary>
+        /// The logger
+        /// </summary>
         protected ILog Logger = LogManager.GetLogger(typeof(ServerConnection));
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerConnection"/> class.
+        /// </summary>
+        /// <param name="clientId">The client ID.</param>
+        /// <param name="clientSecret">The client secret.</param>
+        /// <param name="appName">Name of the application.</param>
+        /// <param name="appVersion">The application version.</param>
+        /// <param name="redirectUri">The redirect URI.</param>
+        /// <param name="udid">The UDID.</param>
         public ServerConnection(string clientId, string clientSecret, string appName, string appVersion, Uri redirectUri, string udid)
         {
             ClientId = clientId;
@@ -23,36 +38,75 @@ namespace Kfstorm.DoubanFM.Core
             Udid = udid;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerConnection"/> class.
+        /// </summary>
         public ServerConnection()
         {
         }
 
+        /// <summary>
+        /// Gets the context. The context contains contextual information about server connection, such as client ID and access token.
+        /// </summary>
+        /// <value>
+        /// The context.
+        /// </value>
         public IDictionary<string, string> Context { get; } = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Gets or sets the client ID.
+        /// </summary>
+        /// <value>
+        /// The client ID.
+        /// </value>
         public string ClientId
         {
             get { return GetContextOptional(StringTable.ClientId); }
             set { Context[StringTable.ClientId] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the client secret.
+        /// </summary>
+        /// <value>
+        /// The client secret.
+        /// </value>
         public string ClientSecret
         {
             get { return GetContextOptional(StringTable.ClientSecret); }
             set { Context[StringTable.ClientSecret] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the name of the application.
+        /// </summary>
+        /// <value>
+        /// The name of the application.
+        /// </value>
         public string AppName
         {
             get { return GetContextOptional(StringTable.AppName); }
             set { Context[StringTable.AppName] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the application version.
+        /// </summary>
+        /// <value>
+        /// The application version.
+        /// </value>
         public string AppVersion
         {
             get { return GetContextOptional(StringTable.Version); }
             set { Context[StringTable.Version] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the redirect URI.
+        /// </summary>
+        /// <value>
+        /// The redirect URI.
+        /// </value>
         public Uri RedirectUri
         {
             get
@@ -63,18 +117,35 @@ namespace Kfstorm.DoubanFM.Core
             set { Context[StringTable.RedirectUri] = value?.AbsoluteUri; }
         }
 
+        /// <summary>
+        /// Gets or sets the access token.
+        /// </summary>
+        /// <value>
+        /// The access token.
+        /// </value>
         public string AccessToken
         {
             get { return GetContextOptional(StringTable.AccessToken); }
             set { Context[StringTable.AccessToken] = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the UDID.
+        /// </summary>
+        /// <value>
+        /// The UDID.
+        /// </value>
         public string Udid
         {
             get { return GetContextOptional(StringTable.Udid); }
             set { Context[StringTable.Udid] = value; }
         }
 
+        /// <summary>
+        /// Gets the optional context.
+        /// </summary>
+        /// <param name="name">The name of the context.</param>
+        /// <returns>The optional context.</returns>
         protected virtual string GetContextOptional(string name)
         {
             string temp;
@@ -85,16 +156,22 @@ namespace Kfstorm.DoubanFM.Core
             return null;
         }
 
+        /// <summary>
+        /// Creates an HTTP request.
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <returns></returns>
         protected virtual HttpWebRequest CreateRequest(Uri uri)
         {
             return WebRequest.CreateHttp(uri);
         }
 
-        public virtual async Task<string> Get(Uri uri)
-        {
-            return await Get(uri, null);
-        }
-
+        /// <summary>
+        /// Send an HTTP GET request to the specified URI, and get the response content as string.
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <param name="modifier">The modifier to change the request before sending. The modifier can be null.</param>
+        /// <returns>The content of response.</returns>
         public async Task<string> Get(Uri uri, Action<HttpWebRequest> modifier)
         {
             Logger.Debug($"GET: {uri}");
@@ -114,11 +191,24 @@ namespace Kfstorm.DoubanFM.Core
             }));
         }
 
+        /// <summary>
+        /// Send an HTTP POST request to the specified URI, and get the response content as string.
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <param name="data">The binary data need to be posted. Null or empty array means no data.</param>
+        /// <returns>The content of response.</returns>
         public virtual async Task<string> Post(Uri uri, byte[] data)
         {
             return await Post(uri, data, null);
         }
 
+        /// <summary>
+        /// Send an HTTP POST request to the specified URI, and get the response content as string.
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <param name="data">The binary data need to be posted. Null or empty array means no data.</param>
+        /// <param name="modifier">The modifier to change the request before sending. The modifier can be null.</param>
+        /// <returns>The content of response.</returns>
         public async Task<string> Post(Uri uri, byte[] data, Action<HttpWebRequest> modifier)
         {
             var dataLength = data?.Length ?? 0;

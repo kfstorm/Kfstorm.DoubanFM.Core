@@ -1,5 +1,8 @@
 ﻿namespace Kfstorm.DoubanFM.Core
 {
+    /// <summary>
+    /// A helper class to store all the common strings
+    /// </summary>
     public class StringTable
     {
         public const string ApiKey = "apikey";

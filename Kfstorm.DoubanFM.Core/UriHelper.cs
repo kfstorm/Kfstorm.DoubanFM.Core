@@ -5,8 +5,17 @@ using System.Text;
 
 namespace Kfstorm.DoubanFM.Core
 {
+    /// <summary>
+    /// A helper class of <see cref="System.Uri"/>
+    /// </summary>
     public static class UriHelper
     {
+        /// <summary>
+        /// Appends the query to a URI.
+        /// </summary>
+        /// <param name="uriBuilder">The URI.</param>
+        /// <param name="name">The query name.</param>
+        /// <param name="value">The query value.</param>
         public static void AppendQuery(this UriBuilder uriBuilder, string name, string value)
         {
             name = Uri.EscapeDataString(name);
@@ -27,6 +36,11 @@ namespace Kfstorm.DoubanFM.Core
             }
         }
 
+        /// <summary>
+        /// Removes the query from a URI.
+        /// </summary>
+        /// <param name="uriBuilder">The URI.</param>
+        /// <returns>The removed query in binary format (encoded with UTF-8)</returns>
         public static byte[] RemoveQuery(this UriBuilder uriBuilder)
         {
             var query = uriBuilder.Query;
@@ -38,6 +52,11 @@ namespace Kfstorm.DoubanFM.Core
             return Encoding.UTF8.GetBytes(query);
         }
 
+        /// <summary>
+        /// Appends the authentication common fields.
+        /// </summary>
+        /// <param name="uriBuilder">The URI.</param>
+        /// <param name="serverConnection">The server connection.</param>
         public static void AppendAuthenticationCommonFields(this UriBuilder uriBuilder, IServerConnection serverConnection)
         {
             AppendQuery(uriBuilder, StringTable.ClientId, serverConnection.ClientId);
@@ -45,6 +64,11 @@ namespace Kfstorm.DoubanFM.Core
             AppendQuery(uriBuilder, StringTable.RedirectUri, serverConnection.RedirectUri.AbsoluteUri);
         }
 
+        /// <summary>
+        /// Appends the usage common fields.
+        /// </summary>
+        /// <param name="uriBuilder">The URI.</param>
+        /// <param name="serverConnection">The server connection.</param>
         public static void AppendUsageCommonFields(this UriBuilder uriBuilder, IServerConnection serverConnection)
         {
             AppendQuery(uriBuilder, StringTable.ApiKey, serverConnection.ClientId);
@@ -53,6 +77,11 @@ namespace Kfstorm.DoubanFM.Core
             AppendQuery(uriBuilder, StringTable.Udid, serverConnection.Udid);
         }
 
+        /// <summary>
+        /// Gets the queries.
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <returns>The queries</returns>
         public static IDictionary<string, string> GetQueries(this Uri uri)
         {
             var queries = uri.Query.TrimStart('?').Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries);

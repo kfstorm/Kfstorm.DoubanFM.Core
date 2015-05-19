@@ -6,27 +6,37 @@ namespace Kfstorm.DoubanFM.Core
 {
     partial class Player
     {
+        /// <summary>
+        /// Parses the channel list.
+        /// </summary>
+        /// <param name="jsonContent">Content of JSON format.</param>
+        /// <returns>The channel list.</returns>
         protected virtual ChannelList ParseChannelList(string jsonContent)
         {
             var obj = JObject.Parse(jsonContent);
             return new ChannelList
             {
                 ChannelGroups = (from @group in obj["groups"]
-                    select new ChannelGroup
-                    {
-                        GroupId = (int)@group["group_id"],
-                        GroupName = (string)@group["group_name"],
-                        Channels = ((JArray)@group["chls"]).Select(chl => new Channel((int)chl["id"])
-                        {
-                            Name = (string)chl["name"],
-                            Description = (string)chl["intro"],
-                            SongCount = (int)chl["song_num"],
-                            CoverUrl = (string)chl["cover"],
-                        }).ToArray(),
-                    }).ToArray()
+                                 select new ChannelGroup
+                                 {
+                                     GroupId = (int)@group["group_id"],
+                                     GroupName = (string)@group["group_name"],
+                                     Channels = ((JArray)@group["chls"]).Select(chl => new Channel((int)chl["id"])
+                                     {
+                                         Name = (string)chl["name"],
+                                         Description = (string)chl["intro"],
+                                         SongCount = (int)chl["song_num"],
+                                         CoverUrl = (string)chl["cover"],
+                                     }).ToArray(),
+                                 }).ToArray()
             };
         }
 
+        /// <summary>
+        /// Parses the play list.
+        /// </summary>
+        /// <param name="jsonContent">Content of JSON format.</param>
+        /// <returns>The play list.</returns>
         protected virtual Song[] ParsePlayList(string jsonContent)
         {
             var obj = JObject.Parse(jsonContent);
@@ -34,30 +44,36 @@ namespace Kfstorm.DoubanFM.Core
             if (obj.TryGetValue("song", out songs) && songs != null)
             {
                 return (from song in songs
-                    select new Song((string) song["sid"])
-                    {
-                        AlbumUrl = (string) song["album"],
-                        PictureUrl = (string) song["picture"],
-                        Ssid = (string) song["ssid"],
-                        Artist = (string) song["artist"],
-                        Url = (string) song["url"],
-                        Company = (string) song["company"],
-                        Title = (string) song["title"],
-                        AverageRating = ParseOptional<double?>(song["rating_avg"]),
-                        Length = (int) song["length"],
-                        SubType = (string) song["subtype"],
-                        PublishTime = ParseOptional<int?>(song["public_time"]),
-                        SongListsCount = ParseOptional<int?>(song["songlists_count"]),
-                        Aid = (string) song["aid"],
-                        Sha256 = (string) song["sha256"],
-                        Kbps = ParseOptional<int?>(song["kbps"]),
-                        AlbumTitle = (string) song["albumtitle"],
-                        Like = ParseOptional<bool>(song["like"]),
-                    }).ToArray();
+                        select new Song((string)song["sid"])
+                        {
+                            AlbumUrl = (string)song["album"],
+                            PictureUrl = (string)song["picture"],
+                            Ssid = (string)song["ssid"],
+                            Artist = (string)song["artist"],
+                            Url = (string)song["url"],
+                            Company = (string)song["company"],
+                            Title = (string)song["title"],
+                            AverageRating = ParseOptional<double?>(song["rating_avg"]),
+                            Length = (int)song["length"],
+                            SubType = (string)song["subtype"],
+                            PublishTime = ParseOptional<int?>(song["public_time"]),
+                            SongListsCount = ParseOptional<int?>(song["songlists_count"]),
+                            Aid = (string)song["aid"],
+                            Sha256 = (string)song["sha256"],
+                            Kbps = ParseOptional<int?>(song["kbps"]),
+                            AlbumTitle = (string)song["albumtitle"],
+                            Like = ParseOptional<bool>(song["like"]),
+                        }).ToArray();
             }
             return new Song[0];
         }
 
+        /// <summary>
+        /// Parses an optional object/field.
+        /// </summary>
+        /// <typeparam name="T">The type of the object/field.</typeparam>
+        /// <param name="obj">The JSON token.</param>
+        /// <returns>The value of the object/field.</returns>
         private T ParseOptional<T>(JToken obj)
         {
             try
