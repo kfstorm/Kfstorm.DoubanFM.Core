@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Kfstorm.DoubanFM.Core;
 using Newtonsoft.Json;
 
@@ -19,6 +20,16 @@ namespace WpfClientSample
         public PlayerTestWindow()
         {
             InitializeComponent();
+
+            var refreshTimer = new DispatcherTimer(TimeSpan.FromSeconds(0.1), DispatcherPriority.Background, new EventHandler((sender, args) =>
+            {
+                var length = MeAudio.NaturalDuration.HasTimeSpan ? MeAudio.NaturalDuration.TimeSpan : (TimeSpan?)null;
+                TbCurrentPosition.Text = MeAudio.Position.ToString(@"mm\:ss");
+                TbLength.Text = length?.ToString(@"mm\:ss") ?? "--:--";
+                PbProgress.Minimum = 0;
+                PbProgress.Maximum = length?.TotalMilliseconds ?? 1;
+                PbProgress.Value = MeAudio.Position.TotalMilliseconds;
+            }), Dispatcher);
 
             Player = new Player(((App)Application.Current).Session);
             Player.CurrentChannelChanged += (sender, args) => TbCurrentChannel.Text = args.Object?.ToString();
@@ -70,6 +81,11 @@ namespace WpfClientSample
         {
             await Player.RefreshChannelList();
             LvChannels.ItemsSource = Player.ChannelList?.ChannelGroups?.SelectMany(group => group.Channels).ToArray();
+        }
+
+        private async void MeAudio_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            await Player.Next(NextCommandType.CurrentSongEnded);
         }
     }
 }
