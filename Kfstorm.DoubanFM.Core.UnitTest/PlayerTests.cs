@@ -37,7 +37,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 }
                 foreach (var channel in channelGroup.Channels)
                 {
-                    ValidateChannel(channel);
+                    Validator.ValidateChannel(channel);
                 }
             }
         }
@@ -58,9 +58,36 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 await player.ChangeChannel(newChannel);
                 serverConnectionMock.Verify();
                 Assert.AreEqual(newChannel, player.CurrentChannel);
-                ValidateChannel(player.CurrentChannel);
-                ValidateSong(player.CurrentSong);
+                Validator.ValidateChannel(player.CurrentChannel);
+                Validator.ValidateSong(player.CurrentSong);
             }
+        }
+
+        [TestCase(ChangeChannelCommandType.Normal)]
+        [TestCase(ChangeChannelCommandType.PlayRelativeSongs)]
+        public async void TestChangeChannelAndValidateParameterStart(ChangeChannelCommandType type)
+        {
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
+            var session = new Session(serverConnectionMock.Object);
+            var player = new Player(session);
+            var channel = new Channel(123) { Start = "StartCode" };
+            await player.ChangeChannel(channel, type);
+            serverConnectionMock.Verify();
+            var startValidator = new Func<Uri, bool>(uri =>
+            {
+                var queries = uri.GetQueries();
+                switch (type)
+                {
+                    case ChangeChannelCommandType.Normal:
+                        return queries.ContainsKey("start") && queries["start"] == "StartCode";
+                    case ChangeChannelCommandType.PlayRelativeSongs:
+                        return !queries.ContainsKey("start");
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(type), type, null);
+                }
+            });
+            serverConnectionMock.Verify(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && startValidator(u)), It.IsAny<Action<HttpWebRequest>>()));
         }
 
         private readonly JObject _defaultPlayList = JObject.Parse(Resource.PlayList);
@@ -77,7 +104,8 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")
                                                                   && (u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))
-                                                                      || u.GetQueries().Contains(new KeyValuePair<string, string>("type", reportType)))),
+                                                                      || u.GetQueries().Contains(new KeyValuePair<string, string>("type", reportType)))
+                                                                  && !u.GetQueries().ContainsKey("start")),
                 It.IsAny<Action<HttpWebRequest>>())).Returns(() => Task.FromResult(playList.ToString())).Callback(
                     () =>
                     {
@@ -293,47 +321,6 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             await player.ChangeChannel(player.ChannelList.ChannelGroups[0].Channels[0]);
             await AssertEx.ThrowsAsync<NoAvailableSongsException>(async () => await player.SetRedHeart(redHeart));
             serverConnectionMock.Verify();
-        }
-
-        private void ValidateChannel(Channel channel)
-        {
-            Assert.IsNotNull(channel);
-            Assert.IsNotEmpty(channel.Name);
-            Assert.IsNotEmpty(channel.Description);
-            Assert.IsNotEmpty(channel.CoverUrl);
-            if (channel.Name != "私人")
-            {
-                Assert.AreNotEqual(0, channel.Id);
-            }
-            else
-            {
-                Assert.AreEqual(0, channel.Id);
-            }
-            Assert.Greater(channel.SongCount, 0);
-        }
-
-        private void ValidateSong(Song song)
-        {
-            Assert.IsNotNull(song);
-            Assert.IsNotEmpty(song.AlbumUrl);
-            Assert.IsNotEmpty(song.PictureUrl);
-            Assert.IsNotEmpty(song.Artist);
-            Assert.IsNotEmpty(song.Url);
-            Assert.IsNotEmpty(song.Title);
-            Assert.AreNotEqual(0, song.Length);
-            Assert.IsNotEmpty(song.Sid);
-            Assert.IsNotEmpty(song.Aid);
-            Assert.AreNotEqual(0, song.Kbps);
-            Assert.IsNotEmpty(song.AlbumTitle);
-            if (song.SubType != "T")
-            {
-                Assert.IsNotEmpty(song.Ssid);
-                Assert.IsNotEmpty(song.Company);
-                Assert.AreNotEqual(0, song.AverageRating);
-                Assert.AreNotEqual(0, song.PublishTime);
-                Assert.AreNotEqual(0, song.SongListsCount);
-                Assert.IsNotEmpty(song.Sha256);
-            }
         }
     }
 }

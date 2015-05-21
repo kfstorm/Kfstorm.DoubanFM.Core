@@ -1,4 +1,5 @@
-﻿namespace Kfstorm.DoubanFM.Core
+﻿#pragma warning disable 1591
+namespace Kfstorm.DoubanFM.Core
 {
     /// <summary>
     /// A helper class to store all the common strings
@@ -33,5 +34,8 @@
         public const string Sid = "sid";
         public const string Type = "type";
         public const string Udid = "udid";
+        public const string Query = "q";
+        public const string Start = "start";
+        public const string Limit = "limit";
     }
 }

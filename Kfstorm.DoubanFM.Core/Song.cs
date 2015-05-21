@@ -143,6 +143,7 @@ namespace Kfstorm.DoubanFM.Core
             Sid = sid;
         }
 
+#pragma warning disable 1591
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -172,6 +173,7 @@ namespace Kfstorm.DoubanFM.Core
         }
 
         public override string ToString()
+#pragma warning restore 1591
         {
             return $"Title: {Title}, Artist: {Artist}, AlbumTitle: {AlbumTitle}, Sid: {Sid}";
         }

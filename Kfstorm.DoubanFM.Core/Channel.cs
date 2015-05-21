@@ -16,12 +16,14 @@ namespace Kfstorm.DoubanFM.Core
             Id = id;
         }
 
+#pragma warning disable 1591
         public bool Equals(Channel other)
         {
             return other != null && Id == other.Id;
         }
 
         public override int GetHashCode()
+#pragma warning restore 1591
         {
             return Id;
         }
@@ -33,6 +35,14 @@ namespace Kfstorm.DoubanFM.Core
         /// The name.
         /// </value>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the artist.
+        /// </summary>
+        /// <value>
+        /// The artist.
+        /// </value>
+        public string Artist { get; set; }
 
         /// <summary>
         /// Gets or sets the description of the channel.
@@ -51,6 +61,14 @@ namespace Kfstorm.DoubanFM.Core
         public int Id { get; }
 
         /// <summary>
+        /// Gets or sets the start song code.
+        /// </summary>
+        /// <value>
+        /// The start song code.
+        /// </value>
+        public string Start { get; set; }
+
+        /// <summary>
         /// Gets or sets the song count of the channel.
         /// </summary>
         /// <value>
@@ -66,6 +84,7 @@ namespace Kfstorm.DoubanFM.Core
         /// </value>
         public string CoverUrl { get; set; }
 
+#pragma warning disable 1591
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
@@ -85,8 +104,14 @@ namespace Kfstorm.DoubanFM.Core
         }
 
         public override string ToString()
+#pragma warning restore 1591
         {
-            return $"Id: {Id}, Name: {Name}";
+            var result = $"Id: {Id}, Name: {Name}";
+            if (!string.IsNullOrEmpty(Artist))
+            {
+                result += $", Artist: {Artist}";
+            }
+            return result;
         }
     }
 }

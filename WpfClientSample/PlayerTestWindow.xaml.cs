@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -15,13 +17,18 @@ namespace WpfClientSample
     {
         public IPlayer Player;
 
+        public ISearcher Searcher;
+
         private bool _playing = true;
+
+        // ReSharper disable once NotAccessedField.Local
+        private DispatcherTimer _refreshTimer;
 
         public PlayerTestWindow()
         {
             InitializeComponent();
 
-            var refreshTimer = new DispatcherTimer(TimeSpan.FromSeconds(0.1), DispatcherPriority.Background, new EventHandler((sender, args) =>
+            _refreshTimer = new DispatcherTimer(TimeSpan.FromSeconds(0.1), DispatcherPriority.Background, (sender, args) =>
             {
                 var length = MeAudio.NaturalDuration.HasTimeSpan ? MeAudio.NaturalDuration.TimeSpan : (TimeSpan?)null;
                 TbCurrentPosition.Text = MeAudio.Position.ToString(@"mm\:ss");
@@ -29,7 +36,7 @@ namespace WpfClientSample
                 PbProgress.Minimum = 0;
                 PbProgress.Maximum = length?.TotalMilliseconds ?? 1;
                 PbProgress.Value = MeAudio.Position.TotalMilliseconds;
-            }), Dispatcher);
+            }, Dispatcher);
 
             Player = new Player(((App)Application.Current).Session);
             Player.CurrentChannelChanged += (sender, args) => TbCurrentChannel.Text = args.Object?.ToString();
@@ -40,6 +47,7 @@ namespace WpfClientSample
                 MeAudio.Play();
                 _playing = true;
             };
+            Searcher = new Searcher(((App)Application.Current).ServerConnection);
         }
 
         private async void BtnLike_Click(object sender, RoutedEventArgs e)
@@ -74,13 +82,58 @@ namespace WpfClientSample
         private async void LvChannels_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var channel = (Channel)(e.AddedItems.Count > 0 ? e.AddedItems[0] : null);
-            await Player.ChangeChannel(channel);
+            if (channel != null)
+            {
+                LvSearchChannelResult.SelectedItem = null;
+                await Player.ChangeChannel(channel);
+            }
+        }
+
+        private async void LvSearchChannelResult_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var channel = (Channel)(e.AddedItems.Count > 0 ? e.AddedItems[0] : null);
+            if (channel != null)
+            {
+                LvChannels.SelectedItem = null;
+                await Player.ChangeChannel(channel);
+            }
         }
 
         private async void BtnRefreshChannelList_Click(object sender, RoutedEventArgs e)
         {
             await Player.RefreshChannelList();
             LvChannels.ItemsSource = Player.ChannelList?.ChannelGroups?.SelectMany(group => group.Channels).ToArray();
+        }
+
+        private int _searchChannelStart;
+        private int _searchChannelSize = 20;
+
+        private async void BtnSearchChannel_OnClick(object sender, RoutedEventArgs e)
+        {
+            _searchChannelStart = 0;
+            _searchChannelStart += await SearchChannel(TbSearchChannelQuery.Text, _searchChannelStart, _searchChannelSize);
+        }
+
+        private async void BtnSearchChannelResultShowMore_OnClick(object sender, RoutedEventArgs e)
+        {
+            _searchChannelStart += await SearchChannel(TbSearchChannelQuery.Text, _searchChannelStart, _searchChannelSize);
+        }
+
+        private async Task<int> SearchChannel(string query, int start, int size)
+        {
+            var channels = await Searcher.SearchChannel(query, start, size);
+            if (start == 0)
+            {
+                LvSearchChannelResult.ItemsSource = new ObservableCollection<Channel>(channels);
+            }
+            else
+            {
+                foreach (var channel in channels)
+                {
+                    ((ObservableCollection<Channel>)LvSearchChannelResult.ItemsSource).Add(channel);
+                }
+            }
+            return start + channels.Length;
         }
 
         private async void MeAudio_MediaEnded(object sender, RoutedEventArgs e)

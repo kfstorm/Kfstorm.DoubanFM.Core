@@ -131,6 +131,30 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         
         /// <summary>
         ///   Looks up a localized string similar to {
+        ///    &quot;groups&quot;: [
+        ///        {
+        ///            &quot;chls&quot;: [
+        ///                {
+        ///                    &quot;style&quot;: {
+        ///                        &quot;display_text&quot;: &quot;&quot;,
+        ///                        &quot;bg_color&quot;: &quot;0x499884&quot;,
+        ///                        &quot;layout_type&quot;: 1,
+        ///                        &quot;bg_image&quot;: &quot;&quot;
+        ///                    },
+        ///                    &quot;intro&quot;: &quot;我的个性化音乐频道&quot;,
+        ///                    &quot;name&quot;: &quot;私人&quot;,
+        ///                    &quot;song_num&quot;: 123,
+        ///                    &quot;collected&quot;: &quot;disabled&quot;,
+        ///                    &quot;cover&quot;: &quot;http:\/\/img3. [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SearchChannelResultExample {
+            get {
+                return ResourceManager.GetString("SearchChannelResultExample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
         ///	&quot;access_token&quot;: &quot;c908a1375d9e74bc5b19e3a618db5e34&quot;,
         ///	&quot;douban_user_name&quot;: &quot;K.F.Storm&quot;,
         ///	&quot;douban_user_id&quot;: &quot;49549004&quot;,

@@ -46,8 +46,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="SearcherTests.cs" />
     <Compile Include="ServerConnectionTests.cs" />
     <Compile Include="SessionTests.cs" />
+    <Compile Include="Validator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -75,6 +77,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="Resources\SearchChannelResultExample.json" />
     <None Include="Resources\ChannelListExample.json" />
     <None Include="Resources\ErrorResponseSample_OldApi.json" />
     <None Include="Resources\PlayList.json" />

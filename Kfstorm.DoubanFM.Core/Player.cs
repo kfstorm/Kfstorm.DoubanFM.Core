@@ -184,15 +184,16 @@ namespace Kfstorm.DoubanFM.Core
                 }
             }
 
-            await LogExceptionIfAny(Logger, async () => await Report(reportType, CurrentChannel.Id, CurrentSong?.Sid));
+            await LogExceptionIfAny(Logger, async () => await Report(reportType, CurrentChannel.Id, CurrentSong?.Sid, null /* should not pass the start song code here */));
         }
 
         /// <summary>
         /// Changes the channel.
         /// </summary>
         /// <param name="newChannel">The new channel.</param>
+        /// <param name="type">The type of operation.</param>
         /// <returns></returns>
-        public async Task ChangeChannel(Channel newChannel)
+        public async Task ChangeChannel(Channel newChannel, ChangeChannelCommandType type = ChangeChannelCommandType.Normal)
         {
             if (CurrentChannel != newChannel)
             {
@@ -203,7 +204,8 @@ namespace Kfstorm.DoubanFM.Core
                 {
                     await LogExceptionIfAny(Logger, async () =>
                     {
-                        await Report(ReportType.CurrentChannelChanged, newChannel.Id, CurrentSong?.Sid);
+                        var start = type == ChangeChannelCommandType.Normal ? newChannel.Start : null;
+                        await Report(ReportType.CurrentChannelChanged, newChannel.Id, CurrentSong?.Sid, start);
 
                         /*
                         If user called ChangeChannel twice in a short time, say call 1 and call 2.
@@ -230,7 +232,7 @@ namespace Kfstorm.DoubanFM.Core
             ThrowExceptionIfCurrentChannelIsNull();
             ThrowExceptionIfCurrentSongIsNull();
             var sid = CurrentSong.Sid;
-            await LogExceptionIfAny(Logger, async () => await Report(redHeart ? ReportType.Like : ReportType.CancelLike, CurrentChannel.Id, CurrentSong?.Sid));
+            await LogExceptionIfAny(Logger, async () => await Report(redHeart ? ReportType.Like : ReportType.CancelLike, CurrentChannel.Id, CurrentSong?.Sid, null));
             if (CurrentSong != null && CurrentSong.Sid == sid)
             {
                 CurrentSong.Like = redHeart;
@@ -240,7 +242,7 @@ namespace Kfstorm.DoubanFM.Core
         /// <summary>
         /// Raises the <see cref="E:CurrentSongChanged" /> event.
         /// </summary>
-        /// <param name="e">The <see cref="Kfstorm.DoubanFM.Core.EventArgs{Kfstorm.DoubanFM.Core.Song}" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="Kfstorm.DoubanFM.Core.EventArgs{T}" /> instance containing the event data.</param>
         protected virtual void OnCurrentSongChanged(EventArgs<Song> e)
         {
             Logger.Info($"Current song changed. {e.Object}");
@@ -250,7 +252,7 @@ namespace Kfstorm.DoubanFM.Core
         /// <summary>
         /// Raises the <see cref="E:CurrentChannelChanged" /> event.
         /// </summary>
-        /// <param name="e">The <see cref="Kfstorm.DoubanFM.Core.EventArgs{Kfstorm.DoubanFM.Core.Channel}" /> instance containing the event data.</param>
+        /// <param name="e">The <see cref="Kfstorm.DoubanFM.Core.EventArgs{T}" /> instance containing the event data.</param>
         protected virtual void OnCurrentChannelChanged(EventArgs<Channel> e)
         {
             Logger.Info($"Current channel changed. {e.Object}");
@@ -263,8 +265,9 @@ namespace Kfstorm.DoubanFM.Core
         /// <param name="type">The type of report.</param>
         /// <param name="channelId">The channel ID.</param>
         /// <param name="sid">The SID of current song.</param>
+        /// <param name="start">The start song code.</param>
         /// <returns></returns>
-        private async Task Report(ReportType type, int channelId, string sid)
+        private async Task Report(ReportType type, int channelId, string sid, string start)
         {
             try
             {
@@ -273,7 +276,7 @@ namespace Kfstorm.DoubanFM.Core
                 {
                     CurrentSong = null;
                 }
-                var newPlayList = await GetPlayList(type, channelId, sid);
+                var newPlayList = await GetPlayList(type, channelId, sid, start);
                 if (newPlayList.Length == 0)
                 {
                     if (type != ReportType.CurrentSongEnded)
@@ -282,7 +285,7 @@ namespace Kfstorm.DoubanFM.Core
                     }
                     if (_pendingSongs.Count == 0)
                     {
-                        await Report(ReportType.PlayListEmpty, channelId, sid);
+                        await Report(ReportType.PlayListEmpty, channelId, sid, start);
                         return;
                     }
                 }

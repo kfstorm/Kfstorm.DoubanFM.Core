@@ -43,7 +43,9 @@ namespace Kfstorm.DoubanFM.Core
         /// </value>
         public string RefreshToken { get; set; }
 
+#pragma warning disable 1591
         public override string ToString()
+#pragma warning restore 1591
         {
             return JsonConvert.SerializeObject(this);
         }

@@ -37,15 +37,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AuthenticationBase.cs" />
+    <Compile Include="ChangeChannelCommandType.cs" />
     <Compile Include="ChannelGroup.cs" />
     <Compile Include="Channel.cs" />
     <Compile Include="ChannelList.cs" />
     <Compile Include="ChannelNotSelectedException.cs" />
     <Compile Include="EventArgs{T}.cs" />
     <Compile Include="ExceptionHelper.cs" />
+    <Compile Include="ISearcher.cs" />
     <Compile Include="NextCommandType.cs" />
     <Compile Include="NoAvailableSongsException.cs" />
     <Compile Include="OAuthAuthentication.cs" />
+    <Compile Include="ParserHelper.cs" />
     <Compile Include="PasswordAuthentication.cs" />
     <Compile Include="ReportType.cs" />
     <Compile Include="ReportTypeString.cs" />
@@ -84,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Compile Include="Searcher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

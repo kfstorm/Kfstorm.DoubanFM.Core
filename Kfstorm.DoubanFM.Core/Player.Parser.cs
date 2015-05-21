@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Kfstorm.DoubanFM.Core
@@ -21,13 +20,7 @@ namespace Kfstorm.DoubanFM.Core
                                  {
                                      GroupId = (int)@group["group_id"],
                                      GroupName = (string)@group["group_name"],
-                                     Channels = ((JArray)@group["chls"]).Select(chl => new Channel((int)chl["id"])
-                                     {
-                                         Name = (string)chl["name"],
-                                         Description = (string)chl["intro"],
-                                         SongCount = (int)chl["song_num"],
-                                         CoverUrl = (string)chl["cover"],
-                                     }).ToArray(),
+                                     Channels = @group["chls"].GetArrayOrEmpty().Select(chl => chl.ParseChannel()).ToArray(),
                                  }).ToArray()
             };
         }
@@ -44,50 +37,9 @@ namespace Kfstorm.DoubanFM.Core
             if (obj.TryGetValue("song", out songs) && songs != null)
             {
                 return (from song in songs
-                        select new Song((string)song["sid"])
-                        {
-                            AlbumUrl = (string)song["album"],
-                            PictureUrl = (string)song["picture"],
-                            Ssid = (string)song["ssid"],
-                            Artist = (string)song["artist"],
-                            Url = (string)song["url"],
-                            Company = (string)song["company"],
-                            Title = (string)song["title"],
-                            AverageRating = ParseOptional<double?>(song["rating_avg"]),
-                            Length = (int)song["length"],
-                            SubType = (string)song["subtype"],
-                            PublishTime = ParseOptional<int?>(song["public_time"]),
-                            SongListsCount = ParseOptional<int?>(song["songlists_count"]),
-                            Aid = (string)song["aid"],
-                            Sha256 = (string)song["sha256"],
-                            Kbps = ParseOptional<int?>(song["kbps"]),
-                            AlbumTitle = (string)song["albumtitle"],
-                            Like = ParseOptional<bool>(song["like"]),
-                        }).ToArray();
+                    select song.ParseSong()).ToArray();
             }
             return new Song[0];
-        }
-
-        /// <summary>
-        /// Parses an optional object/field.
-        /// </summary>
-        /// <typeparam name="T">The type of the object/field.</typeparam>
-        /// <param name="obj">The JSON token.</param>
-        /// <returns>The value of the object/field.</returns>
-        private T ParseOptional<T>(JToken obj)
-        {
-            try
-            {
-                if (obj == null)
-                {
-                    return default(T);
-                }
-                return (T)Convert.ChangeType(obj, typeof(T));
-            }
-            catch (FormatException)
-            {
-                return default(T);
-            }
         }
     }
 }

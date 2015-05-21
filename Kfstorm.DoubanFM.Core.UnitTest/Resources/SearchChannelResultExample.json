@@ -1,0 +1,289 @@
+{
+    "channels": [
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "阿兰 系",
+            "cover": "http:\/\/img4.douban.com\/img\/fmadmin\/medium\/8207.jpg",
+            "intro": "为你推荐 阿兰 以及相似的艺术家",
+            "song_num": 0,
+            "collected": "false",
+            "id": 25623
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "阿蘭 系",
+            "cover": "http:\/\/img3.douban.com\/pics\/fm\/open_channel\/def_chl_cover_medium.png",
+            "intro": "为你推荐 阿蘭 以及相似的艺术家",
+            "song_num": 0,
+            "collected": "false",
+            "id": 41659
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "阿兰木(来.来.来)",
+            "artist": "阿妹妹",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s4387329.jpg",
+            "start": "468065gcbf4g2468065",
+            "intro": "为你推荐与 阿妹妹 - 阿兰木(来.来.来) 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 2468065
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "加油!你有ME!",
+            "artist": "魏晨 \/ 阿兰",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s3939679.jpg",
+            "start": "1457714g4cb5g3457714",
+            "intro": "为你推荐与 魏晨 \/ 阿兰 - 加油!你有ME! 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3457714
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "明日への讃歌",
+            "artist": "阿兰",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s3629306.jpg",
+            "start": "1384535g7421g3384535",
+            "intro": "为你推荐与 阿兰 - 明日への讃歌 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3384535
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "It's Five O'clock Somewhere",
+            "artist": "Alan Jackson",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s1442437.jpg",
+            "start": "286g29ccg2000286",
+            "intro": "为你推荐与 Alan Jackson - It's Five O'clock Somewhere 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 2000286
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "空唄",
+            "artist": "阿兰",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s3629306.jpg",
+            "start": "1384536g5eeeg3384536",
+            "intro": "为你推荐与 阿兰 - 空唄 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3384536
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "Chattahoochee (Extended Mix)",
+            "artist": "Alan Jackson",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s3872926.jpg",
+            "start": "1547042gec7dg3547042",
+            "intro": "为你推荐与 Alan Jackson - Chattahoochee (Extended Mix) 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3547042
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "懐かしい未来 ～longing future～",
+            "artist": "阿兰",
+            "cover": "http:\/\/img3.douban.com\/lpic\/s4715952.jpg",
+            "start": "1478014g6d6bg3478014",
+            "intro": "为你推荐与 阿兰 - 懐かしい未来 ～longing future～ 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3478014
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "Araniuez 阿兰尼兹之恋",
+            "artist": "群星",
+            "cover": "http:\/\/img3.douban.com\/lpic\/s2624362.jpg",
+            "start": "350751gba98g2350751",
+            "intro": "为你推荐与 群星 - Araniuez 阿兰尼兹之恋 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 2350751
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "Where Were You (when The World Stopped Turning)",
+            "artist": "Alan Jackson",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s1442437.jpg",
+            "start": "284g9ab0g2000284",
+            "intro": "为你推荐与 Alan Jackson - Where Were You (when The World Stopped Turning) 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 2000284
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "群青の谷",
+            "artist": "阿兰",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s3629306.jpg",
+            "start": "1384542g4af1g3384542",
+            "intro": "为你推荐与 阿兰 - 群青の谷 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3384542
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "恵みの雨",
+            "artist": "阿兰",
+            "cover": "http:\/\/img3.douban.com\/lpic\/s4715952.jpg",
+            "start": "1478024g27c9g3478024",
+            "intro": "为你推荐与 阿兰 - 恵みの雨 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3478024
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "風の手紙",
+            "artist": "阿兰",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s3208838.jpg",
+            "start": "263048g07afg2263048",
+            "intro": "为你推荐与 阿兰 - 風の手紙 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 2263048
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "my life",
+            "artist": "阿兰",
+            "cover": "http:\/\/img3.douban.com\/lpic\/s4035063.jpg",
+            "start": "1473323ge92eg3473323",
+            "intro": "为你推荐与 阿兰 - my life 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3473323
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "久遠の河",
+            "artist": "阿兰",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s3674499.jpg",
+            "start": "1475068g11d1g3475068",
+            "intro": "为你推荐与 阿兰 - 久遠の河 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3475068
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "ひとつ",
+            "artist": "阿兰",
+            "cover": "http:\/\/img4.douban.com\/lpic\/s3629306.jpg",
+            "start": "1384538g9cbbg3384538",
+            "intro": "为你推荐与 阿兰 - ひとつ 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3384538
+        },
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "月がわたし",
+            "artist": "阿兰",
+            "cover": "http:\/\/img3.douban.com\/lpic\/s4715952.jpg",
+            "start": "1478022gcadcg3478022",
+            "intro": "为你推荐与 阿兰 - 月がわたし 相似的歌曲",
+            "song_num": 0,
+            "collected": "false",
+            "id": 3478022
+        }
+    ],
+    "total": 485
+}

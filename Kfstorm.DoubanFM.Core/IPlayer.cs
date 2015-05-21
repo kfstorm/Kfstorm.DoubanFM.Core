@@ -76,8 +76,9 @@ namespace Kfstorm.DoubanFM.Core
         /// Changes the channel.
         /// </summary>
         /// <param name="newChannel">The new channel.</param>
+        /// <param name="type">The type of operation.</param>
         /// <returns></returns>
-        Task ChangeChannel(Channel newChannel);
+        Task ChangeChannel(Channel newChannel, ChangeChannelCommandType type = ChangeChannelCommandType.Normal);
         /// <summary>
         /// Switch to next song.
         /// </summary>

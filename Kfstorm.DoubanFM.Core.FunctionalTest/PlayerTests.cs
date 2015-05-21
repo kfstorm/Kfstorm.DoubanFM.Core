@@ -93,8 +93,8 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
                 Assert.AreNotEqual(oldChannel, channel);
                 await player.ChangeChannel(channel);
                 Assert.AreEqual(channel, player.CurrentChannel);
-                ValidateChannel(player.CurrentChannel);
-                ValidateSong(player.CurrentSong);
+                Validator.ValidateChannel(player.CurrentChannel);
+                Validator.ValidateSong(player.CurrentSong);
             }
         }
 
@@ -112,7 +112,7 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
             {
                 var originalSong = player.CurrentSong;
                 await player.Next(type);
-                ValidateSong(player.CurrentSong);
+                Validator.ValidateSong(player.CurrentSong);
                 Assert.AreNotEqual(originalSong, player.CurrentSong);
             }
         }
@@ -146,42 +146,12 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
                 Assert.IsNotEmpty(group.Channels);
                 foreach (var channel in group.Channels)
                 {
-                    ValidateChannel(channel);
+                    Validator.ValidateChannel(channel);
                 }
             }
             var channels = channalList.ChannelGroups.SelectMany(group => group.Channels).ToList();
             Assert.IsTrue(channels.Any(channel => !string.IsNullOrEmpty(channel.Description)));
             Assert.IsTrue(channels.Any(channel => channel.SongCount > 0));
-        }
-
-        private void ValidateChannel(Channel channel)
-        {
-            Assert.IsNotNull(channel);
-            Assert.IsNotEmpty(channel.Name);
-            Assert.IsNotEmpty(channel.CoverUrl);
-            if (channel.Name != "私人")
-            {
-                Assert.AreNotEqual(0, channel.Id);
-            }
-            else
-            {
-                Assert.AreEqual(0, channel.Id);
-            }
-        }
-
-        private void ValidateSong(Song song)
-        {
-            Assert.IsNotNull(song);
-            Assert.IsNotEmpty(song.AlbumUrl);
-            Assert.IsNotEmpty(song.PictureUrl);
-            Assert.IsNotEmpty(song.Artist);
-            Assert.IsNotEmpty(song.Url);
-            Assert.IsNotEmpty(song.Title);
-            Assert.AreNotEqual(0, song.Length);
-            Assert.IsNotEmpty(song.Sid);
-            Assert.IsNotEmpty(song.Aid);
-            Assert.AreNotEqual(0, song.Kbps);
-            Assert.IsNotEmpty(song.AlbumTitle);
         }
     }
 }
