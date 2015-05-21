@@ -195,29 +195,26 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         public async Task ChangeChannel(Channel newChannel, ChangeChannelCommandType type = ChangeChannelCommandType.Normal)
         {
-            if (CurrentChannel != newChannel)
+            AsyncExpectedChannelId = newChannel?.Id;
+            CurrentChannel = null;
+            CurrentSong = null;
+            if (newChannel != null)
             {
-                AsyncExpectedChannelId = newChannel?.Id;
-                CurrentChannel = null;
-                CurrentSong = null;
-                if (newChannel != null)
+                await LogExceptionIfAny(Logger, async () =>
                 {
-                    await LogExceptionIfAny(Logger, async () =>
-                    {
-                        var start = type == ChangeChannelCommandType.Normal ? newChannel.Start : null;
-                        await Report(ReportType.CurrentChannelChanged, newChannel.Id, CurrentSong?.Sid, start);
+                    var start = type == ChangeChannelCommandType.Normal ? newChannel.Start : null;
+                    await Report(ReportType.CurrentChannelChanged, newChannel.Id, CurrentSong?.Sid, start);
 
-                        /*
+                    /*
                         If user called ChangeChannel twice in a short time, say call 1 and call 2.
                         But call 2 responded before call 1. Then we want to use call 2's response.
                         So we need to check AsyncExpectedChannelId here because it should be call 2's ID.
                         */
-                        if (AsyncExpectedChannelId == newChannel.Id)
-                        {
-                            CurrentChannel = newChannel;
-                        }
-                    });
-                }
+                    if (AsyncExpectedChannelId == newChannel.Id)
+                    {
+                        CurrentChannel = newChannel;
+                    }
+                });
             }
         }
 

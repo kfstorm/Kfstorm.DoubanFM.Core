@@ -118,6 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ChannelInfoExample" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ChannelInfoExample.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="ChannelListExample" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\ChannelListExample.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
@@ -132,6 +135,9 @@
   </data>
   <data name="SearchChannelResultExample" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SearchChannelResultExample.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="SongDetailExample" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\SongDetailExample.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="TestOAuthResponse" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\TestOAuthResponse.json;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

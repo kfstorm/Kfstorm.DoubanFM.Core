@@ -17,7 +17,7 @@ namespace WpfClientSample
     {
         public IPlayer Player;
 
-        public ISearcher Searcher;
+        public IDiscovery Discovery;
 
         private bool _playing = true;
 
@@ -47,7 +47,7 @@ namespace WpfClientSample
                 MeAudio.Play();
                 _playing = true;
             };
-            Searcher = new Searcher(((App)Application.Current).ServerConnection);
+            Discovery = new Discovery(((App)Application.Current).ServerConnection);
         }
 
         private async void BtnLike_Click(object sender, RoutedEventArgs e)
@@ -77,6 +77,20 @@ namespace WpfClientSample
         private async void Next_Click(object sender, RoutedEventArgs e)
         {
             await Player.Next(NextCommandType.SkipCurrentSong);
+        }
+
+        private async void BtnFindRelative_Click(object sender, RoutedEventArgs e)
+        {
+            var sid = Player.CurrentSong?.Sid;
+            if (sid != null)
+            {
+                var window = new FindRelativeWindow(sid) { Owner = this };
+                window.ShowDialog();
+                if (window.Channel != null)
+                {
+                    await Player.ChangeChannel(window.Channel, ChangeChannelCommandType.PlayRelativeSongs);
+                }
+            }
         }
 
         private async void LvChannels_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -121,7 +135,7 @@ namespace WpfClientSample
 
         private async Task<int> SearchChannel(string query, int start, int size)
         {
-            var channels = await Searcher.SearchChannel(query, start, size);
+            var channels = await Discovery.SearchChannel(query, start, size);
             if (start == 0)
             {
                 LvSearchChannelResult.ItemsSource = new ObservableCollection<Channel>(channels);

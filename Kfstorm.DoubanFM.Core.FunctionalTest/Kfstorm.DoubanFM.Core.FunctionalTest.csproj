@@ -48,7 +48,7 @@
     <Compile Include="PasswordAuthenticationTests.cs" />
     <Compile Include="PlayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SearcherTests.cs" />
+    <Compile Include="DiscoveryTests.cs" />
     <Compile Include="Validator.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -62,6 +62,30 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         
         /// <summary>
         ///   Looks up a localized string similar to {
+        ///    &quot;status&quot;: true,
+        ///    &quot;data&quot;: {
+        ///        &quot;channels&quot;: [
+        ///            {
+        ///                &quot;style&quot;: {
+        ///                    &quot;display_text&quot;: &quot;&quot;,
+        ///                    &quot;bg_color&quot;: &quot;0x499884&quot;,
+        ///                    &quot;layout_type&quot;: 1,
+        ///                    &quot;bg_image&quot;: &quot;&quot;
+        ///                },
+        ///                &quot;name&quot;: &quot;ひかり&quot;,
+        ///                &quot;artist&quot;: &quot;星村麻衣&quot;,
+        ///                &quot;cover&quot;: &quot;http:\/\/img6.douban.com\/lpic\/s3219693.jpg&quot;,
+        ///                &quot;start&quot;: &quot;213265g3654g2213265&quot;,
+        ///                &quot;intro&quot;: &quot;为你推荐与 星村麻衣 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ChannelInfoExample {
+            get {
+                return ResourceManager.GetString("ChannelInfoExample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
         ///    &quot;groups&quot;: [
         ///        {
         ///            &quot;chls&quot;: [
@@ -131,25 +155,53 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///    &quot;groups&quot;: [
+        ///    &quot;channels&quot;: [
         ///        {
-        ///            &quot;chls&quot;: [
-        ///                {
-        ///                    &quot;style&quot;: {
-        ///                        &quot;display_text&quot;: &quot;&quot;,
-        ///                        &quot;bg_color&quot;: &quot;0x499884&quot;,
-        ///                        &quot;layout_type&quot;: 1,
-        ///                        &quot;bg_image&quot;: &quot;&quot;
-        ///                    },
-        ///                    &quot;intro&quot;: &quot;我的个性化音乐频道&quot;,
-        ///                    &quot;name&quot;: &quot;私人&quot;,
-        ///                    &quot;song_num&quot;: 123,
-        ///                    &quot;collected&quot;: &quot;disabled&quot;,
-        ///                    &quot;cover&quot;: &quot;http:\/\/img3. [rest of string was truncated]&quot;;.
+        ///            &quot;style&quot;: {
+        ///                &quot;display_text&quot;: &quot;&quot;,
+        ///                &quot;bg_color&quot;: &quot;0x499884&quot;,
+        ///                &quot;layout_type&quot;: 1,
+        ///                &quot;bg_image&quot;: &quot;&quot;
+        ///            },
+        ///            &quot;name&quot;: &quot;阿兰 系&quot;,
+        ///            &quot;cover&quot;: &quot;http:\/\/img4.douban.com\/img\/fmadmin\/medium\/8207.jpg&quot;,
+        ///            &quot;intro&quot;: &quot;为你推荐 阿兰 以及相似的艺术家&quot;,
+        ///            &quot;song_num&quot;: 0,
+        ///            &quot;collected&quot;: &quot;false&quot;,
+        ///            &quot;id&quot;: 25623
+        ///        },
+        ///        {
+        ///            &quot;style&quot;: {
+        ///       [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SearchChannelResultExample {
             get {
                 return ResourceManager.GetString("SearchChannelResultExample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///    &quot;similar_song_channel&quot;: 2213265,
+        ///    &quot;artist_channels&quot;: [
+        ///        {
+        ///            &quot;style&quot;: {
+        ///                &quot;display_text&quot;: &quot;&quot;,
+        ///                &quot;bg_color&quot;: &quot;0x499884&quot;,
+        ///                &quot;layout_type&quot;: 1,
+        ///                &quot;bg_image&quot;: &quot;&quot;
+        ///            },
+        ///            &quot;name&quot;: &quot;星村麻衣 系&quot;,
+        ///            &quot;cover&quot;: &quot;http:\/\/img6.douban.com\/img\/fmadmin\/medium\/2876.jpg&quot;,
+        ///            &quot;intro&quot;: &quot;为你推荐 星村麻衣 以及相似的艺术家&quot;,
+        ///            &quot;song_num&quot;: 0,
+        ///            &quot;collected&quot;: &quot;false&quot;,
+        ///            &quot;id&quot;: 24258
+        ///     [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SongDetailExample {
+            get {
+                return ResourceManager.GetString("SongDetailExample", resourceCulture);
             }
         }
         

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="PlayerTestWindow" Height="600" Width="800">
+        Title="PlayerTestWindow" Height="600" Width="800" WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" MinWidth="200"></ColumnDefinition>
@@ -78,11 +78,14 @@
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" x:Name="BtnLike" Margin="10,0" Padding="5" MinWidth="50" Click="BtnLike_Click">Like/Unlike</Button>
                 <Button Grid.Column="1" x:Name="BtnBan" Margin="10,0" Padding="5" MinWidth="50" Click="BtnBan_Click">Ban</Button>
                 <Button Grid.Column="2" x:Name="BtnPlay" Margin="10,0" Padding="5" MinWidth="50" Click="BtnPlay_Click">Play/Pause</Button>
                 <Button Grid.Column="3" x:Name="Next" Margin="10,0" Padding="5" MinWidth="50" Click="Next_Click">Next</Button>
+                <Button Grid.Column="5" x:Name="BtnFindRelative" Margin="10,0" Padding="5" MinWidth="50" Click="BtnFindRelative_Click">Relative</Button>
             </Grid>
         </Grid>
         <Label Grid.Row="1" Grid.Column="0">Progress bar to see if blocked</Label>

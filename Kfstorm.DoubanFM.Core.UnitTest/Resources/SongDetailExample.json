@@ -1,0 +1,195 @@
+{
+    "similar_song_channel": 2213265,
+    "artist_channels": [
+        {
+            "style": {
+                "display_text": "",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "星村麻衣 系",
+            "cover": "http:\/\/img6.douban.com\/img\/fmadmin\/medium\/2876.jpg",
+            "intro": "为你推荐 星村麻衣 以及相似的艺术家",
+            "song_num": 0,
+            "collected": "false",
+            "id": 24258
+        },
+        {
+            "style": {
+                "display_text": "8765首",
+                "bg_color": "0x499884",
+                "layout_type": 1,
+                "bg_image": ""
+            },
+            "name": "流行",
+            "cover": "http:\/\/img6.douban.com\/img\/fmadmin\/medium\/30078.jpg",
+            "intro": "在豆瓣FM，邂逅你倾心的歌曲",
+            "song_num": 8765,
+            "collected": "false",
+            "id": 194
+        }
+    ],
+    "related_programmes": [
+        {
+            "can_play": true,
+            "is_collected": false,
+            "description": "",
+            "collected_count": 19,
+            "title": "给娟娟的好听的日系歌\/曲",
+            "type": 0,
+            "creator": {
+                "url": "http:\/\/www.douban.com\/people\/59457349\/",
+                "id": "59457349",
+                "name": "某然"
+            },
+            "cover": "http:\/\/img6.douban.com\/pics\/music\/songlist\/cover_default_v1.png",
+            "id": 248904,
+            "songs_count": 26
+        },
+        {
+            "can_play": true,
+            "is_collected": false,
+            "description": "",
+            "collected_count": 3,
+            "title": "红心兆赫02",
+            "type": 0,
+            "creator": {
+                "url": "http:\/\/www.douban.com\/people\/babyrokh\/",
+                "id": "85235110",
+                "name": "babyrokh"
+            },
+            "cover": "http:\/\/img6.douban.com\/img\/songlist\/large\/406864-1.jpg",
+            "id": 406864,
+            "songs_count": 30
+        },
+        {
+            "can_play": true,
+            "is_collected": false,
+            "description": "那些有爱的日文歌曲",
+            "collected_count": 11,
+            "title": "桃之夭夭。灼灼其华。",
+            "type": 0,
+            "creator": {
+                "url": "http:\/\/www.douban.com\/people\/60000721\/",
+                "id": "60000721",
+                "name": "小桃子"
+            },
+            "cover": "http:\/\/img6.douban.com\/pics\/music\/songlist\/cover_default_v1.png",
+            "id": 19077,
+            "songs_count": 30
+        },
+        {
+            "can_play": true,
+            "is_collected": false,
+            "description": "典型Japanese Pop风格。更多请移步【第二辑】http:\/\/music.douban.com\/programme\/466125。",
+            "collected_count": 24,
+            "title": "日音系列——小行板",
+            "type": 0,
+            "creator": {
+                "url": "http:\/\/www.douban.com\/people\/53983424\/",
+                "id": "53983424",
+                "name": "May"
+            },
+            "cover": "http:\/\/img6.douban.com\/img\/songlist\/large\/427626-7.jpg",
+            "id": 427626,
+            "songs_count": 30
+        },
+        {
+            "can_play": true,
+            "is_collected": false,
+            "description": "就是一些 一听就记住的旋律~",
+            "collected_count": 5,
+            "title": "随手笔记",
+            "type": 0,
+            "creator": {
+                "url": "http:\/\/www.douban.com\/people\/bottlerain\/",
+                "id": "3157234",
+                "name": "球左左"
+            },
+            "cover": "http:\/\/img6.douban.com\/img\/songlist\/large\/273546-1.jpg",
+            "id": 273546,
+            "songs_count": 27
+        },
+        {
+            "can_play": true,
+            "is_collected": false,
+            "description": "",
+            "collected_count": 2,
+            "title": "那些怦然心动的song♪♪~",
+            "type": 0,
+            "creator": {
+                "url": "http:\/\/www.douban.com\/people\/63153013\/",
+                "id": "63153013",
+                "name": "R"
+            },
+            "cover": "http:\/\/img6.douban.com\/pics\/music\/songlist\/cover_default_v1.png",
+            "id": 39510,
+            "songs_count": 15
+        },
+        {
+            "can_play": true,
+            "is_collected": false,
+            "description": "",
+            "collected_count": 3,
+            "title": "日式R&B2",
+            "type": 0,
+            "creator": {
+                "url": "http:\/\/www.douban.com\/people\/25425915\/",
+                "id": "25425915",
+                "name": "午夜幼虫"
+            },
+            "cover": "http:\/\/img6.douban.com\/pics\/music\/songlist\/cover_default_v1.png",
+            "id": 49187,
+            "songs_count": 30
+        },
+        {
+            "can_play": true,
+            "is_collected": false,
+            "description": "温柔安心的声音",
+            "collected_count": 5,
+            "title": "優しい♥",
+            "type": 0,
+            "creator": {
+                "url": "http:\/\/www.douban.com\/people\/s32047\/",
+                "id": "60922034",
+                "name": "清弥"
+            },
+            "cover": "http:\/\/img6.douban.com\/img\/songlist\/large\/351914-4.jpg",
+            "id": 351914,
+            "songs_count": 30
+        },
+        {
+            "can_play": true,
+            "is_collected": false,
+            "description": "",
+            "collected_count": 27,
+            "title": "我所生活的二次元（一）。",
+            "type": 0,
+            "creator": {
+                "url": "http:\/\/www.douban.com\/people\/Laure_Champigno\/",
+                "id": "71260453",
+                "name": "蘑菇给你要不"
+            },
+            "cover": "http:\/\/img6.douban.com\/img\/songlist\/large\/328135-4.jpg",
+            "id": 328135,
+            "songs_count": 30
+        },
+        {
+            "can_play": true,
+            "is_collected": false,
+            "description": "seems wind seems rain seems sunny seems your mood........",
+            "collected_count": 4,
+            "title": "Oseason",
+            "type": 0,
+            "creator": {
+                "url": "http:\/\/www.douban.com\/people\/revila\/",
+                "id": "1774849",
+                "name": "Lienya"
+            },
+            "cover": "http:\/\/img6.douban.com\/img\/songlist\/large\/28424-1.jpg",
+            "id": 28424,
+            "songs_count": 36
+        }
+    ]
+}

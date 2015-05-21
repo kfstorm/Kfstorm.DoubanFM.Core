@@ -46,7 +46,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
-    <Compile Include="SearcherTests.cs" />
+    <Compile Include="DiscoveryTests.cs" />
     <Compile Include="ServerConnectionTests.cs" />
     <Compile Include="SessionTests.cs" />
     <Compile Include="Validator.cs" />
@@ -77,6 +77,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="Resources\ChannelInfoExample.json" />
+    <None Include="Resources\SongDetailExample.json" />
     <None Include="Resources\SearchChannelResultExample.json" />
     <None Include="Resources\ChannelListExample.json" />
     <None Include="Resources\ErrorResponseSample_OldApi.json" />

@@ -1,0 +1,23 @@
+{
+    "status": true,
+    "data": {
+        "channels": [
+            {
+                "style": {
+                    "display_text": "",
+                    "bg_color": "0x499884",
+                    "layout_type": 1,
+                    "bg_image": ""
+                },
+                "name": "ひかり",
+                "artist": "星村麻衣",
+                "cover": "http:\/\/img6.douban.com\/lpic\/s3219693.jpg",
+                "start": "213265g3654g2213265",
+                "intro": "为你推荐与 星村麻衣 - ひかり 相似的歌曲",
+                "song_num": 0,
+                "collected": "false",
+                "id": 2213265
+            }
+        ]
+    }
+}
