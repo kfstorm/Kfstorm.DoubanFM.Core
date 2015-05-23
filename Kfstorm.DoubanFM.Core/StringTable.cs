@@ -38,5 +38,6 @@ namespace Kfstorm.DoubanFM.Core
         public const string Start = "start";
         public const string Limit = "limit";
         public const string Id = "id";
+        public const string Ssid = "ssid";
     }
 }

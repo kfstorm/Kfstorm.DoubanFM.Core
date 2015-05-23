@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 
 namespace Kfstorm.DoubanFM.Core.FunctionalTest
@@ -105,6 +106,27 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
                 Assert.AreEqual(artistChannel.Name, newChannel.Name);
                 Assert.AreEqual(artistChannel.CoverUrl, newChannel.CoverUrl);
                 Assert.AreEqual(artistChannel.Description, newChannel.Description);
+            }
+        }
+
+        [TestCase("1638676", "9dd2", true)]
+        [TestCase("153931", "4886", true)]
+        [TestCase("544342", "c34c", true)]
+        [TestCase("1888024", "5676", true)]
+        [TestCase("1509097", "a8c6", false)]
+        [TestCase("1382374", "d906", false)]
+        public async void TestGetLyrics(string sid, string ssid, bool hasLyrics)
+        {
+            var discovery = new Discovery(Generator.ServerConnection);
+            var lyrics = await discovery.GetLyrics(sid, ssid);
+            if (hasLyrics)
+            {
+                Assert.IsNotNull(lyrics);
+                Assert.IsNotEmpty(lyrics);
+            }
+            else
+            {
+                Assert.IsNull(lyrics);
             }
         }
     }

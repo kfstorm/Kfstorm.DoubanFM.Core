@@ -65,5 +65,17 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             Validator.ValidateChannel(channel);
             serverConnectionMock.Verify();
         }
+
+        [Test]
+        public async void TestGetLyrics()
+        {
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("lyric")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.LyricsExample).Verifiable();
+
+            var discovery = new Discovery(serverConnectionMock.Object);
+            var lyrics = await discovery.GetLyrics("123", "12345");
+            Assert.IsNotNull(lyrics);
+            Assert.IsNotEmpty(lyrics);
+        }
     }
 }

@@ -94,13 +94,23 @@ namespace Kfstorm.DoubanFM.Core
         }
 
         /// <summary>
+        /// Gets the song detail.
+        /// </summary>
+        /// <param name="song">The song.</param>
+        /// <returns></returns>
+        public Task<SongDetail> GetSongDetail(Song song)
+        {
+            return GetSongDetail(song.Sid);
+        }
+
+        /// <summary>
         /// Creates the get channel info URI.
         /// </summary>
         /// <param name="channelId">The channel ID.</param>
         /// <returns></returns>
         protected virtual Uri CreateGetChannelInfoUri(int channelId)
         {
-            var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm//channel_info");
+            var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/channel_info");
             uriBuilder.AppendUsageCommonFields(ServerConnection);
             uriBuilder.AppendQuery(StringTable.Id, channelId.ToString(CultureInfo.InvariantCulture));
             return uriBuilder.Uri;
@@ -116,6 +126,45 @@ namespace Kfstorm.DoubanFM.Core
             var uri = CreateGetChannelInfoUri(channelId);
             var jsonContent = await ServerConnection.Get(uri, null);
             return ParseChannelInfo(jsonContent);
+        }
+
+        /// <summary>
+        /// Creates the get lyrics URI.
+        /// </summary>
+        /// <param name="sid">The SID of the song.</param>
+        /// <param name="ssid">The SSID of the song.</param>
+        /// <returns></returns>
+        protected virtual Uri CreateGetLyricsUri(string sid, string ssid)
+        {
+            var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/lyric");
+            uriBuilder.AppendQuery(StringTable.Sid, sid);
+            uriBuilder.AppendQuery(StringTable.Ssid, ssid);
+            return uriBuilder.Uri;
+        }
+
+        /// <summary>
+        /// Gets the lyrics.
+        /// </summary>
+        /// <param name="sid">The SID of the song.</param>
+        /// <param name="ssid">The SSID of the song.</param>
+        /// <returns></returns>
+        public async Task<string> GetLyrics(string sid, string ssid)
+        {
+            var uri = CreateGetLyricsUri(sid, ssid);
+            var jsonContent = await ServerConnection.Get(uri, null);
+            return ParseLyrics(jsonContent);
+        }
+
+        /// <summary>
+        /// Gets the lyrics.
+        /// </summary>
+        /// <param name="song">The song.</param>
+        /// <returns>
+        /// The lyrics if found, otherwise null.
+        /// </returns>
+        public Task<string> GetLyrics(Song song)
+        {
+            return GetLyrics(song.Sid, song.Ssid);
         }
 
         /// <summary>
@@ -154,6 +203,19 @@ namespace Kfstorm.DoubanFM.Core
             var obj = JObject.Parse(jsonContent);
             var channels = obj["data"]?["channels"].GetArrayOrEmpty();
             return channels?.Select(chl => chl.ParseChannel()).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Parses the lyrics.
+        /// </summary>
+        /// <param name="jsonContent">Content of JSON format.</param>
+        /// <returns>The lyrics if found, otherwise null.</returns>
+        protected virtual string ParseLyrics(string jsonContent)
+        {
+            var obj = JObject.Parse(jsonContent);
+            var lyrics = (string)obj["lyric"];
+            if (lyrics == string.Empty) lyrics = null;
+            return lyrics;
         }
     }
 }

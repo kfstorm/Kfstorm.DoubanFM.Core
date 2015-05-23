@@ -23,10 +23,32 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         Task<SongDetail> GetSongDetail(string sid);
         /// <summary>
+        /// Gets the song detail.
+        /// </summary>
+        /// <param name="song">The song.</param>
+        /// <returns></returns>
+        Task<SongDetail> GetSongDetail(Song song);
+        /// <summary>
         /// Gets the channel info.
         /// </summary>
         /// <param name="channelId">The channel ID.</param>
         /// <returns></returns>
         Task<Channel> GetChannelInfo(int channelId);
+
+        /// <summary>
+        /// Gets the lyrics.
+        /// </summary>
+        /// <param name="sid">The SID of the song.</param>
+        /// <param name="ssid">The SSID of the song.</param>
+        /// <returns>The lyrics if found, otherwise null.</returns>
+        Task<string> GetLyrics(string sid, string ssid);
+        /// <summary>
+        /// Gets the lyrics.
+        /// </summary>
+        /// <param name="song">The song.</param>
+        /// <returns>
+        /// The lyrics if found, otherwise null.
+        /// </returns>
+        Task<string> GetLyrics(Song song);
     }
 }
