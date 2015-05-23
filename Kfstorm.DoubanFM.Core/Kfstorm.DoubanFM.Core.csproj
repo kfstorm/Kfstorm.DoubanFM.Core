@@ -49,6 +49,7 @@
     <Compile Include="NoAvailableSongsException.cs" />
     <Compile Include="OAuthAuthentication.cs" />
     <Compile Include="ParserHelper.cs" />
+    <Compile Include="PartialList.cs" />
     <Compile Include="PasswordAuthentication.cs" />
     <Compile Include="ReportType.cs" />
     <Compile Include="ReportTypeString.cs" />

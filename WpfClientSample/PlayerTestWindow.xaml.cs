@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Kfstorm.DoubanFM.Core;
 using Newtonsoft.Json;
@@ -42,12 +43,17 @@ namespace WpfClientSample
             Player.CurrentChannelChanged += (sender, args) => TbCurrentChannel.Text = args.Object?.ToString();
             Player.CurrentSongChanged += (sender, args) =>
             {
+                ImgCover.Source = args.Object != null ? new BitmapImage(new Uri(args.Object.PictureUrl)) : null;
+                TbTitle.Text = args.Object?.Title;
+                TbArtist.Text = args.Object?.Artist;
+                TbAlbum.Text = args.Object?.AlbumTitle;
+
                 TbCurrentSong.Text = args.Object != null ? JsonConvert.SerializeObject(args.Object, Formatting.Indented) : null;
                 MeAudio.Source = args.Object == null ? null : new Uri(args.Object.Url);
                 MeAudio.Play();
                 _playing = true;
             };
-            Discovery = new Discovery(((App)Application.Current).ServerConnection);
+            Discovery = new Discovery(((App)Application.Current).Session);
         }
 
         private async void BtnLike_Click(object sender, RoutedEventArgs e)
@@ -138,16 +144,16 @@ namespace WpfClientSample
             var channels = await Discovery.SearchChannel(query, start, size);
             if (start == 0)
             {
-                LvSearchChannelResult.ItemsSource = new ObservableCollection<Channel>(channels);
+                LvSearchChannelResult.ItemsSource = new ObservableCollection<Channel>(channels.CurrentList);
             }
             else
             {
-                foreach (var channel in channels)
+                foreach (var channel in channels.CurrentList)
                 {
                     ((ObservableCollection<Channel>)LvSearchChannelResult.ItemsSource).Add(channel);
                 }
             }
-            return start + channels.Length;
+            return start + channels.CurrentList.Count;
         }
 
         private async void MeAudio_MediaEnded(object sender, RoutedEventArgs e)

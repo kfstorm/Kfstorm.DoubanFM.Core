@@ -19,20 +19,20 @@ namespace Kfstorm.DoubanFM.Core
         protected ILog Logger = LogManager.GetLogger(typeof(Player));
 
         /// <summary>
-        /// Gets the server connection.
+        /// Gets the session.
         /// </summary>
         /// <value>
-        /// The server connection.
+        /// The session.
         /// </value>
-        public IServerConnection ServerConnection { get; }
+        public ISession Session { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Discovery" /> class.
         /// </summary>
-        /// <param name="serverConnection">The server connection.</param>
-        public Discovery(IServerConnection serverConnection)
+        /// <param name="session">The session.</param>
+        public Discovery(ISession session)
         {
-            ServerConnection = serverConnection;
+            Session = session;
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Kfstorm.DoubanFM.Core
         protected virtual Uri CreateSearchChannelUri(string query, int start, int size)
         {
             var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/search/channel");
-            uriBuilder.AppendUsageCommonFields(ServerConnection);
+            uriBuilder.AppendUsageCommonFields(Session.ServerConnection);
             uriBuilder.AppendQuery(StringTable.Query, query);
             uriBuilder.AppendQuery(StringTable.Start, start.ToString(CultureInfo.InvariantCulture));
             uriBuilder.AppendQuery(StringTable.Limit, size.ToString(CultureInfo.InvariantCulture));
@@ -59,12 +59,12 @@ namespace Kfstorm.DoubanFM.Core
         /// <param name="start">The preferred index of the first channel in the returned channel array.</param>
         /// <param name="size">The max size of returned channel array.</param>
         /// <returns>A channel array with the first channel at index <paramref name="start"/>, or an empty array if no channels available.</returns>
-        public async Task<Channel[]> SearchChannel(string query, int start, int size)
+        public async Task<PartialList<Channel>> SearchChannel(string query, int start, int size)
         {
             var uri = CreateSearchChannelUri(query, start, size);
-            var jsonContent = await ServerConnection.Get(uri, null);
+            var jsonContent = await Session.ServerConnection.Get(uri, null);
             var channelArray = ParseSearchChannelResult(jsonContent);
-            Logger.Info($"Got channel search result. Channel count: {channelArray.Length}. Detail: {JsonConvert.SerializeObject(channelArray)}");
+            Logger.Info($"Got channel search result. Total count: {channelArray.TotalCount}. Current list count: {channelArray.CurrentList.Count}. Detail: {JsonConvert.SerializeObject(channelArray)}");
             return channelArray;
         }
 
@@ -76,7 +76,7 @@ namespace Kfstorm.DoubanFM.Core
         protected virtual Uri CreateGetSongDetailUri(string sid)
         {
             var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/song_detail");
-            uriBuilder.AppendUsageCommonFields(ServerConnection);
+            uriBuilder.AppendUsageCommonFields(Session.ServerConnection);
             uriBuilder.AppendQuery(StringTable.Sid, sid);
             return uriBuilder.Uri;
         }
@@ -89,7 +89,7 @@ namespace Kfstorm.DoubanFM.Core
         public async Task<SongDetail> GetSongDetail(string sid)
         {
             var uri = CreateGetSongDetailUri(sid);
-            var jsonContent = await ServerConnection.Get(uri, null);
+            var jsonContent = await Session.ServerConnection.Get(uri, null);
             return ParseSongDetail(jsonContent);
         }
 
@@ -111,7 +111,7 @@ namespace Kfstorm.DoubanFM.Core
         protected virtual Uri CreateGetChannelInfoUri(int channelId)
         {
             var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/channel_info");
-            uriBuilder.AppendUsageCommonFields(ServerConnection);
+            uriBuilder.AppendUsageCommonFields(Session.ServerConnection);
             uriBuilder.AppendQuery(StringTable.Id, channelId.ToString(CultureInfo.InvariantCulture));
             return uriBuilder.Uri;
         }
@@ -124,7 +124,7 @@ namespace Kfstorm.DoubanFM.Core
         public async Task<Channel> GetChannelInfo(int channelId)
         {
             var uri = CreateGetChannelInfoUri(channelId);
-            var jsonContent = await ServerConnection.Get(uri, null);
+            var jsonContent = await Session.ServerConnection.Get(uri, null);
             return ParseChannelInfo(jsonContent);
         }
 
@@ -151,7 +151,7 @@ namespace Kfstorm.DoubanFM.Core
         public async Task<string> GetLyrics(string sid, string ssid)
         {
             var uri = CreateGetLyricsUri(sid, ssid);
-            var jsonContent = await ServerConnection.Get(uri, null);
+            var jsonContent = await Session.ServerConnection.Get(uri, null);
             return ParseLyrics(jsonContent);
         }
 
@@ -172,10 +172,12 @@ namespace Kfstorm.DoubanFM.Core
         /// </summary>
         /// <param name="jsonContent">Content of JSON format.</param>
         /// <returns>The search channel result.</returns>
-        protected virtual Channel[] ParseSearchChannelResult(string jsonContent)
+        protected virtual PartialList<Channel> ParseSearchChannelResult(string jsonContent)
         {
             var obj = JObject.Parse(jsonContent);
-            return obj["channels"].GetArrayOrEmpty().Select(chl => chl.ParseChannel()).ToArray();
+            var channels = obj["channels"].GetArrayOrEmpty().Select(chl => chl.ParseChannel()).ToArray();
+            var total = (int)obj["total"];
+            return new PartialList<Channel>(channels, total);
         }
 
         /// <summary>

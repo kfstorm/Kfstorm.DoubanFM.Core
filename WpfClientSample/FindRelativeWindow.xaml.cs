@@ -18,7 +18,7 @@ namespace WpfClientSample
         public FindRelativeWindow(string sid)
         {
             _sid = sid;
-            _discovery = new Discovery(((App)Application.Current).ServerConnection);
+            _discovery = new Discovery(((App)Application.Current).Session);
 
             InitializeComponent();
         }
