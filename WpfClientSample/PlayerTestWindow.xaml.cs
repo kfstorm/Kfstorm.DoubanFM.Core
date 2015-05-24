@@ -121,8 +121,8 @@ namespace WpfClientSample
 
         private async void BtnRefreshChannelList_Click(object sender, RoutedEventArgs e)
         {
-            await Player.RefreshChannelList();
-            LvChannels.ItemsSource = Player.ChannelList?.ChannelGroups?.SelectMany(group => group.Channels).ToArray();
+            var channelGroups = await Discovery.GetRecommendedChannels();
+            LvChannels.ItemsSource = channelGroups.SelectMany(group => group.Channels).ToArray();
         }
 
         private int _searchChannelStart;

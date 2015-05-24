@@ -31,16 +31,6 @@ namespace Kfstorm.DoubanFM.Core
         /// </value>
         Song CurrentSong { get; }
         /// <summary>
-        /// Gets the channel list.
-        /// </summary>
-        /// <value>
-        /// The channel list.
-        /// </value>
-        /// <remarks>
-        /// The channel list is a collection of sample channels, organized by groups.
-        /// </remarks>
-        ChannelList ChannelList { get; }
-        /// <summary>
         /// Gets the current channel.
         /// </summary>
         /// <value>
@@ -67,11 +57,6 @@ namespace Kfstorm.DoubanFM.Core
         /// </summary>
         event EventHandler<EventArgs<Channel>> CurrentChannelChanged;
 
-        /// <summary>
-        /// Refreshes the channel list.
-        /// </summary>
-        /// <returns></returns>
-        Task RefreshChannelList();
         /// <summary>
         /// Changes the channel.
         /// </summary>

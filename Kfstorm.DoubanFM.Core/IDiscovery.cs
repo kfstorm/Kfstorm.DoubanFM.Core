@@ -16,6 +16,20 @@ namespace Kfstorm.DoubanFM.Core
         ISession Session { get; }
 
         /// <summary>
+        /// Gets the server connection.
+        /// </summary>
+        /// <value>
+        /// The server connection.
+        /// </value>
+        IServerConnection ServerConnection { get; }
+
+        /// <summary>
+        /// Gets the recommended channels.
+        /// </summary>
+        /// <returns>The recommended channels, organized by groups.</returns>
+        Task<ChannelGroup[]> GetRecommendedChannels();
+
+        /// <summary>
         /// Searches the channel with specified query.
         /// </summary>
         /// <param name="query">The query.</param>

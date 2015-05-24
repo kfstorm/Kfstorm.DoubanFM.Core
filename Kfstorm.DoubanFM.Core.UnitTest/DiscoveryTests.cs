@@ -10,6 +10,33 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
     public class DiscoveryTests
     {
         [Test]
+        public async void TestGetRecommendedChannels()
+        {
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.IsAny<Uri>(), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
+            var session = new Session(serverConnectionMock.Object);
+            var discovery = new Discovery(session);
+            var channelGroups = await discovery.GetRecommendedChannels();
+            serverConnectionMock.Verify();
+            Assert.IsNotNull(channelGroups);
+            Assert.AreEqual(4, channelGroups.Length);
+            for (int i = 0; i < channelGroups.Length; ++i)
+            {
+                var channelGroup = channelGroups[i];
+                Assert.IsNotEmpty(channelGroup.GroupName);
+                Assert.IsNotEmpty(channelGroup.Channels);
+                if (i > 0)
+                {
+                    Assert.Greater(channelGroups[i].GroupId, channelGroups[i - 1].GroupId);
+                }
+                foreach (var channel in channelGroup.Channels)
+                {
+                    Validator.ValidateChannel(channel);
+                }
+            }
+        }
+
+        [Test]
         public async void TestSearchChannel()
         {
             var emptySearchChannelResult = JObject.Parse(Resource.SearchChannelResultExample).DeepClone();

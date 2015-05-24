@@ -68,6 +68,12 @@ namespace Kfstorm.DoubanFM.Core
         string Udid { get; set; }
 
         /// <summary>
+        /// Sets the session information to request.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        void SetSessionInfoToRequest(HttpWebRequest request);
+
+        /// <summary>
         /// Send an HTTP GET request to the specified URI, and get the response content as string.
         /// </summary>
         /// <param name="uri">The URI.</param>

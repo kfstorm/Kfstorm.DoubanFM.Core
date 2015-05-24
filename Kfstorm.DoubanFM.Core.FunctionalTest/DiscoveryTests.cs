@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.Linq;
 using NUnit.Framework;
 
 namespace Kfstorm.DoubanFM.Core.FunctionalTest
@@ -8,6 +8,23 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
     [TestFixture]
     public class DiscoveryTests
     {
+        [TestCase(true)]
+        [TestCase(false)]
+        public async void TestGetRecommendedChannels(bool loggedOn)
+        {
+            var discovery = Generator.Discovery;
+            if (loggedOn)
+            {
+                await discovery.Session.LogOn(new PasswordAuthentication(discovery.ServerConnection)
+                {
+                    Username = Generator.MailAddress,
+                    Password = Generator.Password
+                });
+            }
+            var channelGroups = await discovery.GetRecommendedChannels();
+            ValidateChannelGroups(channelGroups);
+        }
+
         [TestCase("阿兰", 20)]
         [TestCase("Taylor Swift", 100)]
         [TestCase("周杰伦", 20)]
@@ -70,7 +87,7 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
         [TestCase("Taylor Swift", -5, 5)]
         public async void TestSearchChannelWithoutResult(string query, int start, int size)
         {
-            var discovery = new Discovery(new Session(new ServerConnection()));
+            var discovery = Generator.Discovery;
             var channels = await discovery.SearchChannel(query, start, size);
             Assert.IsNotNull(channels);
             Assert.IsEmpty(channels.CurrentList);
@@ -81,7 +98,7 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
         public async void TestGetSongDetail(string query)
         {
             var player = Generator.Player;
-            var discovery = new Discovery(new Session(new ServerConnection()));
+            var discovery = new Discovery(player.Session);
             var channels = await discovery.SearchChannel(query, 0, 1);
             Assert.IsNotNull(channels);
             Assert.AreEqual(1, channels.CurrentList.Count);
@@ -142,7 +159,7 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
         [TestCase("1382374", "d906", false)]
         public async void TestGetLyrics(string sid, string ssid, bool hasLyrics)
         {
-            var discovery = new Discovery(new Session(new ServerConnection()));
+            var discovery = Generator.Discovery;
             var lyrics = await discovery.GetLyrics(sid, ssid);
             if (hasLyrics)
             {
@@ -153,6 +170,27 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
             {
                 Assert.IsNull(lyrics);
             }
+        }
+
+        private void ValidateChannelGroups(ChannelGroup[] channelGroups)
+        {
+            Assert.IsNotNull(channelGroups);
+            Assert.IsNotEmpty(channelGroups);
+            CollectionAssert.AllItemsAreUnique(channelGroups.Select(group => group.GroupName));
+            CollectionAssert.AllItemsAreUnique(channelGroups.Select(group => group.GroupId));
+            foreach (var group in channelGroups)
+            {
+                Assert.IsNotNull(group);
+                Assert.IsNotEmpty(group.GroupName);
+                Assert.IsNotEmpty(group.Channels);
+                foreach (var channel in group.Channels)
+                {
+                    Validator.ValidateChannel(channel);
+                }
+            }
+            var channels = channelGroups.SelectMany(group => group.Channels).ToList();
+            Assert.IsTrue(channels.Any(channel => !string.IsNullOrEmpty(channel.Description)));
+            Assert.IsTrue(channels.Any(channel => channel.SongCount > 0));
         }
     }
 }

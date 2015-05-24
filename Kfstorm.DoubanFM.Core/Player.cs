@@ -39,7 +39,7 @@ namespace Kfstorm.DoubanFM.Core
         /// <value>
         /// The server connection.
         /// </value>
-        public IServerConnection ServerConnection { get; }
+        public IServerConnection ServerConnection => Session.ServerConnection;
 
         /// <summary>
         /// Gets the current song.
@@ -67,17 +67,6 @@ namespace Kfstorm.DoubanFM.Core
         /// Stores a list of songs will be played next.
         /// </summary>
         private Queue<Song> _pendingSongs;
-
-        /// <summary>
-        /// Gets the channel list.
-        /// </summary>
-        /// <value>
-        /// The channel list.
-        /// </value>
-        /// <remarks>
-        /// The channel list is a collection of sample channels, organized by groups.
-        /// </remarks>
-        public ChannelList ChannelList { get; protected set; }
 
         /// <summary>
         /// Gets the current channel.
@@ -139,18 +128,7 @@ namespace Kfstorm.DoubanFM.Core
         /// <param name="session">The session.</param>
         public Player(ISession session)
         {
-            ServerConnection = session.ServerConnection;
             Session = session;
-        }
-
-        /// <summary>
-        /// Refreshes the channel list.
-        /// </summary>
-        /// <returns></returns>
-        public async Task RefreshChannelList()
-        {
-            await LogExceptionIfAny(Logger, async () => ChannelList = await GetChannelList());
-            Logger.Info("Channel list refreshed.");
         }
 
         /// <summary>

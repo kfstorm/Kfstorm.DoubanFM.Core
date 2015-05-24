@@ -18,5 +18,6 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
         public static IServerConnection ServerConnection => new ServerConnection(ClientId, ClientSecret, AppName, AppVersion, RedirectUri, Udid);
         public static ISession Session => new Session(ServerConnection);
         public static IPlayer Player => new Player(Session);
+        public static IDiscovery Discovery => new Discovery(Session);
     }
 }

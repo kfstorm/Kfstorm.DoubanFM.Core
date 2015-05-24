@@ -40,7 +40,6 @@
     <Compile Include="ChangeChannelCommandType.cs" />
     <Compile Include="ChannelGroup.cs" />
     <Compile Include="Channel.cs" />
-    <Compile Include="ChannelList.cs" />
     <Compile Include="ChannelNotSelectedException.cs" />
     <Compile Include="EventArgs{T}.cs" />
     <Compile Include="ExceptionHelper.cs" />

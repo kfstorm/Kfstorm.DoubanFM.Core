@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using static Kfstorm.DoubanFM.Core.ExceptionHelper;
 
 namespace Kfstorm.DoubanFM.Core
 {
@@ -27,12 +28,50 @@ namespace Kfstorm.DoubanFM.Core
         public ISession Session { get; }
 
         /// <summary>
+        /// Gets the server connection.
+        /// </summary>
+        /// <value>
+        /// The server connection.
+        /// </value>
+        public IServerConnection ServerConnection => Session.ServerConnection;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Discovery" /> class.
         /// </summary>
         /// <param name="session">The session.</param>
         public Discovery(ISession session)
         {
             Session = session;
+        }
+
+        /// <summary>
+        /// Creates the get channel list URI.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Uri CreateGetRecommendedChannelsUri()
+        {
+            var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/app_channels");
+            uriBuilder.AppendUsageCommonFields(ServerConnection);
+            // ReSharper disable once StringLiteralTypo
+            uriBuilder.AppendQuery(StringTable.IconCategory, "xlarge");
+            return uriBuilder.Uri;
+        }
+
+        /// <summary>
+        /// Gets the recommended channels.
+        /// </summary>
+        /// <returns>The recommended channels, organized by groups.</returns>
+        public async Task<ChannelGroup[]> GetRecommendedChannels()
+        {
+            return await LogExceptionIfAny(Logger, async () =>
+            {
+                var jsonContent = await ServerConnection.Get(CreateGetRecommendedChannelsUri(), ServerConnection.SetSessionInfoToRequest);
+                var groups = ParseRecommendedChannels(jsonContent);
+                var groupCount = groups.Length;
+                var channelCount = groups.Sum(group => group.Channels.Length);
+                Logger.Info($"Got recommended channels. Group count: {groupCount}. Channel count: {channelCount}. Detail: {JsonConvert.SerializeObject(groups)}");
+                return groups;
+            });
         }
 
         /// <summary>
@@ -45,7 +84,7 @@ namespace Kfstorm.DoubanFM.Core
         protected virtual Uri CreateSearchChannelUri(string query, int start, int size)
         {
             var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/search/channel");
-            uriBuilder.AppendUsageCommonFields(Session.ServerConnection);
+            uriBuilder.AppendUsageCommonFields(ServerConnection);
             uriBuilder.AppendQuery(StringTable.Query, query);
             uriBuilder.AppendQuery(StringTable.Start, start.ToString(CultureInfo.InvariantCulture));
             uriBuilder.AppendQuery(StringTable.Limit, size.ToString(CultureInfo.InvariantCulture));
@@ -61,11 +100,14 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns>A channel array with the first channel at index <paramref name="start"/>, or an empty array if no channels available.</returns>
         public async Task<PartialList<Channel>> SearchChannel(string query, int start, int size)
         {
-            var uri = CreateSearchChannelUri(query, start, size);
-            var jsonContent = await Session.ServerConnection.Get(uri, null);
-            var channelArray = ParseSearchChannelResult(jsonContent);
-            Logger.Info($"Got channel search result. Total count: {channelArray.TotalCount}. Current list count: {channelArray.CurrentList.Count}. Detail: {JsonConvert.SerializeObject(channelArray)}");
-            return channelArray;
+            return await LogExceptionIfAny(Logger, async () =>
+            {
+                var uri = CreateSearchChannelUri(query, start, size);
+                var jsonContent = await ServerConnection.Get(uri, null);
+                var channelArray = ParseSearchChannelResult(jsonContent);
+                Logger.Info($"Got channel search result. Total count: {channelArray.TotalCount}. Current list count: {channelArray.CurrentList.Count}. Detail: {JsonConvert.SerializeObject(channelArray)}");
+                return channelArray;
+            });
         }
 
         /// <summary>
@@ -76,7 +118,7 @@ namespace Kfstorm.DoubanFM.Core
         protected virtual Uri CreateGetSongDetailUri(string sid)
         {
             var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/song_detail");
-            uriBuilder.AppendUsageCommonFields(Session.ServerConnection);
+            uriBuilder.AppendUsageCommonFields(ServerConnection);
             uriBuilder.AppendQuery(StringTable.Sid, sid);
             return uriBuilder.Uri;
         }
@@ -88,9 +130,12 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         public async Task<SongDetail> GetSongDetail(string sid)
         {
-            var uri = CreateGetSongDetailUri(sid);
-            var jsonContent = await Session.ServerConnection.Get(uri, null);
-            return ParseSongDetail(jsonContent);
+            return await LogExceptionIfAny(Logger, async () =>
+            {
+                var uri = CreateGetSongDetailUri(sid);
+                var jsonContent = await ServerConnection.Get(uri, null);
+                return ParseSongDetail(jsonContent);
+            });
         }
 
         /// <summary>
@@ -111,7 +156,7 @@ namespace Kfstorm.DoubanFM.Core
         protected virtual Uri CreateGetChannelInfoUri(int channelId)
         {
             var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/channel_info");
-            uriBuilder.AppendUsageCommonFields(Session.ServerConnection);
+            uriBuilder.AppendUsageCommonFields(ServerConnection);
             uriBuilder.AppendQuery(StringTable.Id, channelId.ToString(CultureInfo.InvariantCulture));
             return uriBuilder.Uri;
         }
@@ -123,9 +168,12 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         public async Task<Channel> GetChannelInfo(int channelId)
         {
-            var uri = CreateGetChannelInfoUri(channelId);
-            var jsonContent = await Session.ServerConnection.Get(uri, null);
-            return ParseChannelInfo(jsonContent);
+            return await LogExceptionIfAny(Logger, async () =>
+            {
+                var uri = CreateGetChannelInfoUri(channelId);
+                var jsonContent = await ServerConnection.Get(uri, null);
+                return ParseChannelInfo(jsonContent);
+            });
         }
 
         /// <summary>
@@ -150,9 +198,12 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         public async Task<string> GetLyrics(string sid, string ssid)
         {
-            var uri = CreateGetLyricsUri(sid, ssid);
-            var jsonContent = await Session.ServerConnection.Get(uri, null);
-            return ParseLyrics(jsonContent);
+            return await LogExceptionIfAny(Logger, async () =>
+            {
+                var uri = CreateGetLyricsUri(sid, ssid);
+                var jsonContent = await ServerConnection.Get(uri, null);
+                return ParseLyrics(jsonContent);
+            });
         }
 
         /// <summary>
@@ -165,6 +216,23 @@ namespace Kfstorm.DoubanFM.Core
         public Task<string> GetLyrics(Song song)
         {
             return GetLyrics(song.Sid, song.Ssid);
+        }
+
+        /// <summary>
+        /// Parses the recommended channels.
+        /// </summary>
+        /// <param name="jsonContent">Content of JSON format.</param>
+        /// <returns>The recommended channels.</returns>
+        protected virtual ChannelGroup[] ParseRecommendedChannels(string jsonContent)
+        {
+            var obj = JObject.Parse(jsonContent);
+            return (from @group in obj["groups"]
+                    select new ChannelGroup
+                    {
+                        GroupId = (int)@group["group_id"],
+                        GroupName = (string)@group["group_name"],
+                        Channels = @group["chls"].GetArrayOrEmpty().Select(chl => chl.ParseChannel()).ToArray(),
+                    }).ToArray();
         }
 
         /// <summary>
