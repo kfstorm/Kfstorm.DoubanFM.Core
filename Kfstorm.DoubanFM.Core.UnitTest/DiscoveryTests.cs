@@ -105,5 +105,40 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             Assert.IsNotNull(lyrics);
             Assert.IsNotEmpty(lyrics);
         }
+
+        [Test]
+        public async void TestGetOfflineRedHeartSongs()
+        {
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
+            var session = new Session(serverConnectionMock.Object);
+            var discovery = new Discovery(session);
+            var songs = await discovery.GetOfflineRedHeartSongs(20, null);
+            Assert.IsNotNull(songs);
+            Assert.IsNotEmpty(songs);
+            foreach (var song in songs)
+            {
+                Validator.ValidateSong(song);
+            }
+        }
+
+        [Test]
+        public async void TestUpdateSongUrl()
+        {
+            var serverConnectionMock = new Mock<IServerConnection>();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
+            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("song_url")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.SongUrlExample).Verifiable();
+            var session = new Session(serverConnectionMock.Object);
+            var discovery = new Discovery(session);
+            var songs = await discovery.GetOfflineRedHeartSongs(20, null);
+            Assert.IsNotNull(songs);
+            Assert.IsNotEmpty(songs);
+            var song = songs[0];
+            var oldUrl = song.Url;
+            await discovery.UpdateSongUrl(song);
+            Assert.IsNotNull(song.Url);
+            Assert.IsNotEmpty(song.Url);
+            Assert.AreNotEqual(oldUrl, song.Url);
+        }
     }
 }

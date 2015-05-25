@@ -1,8 +1,6 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 
 namespace Kfstorm.DoubanFM.Core
 {
@@ -37,43 +35,14 @@ namespace Kfstorm.DoubanFM.Core
         }
 
         /// <summary>
-        /// Creates the get channel list URI.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual Uri CreateGetRecommendedChannelsUri()
-        {
-            var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/app_channels");
-            uriBuilder.AppendUsageCommonFields(ServerConnection);
-            // ReSharper disable once StringLiteralTypo
-            uriBuilder.AppendQuery(StringTable.IconCategory, "xlarge");
-            return uriBuilder.Uri;
-        }
-
-        /// <summary>
         /// Gets the recommended channels.
         /// </summary>
         /// <returns>The recommended channels, organized by groups.</returns>
         public async Task<ChannelGroup[]> GetRecommendedChannels()
         {
-            var jsonContent = await ServerConnection.Get(CreateGetRecommendedChannelsUri(), ServerConnection.SetSessionInfoToRequest);
-            return ParseRecommendedChannels(jsonContent);
-        }
-
-        /// <summary>
-        /// Creates the search channel URI.
-        /// </summary>
-        /// <param name="query">The query.</param>
-        /// <param name="start">The preferred index of the first channel in the returned channel array.</param>
-        /// <param name="size">The max size of returned channel array.</param>
-        /// <returns></returns>
-        protected virtual Uri CreateSearchChannelUri(string query, int start, int size)
-        {
-            var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/search/channel");
-            uriBuilder.AppendUsageCommonFields(ServerConnection);
-            uriBuilder.AppendQuery(StringTable.Query, query);
-            uriBuilder.AppendQuery(StringTable.Start, start.ToString(CultureInfo.InvariantCulture));
-            uriBuilder.AppendQuery(StringTable.Limit, size.ToString(CultureInfo.InvariantCulture));
-            return uriBuilder.Uri;
+            var uri = ServerConnection.CreateGetRecommendedChannelsUri();
+            var jsonContent = await ServerConnection.Get(uri, ServerConnection.SetSessionInfoToRequest);
+            return ServerRequests.ParseGetRecommendedChannelsResult(jsonContent);
         }
 
         /// <summary>
@@ -85,22 +54,9 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns>A channel array with the first channel at index <paramref name="start"/>, or an empty array if no channels available.</returns>
         public async Task<PartialList<Channel>> SearchChannel(string query, int start, int size)
         {
-            var uri = CreateSearchChannelUri(query, start, size);
+            var uri = ServerConnection.CreateSearchChannelUri(query, start, size);
             var jsonContent = await ServerConnection.Get(uri, null);
-            return ParseSearchChannelResult(jsonContent);
-        }
-
-        /// <summary>
-        /// Creates the get song detail URI.
-        /// </summary>
-        /// <param name="sid">The SID of the song.</param>
-        /// <returns></returns>
-        protected virtual Uri CreateGetSongDetailUri(string sid)
-        {
-            var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/song_detail");
-            uriBuilder.AppendUsageCommonFields(ServerConnection);
-            uriBuilder.AppendQuery(StringTable.Sid, sid);
-            return uriBuilder.Uri;
+            return ServerRequests.ParseSearchChannelResult(jsonContent);
         }
 
         /// <summary>
@@ -110,9 +66,9 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         public async Task<SongDetail> GetSongDetail(string sid)
         {
-            var uri = CreateGetSongDetailUri(sid);
+            var uri = ServerConnection.CreateGetSongDetailUri(sid);
             var jsonContent = await ServerConnection.Get(uri, null);
-            return ParseSongDetail(jsonContent);
+            return ServerRequests.ParseGetSongDetailResult(jsonContent);
         }
 
         /// <summary>
@@ -126,42 +82,15 @@ namespace Kfstorm.DoubanFM.Core
         }
 
         /// <summary>
-        /// Creates the get channel info URI.
-        /// </summary>
-        /// <param name="channelId">The channel ID.</param>
-        /// <returns></returns>
-        protected virtual Uri CreateGetChannelInfoUri(int channelId)
-        {
-            var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/channel_info");
-            uriBuilder.AppendUsageCommonFields(ServerConnection);
-            uriBuilder.AppendQuery(StringTable.Id, channelId.ToString(CultureInfo.InvariantCulture));
-            return uriBuilder.Uri;
-        }
-
-        /// <summary>
         /// Gets the channel info.
         /// </summary>
         /// <param name="channelId">The channel ID.</param>
         /// <returns></returns>
         public async Task<Channel> GetChannelInfo(int channelId)
         {
-            var uri = CreateGetChannelInfoUri(channelId);
+            var uri = ServerConnection.CreateGetChannelInfoUri(channelId);
             var jsonContent = await ServerConnection.Get(uri, null);
-            return ParseChannelInfo(jsonContent);
-        }
-
-        /// <summary>
-        /// Creates the get lyrics URI.
-        /// </summary>
-        /// <param name="sid">The SID of the song.</param>
-        /// <param name="ssid">The SSID of the song.</param>
-        /// <returns></returns>
-        protected virtual Uri CreateGetLyricsUri(string sid, string ssid)
-        {
-            var uriBuilder = new UriBuilder("https://api.douban.com/v2/fm/lyric");
-            uriBuilder.AppendQuery(StringTable.Sid, sid);
-            uriBuilder.AppendQuery(StringTable.Ssid, ssid);
-            return uriBuilder.Uri;
+            return ServerRequests.ParseGetChannelInfoResult(jsonContent);
         }
 
         /// <summary>
@@ -172,9 +101,9 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         public async Task<string> GetLyrics(string sid, string ssid)
         {
-            var uri = CreateGetLyricsUri(sid, ssid);
+            var uri = ServerRequests.CreateGetLyricsUri(sid, ssid);
             var jsonContent = await ServerConnection.Get(uri, null);
-            return ParseLyrics(jsonContent);
+            return ServerRequests.ParseGetLyricsResult(jsonContent);
         }
 
         /// <summary>
@@ -190,73 +119,31 @@ namespace Kfstorm.DoubanFM.Core
         }
 
         /// <summary>
-        /// Parses the recommended channels.
+        /// Gets the offline red heart songs.
         /// </summary>
-        /// <param name="jsonContent">Content of JSON format.</param>
-        /// <returns>The recommended channels.</returns>
-        protected virtual ChannelGroup[] ParseRecommendedChannels(string jsonContent)
+        /// <param name="maxSize">The maximum amount of returned songs.</param>
+        /// <param name="excludedSids">The excluded SIDs of songs.</param>
+        /// <returns>
+        /// The offline red heart songs.
+        /// </returns>
+        public async Task<Song[]> GetOfflineRedHeartSongs(int maxSize, IEnumerable<string> excludedSids)
         {
-            var obj = JObject.Parse(jsonContent);
-            return (from @group in obj["groups"]
-                    select new ChannelGroup
-                    {
-                        GroupId = (int)@group["group_id"],
-                        GroupName = (string)@group["group_name"],
-                        Channels = @group["chls"].GetArrayOrEmpty().Select(chl => chl.ParseChannel()).ToArray(),
-                    }).ToArray();
+            var uri = ServerConnection.CreateGetPlayListUri(-3, type: ReportType.CurrentChannelChanged, sid: null, start: null, formats: null, kbps: null, playedTime: null, mode: "offline", excludedSids: excludedSids, max: maxSize);
+            var jsonContent = await ServerConnection.Get(uri, ServerConnection.SetSessionInfoToRequest);
+            return ServerRequests.ParseGetPlayListResult(jsonContent);
         }
 
         /// <summary>
-        /// Parses the search channel result.
+        /// Updates the audio URL of the song.
         /// </summary>
-        /// <param name="jsonContent">Content of JSON format.</param>
-        /// <returns>The search channel result.</returns>
-        protected virtual PartialList<Channel> ParseSearchChannelResult(string jsonContent)
+        /// <param name="song">The song.</param>
+        /// <returns></returns>
+        /// <remarks>The audio URL can be invalid after a period of time. This method can get an updated URL.</remarks>
+        public async Task UpdateSongUrl(Song song)
         {
-            var obj = JObject.Parse(jsonContent);
-            var channels = obj["channels"].GetArrayOrEmpty().Select(chl => chl.ParseChannel()).ToArray();
-            var total = (int)obj["total"];
-            return new PartialList<Channel>(channels, total);
-        }
-
-        /// <summary>
-        /// Parses the song detail.
-        /// </summary>
-        /// <param name="jsonContent">Content of JSON format.</param>
-        /// <returns>The song detail.</returns>
-        protected virtual SongDetail ParseSongDetail(string jsonContent)
-        {
-            var obj = JObject.Parse(jsonContent);
-            return new SongDetail
-            {
-                ArtistChannels = obj["artist_channels"].GetArrayOrEmpty().Select(chl => chl.ParseChannel()).ToArray(),
-                SimilarSongChannel = obj["similar_song_channel"].ParseOptional<int?>(),
-            };
-        }
-
-        /// <summary>
-        /// Parses the channel info.
-        /// </summary>
-        /// <param name="jsonContent">Content of JSON format.</param>
-        /// <returns>The channel info.</returns>
-        protected virtual Channel ParseChannelInfo(string jsonContent)
-        {
-            var obj = JObject.Parse(jsonContent);
-            var channels = obj["data"]?["channels"].GetArrayOrEmpty();
-            return channels?.Select(chl => chl.ParseChannel()).FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Parses the lyrics.
-        /// </summary>
-        /// <param name="jsonContent">Content of JSON format.</param>
-        /// <returns>The lyrics if found, otherwise null.</returns>
-        protected virtual string ParseLyrics(string jsonContent)
-        {
-            var obj = JObject.Parse(jsonContent);
-            var lyrics = (string)obj["lyric"];
-            if (lyrics == string.Empty) lyrics = null;
-            return lyrics;
+            var uri = ServerConnection.CreateGetSongUrlUri(song.Sid, song.Ssid);
+            var jsonContent = await ServerConnection.Get(uri, ServerConnection.SetSessionInfoToRequest);
+            song.Url = ServerRequests.ParseGetSongUrlResult(jsonContent);
         }
     }
 }

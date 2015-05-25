@@ -7,7 +7,7 @@ namespace Kfstorm.DoubanFM.Core
     /// <summary>
     /// The default implementation of <see cref="IPlayer" /> interface
     /// </summary>
-    public partial class Player : IPlayer
+    public class Player : IPlayer
     {
         private volatile Song _currentSong;
 
@@ -237,7 +237,9 @@ namespace Kfstorm.DoubanFM.Core
             {
                 CurrentSong = null;
             }
-            var newPlayList = await GetPlayList(type, channelId, sid, start);
+            var uri = ServerConnection.CreateGetPlayListUri(channelId, type: type, sid: sid, start: start, formats: null, kbps: null, playedTime: null, mode: null, excludedSids: null, max: null);
+            var jsonContent = await ServerConnection.Get(uri, ServerConnection.SetSessionInfoToRequest);
+            var newPlayList = ServerRequests.ParseGetPlayListResult(jsonContent);
             if (newPlayList.Length == 0)
             {
                 if (type != ReportType.CurrentSongEnded)

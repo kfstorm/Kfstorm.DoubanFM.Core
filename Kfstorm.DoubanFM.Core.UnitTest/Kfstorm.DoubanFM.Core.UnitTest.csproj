@@ -77,6 +77,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="Resources\SongUrlExample.json" />
     <None Include="Resources\LyricsExample.json" />
     <None Include="Resources\ChannelInfoExample.json" />
     <None Include="Resources\SongDetailExample.json" />

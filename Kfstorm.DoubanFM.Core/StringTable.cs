@@ -39,5 +39,8 @@ namespace Kfstorm.DoubanFM.Core
         public const string Limit = "limit";
         public const string Id = "id";
         public const string Ssid = "ssid";
+        public const string Mode = "mode";
+        public const string Exclude = "exclude";
+        public const string Max = "max";
     }
 }

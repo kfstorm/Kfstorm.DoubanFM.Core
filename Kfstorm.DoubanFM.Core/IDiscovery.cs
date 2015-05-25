@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Kfstorm.DoubanFM.Core
 {
@@ -72,5 +73,22 @@ namespace Kfstorm.DoubanFM.Core
         /// The lyrics if found, otherwise null.
         /// </returns>
         Task<string> GetLyrics(Song song);
+        /// <summary>
+        /// Gets the offline red heart songs.
+        /// </summary>
+        /// <param name="maxSize">The maximum amount of returned songs.</param>
+        /// <param name="excludedSids">The excluded SIDs of songs.</param>
+        /// <returns>
+        /// The offline red heart songs.
+        /// </returns>
+        Task<Song[]> GetOfflineRedHeartSongs(int maxSize, IEnumerable<string> excludedSids);
+        
+        /// <summary>
+        /// Updates the audio URL of the song.
+        /// </summary>
+        /// <param name="song">The song.</param>
+        /// <returns></returns>
+        /// <remarks>The audio URL can be invalid after a period of time. This method can get an updated URL.</remarks>
+        Task UpdateSongUrl(Song song);
     }
 }

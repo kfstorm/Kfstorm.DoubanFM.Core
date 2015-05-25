@@ -59,7 +59,7 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
                 start += size;
             }
             Assert.IsNotEmpty(allChannels);
-            // Bug: seems the server doesn't always return all the channels. Maybe the server has some filter logic.
+            // Bug #16: seems the server doesn't always return all the channels. Maybe the server has some filter logic.
             //Assert.AreEqual(totalCount.Value, allChannels.Count);
             //Assert.GreaterOrEqual(start, totalCount.Value);
 
@@ -170,6 +170,48 @@ namespace Kfstorm.DoubanFM.Core.FunctionalTest
             {
                 Assert.IsNull(lyrics);
             }
+        }
+
+        [Test]
+        public async void TestGetOfflineRedHeartSongs()
+        {
+            var discovery = Generator.Discovery;
+            await discovery.Session.LogOn(new PasswordAuthentication(discovery.ServerConnection)
+            {
+                Username = Generator.MailAddress,
+                Password = Generator.Password
+            });
+            var allSongs = new List<Song>();
+            while (allSongs.Count < 100)
+            {
+                var songs = await discovery.GetOfflineRedHeartSongs(10, allSongs.Select(song => song.Sid));
+                Assert.IsNotNull(songs);
+                if (songs.Length == 0)
+                {
+                    break;
+                }
+                allSongs.AddRange(songs);
+            }
+            // Bug #17: douban.fm ignores 'max' parameter. So skip count validation here.
+            // Assert.AreEqual(count, allSongs.Count);
+            Assert.Greater(allSongs.Count, 0);
+            foreach (var song in allSongs)
+            {
+                Validator.ValidateSong(song);
+            }
+            Assert.AreEqual(allSongs.Count, allSongs.Select(song => song.Sid).Distinct().Count());
+        }
+
+        [Test]
+        public async void TestUpdateSongUrl()
+        {
+            var discovery = Generator.Discovery;
+            var song = new Song("1383774") { Ssid = "b7e0", Url = "http://mr3.douban.com/201505251612/b1a92c48722420ffa71e213547b41d8d/view/song/small/p1383774.mp4" };
+            var oldUrl = song.Url;
+            await discovery.UpdateSongUrl(song);
+            Assert.IsNotNull(song.Url);
+            Assert.IsNotEmpty(song.Url);
+            Assert.AreNotEqual(oldUrl, song.Url);
         }
 
         private void ValidateChannelGroups(ChannelGroup[] channelGroups)

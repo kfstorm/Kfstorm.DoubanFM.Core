@@ -100,7 +100,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         ///                    &quot;name&quot;: &quot;私人&quot;,
         ///                    &quot;song_num&quot;: 123,
         ///                    &quot;collected&quot;: &quot;disabled&quot;,
-        ///                    &quot;cover&quot;: &quot;http:\/\/img3.douban.com\/pic [rest of string was truncated]&quot;;.
+        ///                    &quot;cover&quot;: &quot;http:\/\/img3. [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ChannelListExample {
             get {
@@ -135,7 +135,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///	&quot;lyric&quot;: &quot;[00:11.23]I knew how it felt to be another one in need of someone to show the way\r\n[00:20.73]Until you saw a part of me that nobody else could see and my life hasn&apos;t been the same.....[01:28.45][01:18.20][00:43.47][00:33.55][02:10.16]You make me feel lucky as I can be....[00:55.71]Before I couldn&apos;t get a break, never had a chance to the impressions I want to\r\n[01:05.34]But now it falls right into place when I get to see your face then there&apos;s\r\n[01:12.13]Nothing that I can&apos;t do....[01:40.0 [rest of string was truncated]&quot;;.
+        ///	&quot;lyric&quot;: &quot;[00:11.23]I knew how it felt to be another one in need of someone to show the way\r\n[00:20.73]Until you saw a part of me that nobody else could see and my life hasn&apos;t been the same.....[01:28.45][01:18.20][00:43.47][00:33.55][02:10.16]You make me feel lucky as I can be....[00:55.71]Before I couldn&apos;t get a break, never had a chance to the impressions I want to\r\n[01:05.34]But now it falls right into place when I get to see your face then there&apos;s\r\n[01:12.13]Nothing that I can&apos;t do....[01:40. [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string LyricsExample {
             get {
@@ -212,6 +212,17 @@ namespace Kfstorm.DoubanFM.Core.UnitTest {
         internal static string SongDetailExample {
             get {
                 return ResourceManager.GetString("SongDetailExample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///    &quot;url&quot;: &quot;http:\/\/mr3.douban.com\/201505251323\/fecad378d563624e79b4fa5b96692634\/view\/song\/small\/p760017.mp4&quot;
+        ///}.
+        /// </summary>
+        internal static string SongUrlExample {
+            get {
+                return ResourceManager.GetString("SongUrlExample", resourceCulture);
             }
         }
         
