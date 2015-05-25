@@ -10,8 +10,8 @@
         /// </summary>
         Normal,
         /// <summary>
-        /// Play relative songs.
+        /// Play related songs.
         /// </summary>
-        PlayRelativeSongs,
+        PlayRelatedSongs,
     }
 }

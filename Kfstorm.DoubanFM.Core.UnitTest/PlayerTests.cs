@@ -35,7 +35,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         }
 
         [TestCase(ChangeChannelCommandType.Normal)]
-        [TestCase(ChangeChannelCommandType.PlayRelativeSongs)]
+        [TestCase(ChangeChannelCommandType.PlayRelatedSongs)]
         public async void TestChangeChannelAndValidateParameterStart(ChangeChannelCommandType type)
         {
             var serverConnectionMock = new Mock<IServerConnection>();
@@ -52,7 +52,7 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
                 {
                     case ChangeChannelCommandType.Normal:
                         return queries.ContainsKey("start") && queries["start"] == "StartCode";
-                    case ChangeChannelCommandType.PlayRelativeSongs:
+                    case ChangeChannelCommandType.PlayRelatedSongs:
                         return !queries.ContainsKey("start");
                     default:
                         throw new ArgumentOutOfRangeException(nameof(type), type, null);

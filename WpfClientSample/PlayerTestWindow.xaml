@@ -103,7 +103,7 @@
                 <Button Grid.Column="1" x:Name="BtnBan" Margin="10,0" Padding="5" MinWidth="50" Click="BtnBan_Click">Ban</Button>
                 <Button Grid.Column="2" x:Name="BtnPlay" Margin="10,0" Padding="5" MinWidth="50" Click="BtnPlay_Click">Play/Pause</Button>
                 <Button Grid.Column="3" x:Name="Next" Margin="10,0" Padding="5" MinWidth="50" Click="Next_Click">Next</Button>
-                <Button Grid.Column="5" x:Name="BtnFindRelative" Margin="10,0" Padding="5" MinWidth="50" Click="BtnFindRelative_Click">Relative</Button>
+                <Button Grid.Column="5" x:Name="BtnFindRelated" Margin="10,0" Padding="5" MinWidth="50" Click="BtnFindRelated_Click">Related</Button>
             </Grid>
         </Grid>
         <Label Grid.Row="1" Grid.Column="0">Progress bar to see if blocked</Label>

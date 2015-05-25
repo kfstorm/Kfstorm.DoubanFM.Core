@@ -85,16 +85,16 @@ namespace WpfClientSample
             await Player.Next(NextCommandType.SkipCurrentSong);
         }
 
-        private async void BtnFindRelative_Click(object sender, RoutedEventArgs e)
+        private async void BtnFindRelated_Click(object sender, RoutedEventArgs e)
         {
             var sid = Player.CurrentSong?.Sid;
             if (sid != null)
             {
-                var window = new FindRelativeWindow(sid) { Owner = this };
+                var window = new FindRelatedWindow(sid) { Owner = this };
                 window.ShowDialog();
                 if (window.Channel != null)
                 {
-                    await Player.ChangeChannel(window.Channel, ChangeChannelCommandType.PlayRelativeSongs);
+                    await Player.ChangeChannel(window.Channel, ChangeChannelCommandType.PlayRelatedSongs);
                 }
             }
         }

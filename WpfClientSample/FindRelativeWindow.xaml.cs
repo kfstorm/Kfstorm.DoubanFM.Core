@@ -6,16 +6,16 @@ using Kfstorm.DoubanFM.Core;
 namespace WpfClientSample
 {
     /// <summary>
-    /// Interaction logic for FindRelativeWindow.xaml
+    /// Interaction logic for FindRelatedWindow.xaml
     /// </summary>
-    public partial class FindRelativeWindow
+    public partial class FindRelatedWindow
     {
         public Channel Channel { get; set; }
 
         private readonly IDiscovery _discovery;
         private readonly string _sid;
 
-        public FindRelativeWindow(string sid)
+        public FindRelatedWindow(string sid)
         {
             _sid = sid;
             _discovery = new Discovery(((App)Application.Current).Session);

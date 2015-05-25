@@ -1,7 +1,7 @@
 ﻿namespace Kfstorm.DoubanFM.Core
 {
     /// <summary>
-    /// Contains information to discover relative songs
+    /// Contains information to discover related songs
     /// </summary>
     public class SongDetail
     {
