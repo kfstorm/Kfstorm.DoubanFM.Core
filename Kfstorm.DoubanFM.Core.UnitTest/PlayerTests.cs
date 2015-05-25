@@ -72,7 +72,6 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             string reportType = GetReportTypeStringByNextCommandType(type);
 
             var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")
                                                                   && (u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))
                                                                       || u.GetQueries().Contains(new KeyValuePair<string, string>("type", reportType)))
@@ -133,7 +132,6 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
         {
             string reportType = GetReportTypeStringByRedHeart(redHeart);
             var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist")
                                                                   && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
@@ -163,7 +161,6 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             var emptyPlayList = _defaultPlayList.DeepClone();
             emptyPlayList["song"] = new JArray();
             var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(playList.ToString()).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "p"))),
@@ -244,7 +241,6 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             var emptyPlayList = _defaultPlayList.DeepClone();
             emptyPlayList["song"] = new JArray();
             var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(emptyPlayList.ToString()).Verifiable();
 
@@ -261,7 +257,6 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             var emptyPlayList = _defaultPlayList.DeepClone();
             emptyPlayList["song"] = new JArray();
             var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", GetReportTypeStringByNextCommandType(type)))),
@@ -280,7 +275,6 @@ namespace Kfstorm.DoubanFM.Core.UnitTest
             var emptyPlayList = _defaultPlayList.DeepClone();
             emptyPlayList["song"] = new JArray();
             var serverConnectionMock = new Mock<IServerConnection>();
-            serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("app_channels")), It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.ChannelListExample).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", "n"))),
                 It.IsAny<Action<HttpWebRequest>>())).ReturnsAsync(Resource.PlayList).Verifiable();
             serverConnectionMock.Setup(s => s.Get(It.Is<Uri>(u => u.AbsolutePath.EndsWith("playlist") && u.GetQueries().Contains(new KeyValuePair<string, string>("type", GetReportTypeStringByRedHeart(redHeart)))),
