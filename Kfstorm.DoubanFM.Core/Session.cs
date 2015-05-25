@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using log4net;
 
 namespace Kfstorm.DoubanFM.Core
 {
@@ -10,11 +9,6 @@ namespace Kfstorm.DoubanFM.Core
     /// </summary>
     public class Session : ISession
     {
-        /// <summary>
-        /// The logger
-        /// </summary>
-        protected ILog Logger = LogManager.GetLogger(typeof(Session));
-
         /// <summary>
         /// Gets the user information.
         /// </summary>
@@ -68,7 +62,6 @@ namespace Kfstorm.DoubanFM.Core
                 try
                 {
                     var result = await authentication.Authenticate();
-                    Logger.Info($"Authentication result: {result}");
                     if (result == null)
                     {
                         throw new Exception("Null user info is not allowed");
@@ -76,11 +69,6 @@ namespace Kfstorm.DoubanFM.Core
                     UserInfo = result;
                     ServerConnection.AccessToken = UserInfo.AccessToken;
                     return;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error("Exception occurred when trying to log on.", ex);
-                    throw;
                 }
                 finally
                 {

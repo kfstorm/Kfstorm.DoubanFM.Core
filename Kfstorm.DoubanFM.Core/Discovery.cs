@@ -2,10 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using log4net;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using static Kfstorm.DoubanFM.Core.ExceptionHelper;
 
 namespace Kfstorm.DoubanFM.Core
 {
@@ -14,11 +11,6 @@ namespace Kfstorm.DoubanFM.Core
     /// </summary>
     public class Discovery : IDiscovery
     {
-        /// <summary>
-        /// The logger
-        /// </summary>
-        protected ILog Logger = LogManager.GetLogger(typeof(Player));
-
         /// <summary>
         /// Gets the session.
         /// </summary>
@@ -63,15 +55,8 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns>The recommended channels, organized by groups.</returns>
         public async Task<ChannelGroup[]> GetRecommendedChannels()
         {
-            return await LogExceptionIfAny(Logger, async () =>
-            {
-                var jsonContent = await ServerConnection.Get(CreateGetRecommendedChannelsUri(), ServerConnection.SetSessionInfoToRequest);
-                var groups = ParseRecommendedChannels(jsonContent);
-                var groupCount = groups.Length;
-                var channelCount = groups.Sum(group => group.Channels.Length);
-                Logger.Info($"Got recommended channels. Group count: {groupCount}. Channel count: {channelCount}. Detail: {JsonConvert.SerializeObject(groups)}");
-                return groups;
-            });
+            var jsonContent = await ServerConnection.Get(CreateGetRecommendedChannelsUri(), ServerConnection.SetSessionInfoToRequest);
+            return ParseRecommendedChannels(jsonContent);
         }
 
         /// <summary>
@@ -100,14 +85,9 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns>A channel array with the first channel at index <paramref name="start"/>, or an empty array if no channels available.</returns>
         public async Task<PartialList<Channel>> SearchChannel(string query, int start, int size)
         {
-            return await LogExceptionIfAny(Logger, async () =>
-            {
-                var uri = CreateSearchChannelUri(query, start, size);
-                var jsonContent = await ServerConnection.Get(uri, null);
-                var channelArray = ParseSearchChannelResult(jsonContent);
-                Logger.Info($"Got channel search result. Total count: {channelArray.TotalCount}. Current list count: {channelArray.CurrentList.Count}. Detail: {JsonConvert.SerializeObject(channelArray)}");
-                return channelArray;
-            });
+            var uri = CreateSearchChannelUri(query, start, size);
+            var jsonContent = await ServerConnection.Get(uri, null);
+            return ParseSearchChannelResult(jsonContent);
         }
 
         /// <summary>
@@ -130,12 +110,9 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         public async Task<SongDetail> GetSongDetail(string sid)
         {
-            return await LogExceptionIfAny(Logger, async () =>
-            {
-                var uri = CreateGetSongDetailUri(sid);
-                var jsonContent = await ServerConnection.Get(uri, null);
-                return ParseSongDetail(jsonContent);
-            });
+            var uri = CreateGetSongDetailUri(sid);
+            var jsonContent = await ServerConnection.Get(uri, null);
+            return ParseSongDetail(jsonContent);
         }
 
         /// <summary>
@@ -168,12 +145,9 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         public async Task<Channel> GetChannelInfo(int channelId)
         {
-            return await LogExceptionIfAny(Logger, async () =>
-            {
-                var uri = CreateGetChannelInfoUri(channelId);
-                var jsonContent = await ServerConnection.Get(uri, null);
-                return ParseChannelInfo(jsonContent);
-            });
+            var uri = CreateGetChannelInfoUri(channelId);
+            var jsonContent = await ServerConnection.Get(uri, null);
+            return ParseChannelInfo(jsonContent);
         }
 
         /// <summary>
@@ -198,12 +172,9 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         public async Task<string> GetLyrics(string sid, string ssid)
         {
-            return await LogExceptionIfAny(Logger, async () =>
-            {
-                var uri = CreateGetLyricsUri(sid, ssid);
-                var jsonContent = await ServerConnection.Get(uri, null);
-                return ParseLyrics(jsonContent);
-            });
+            var uri = CreateGetLyricsUri(sid, ssid);
+            var jsonContent = await ServerConnection.Get(uri, null);
+            return ParseLyrics(jsonContent);
         }
 
         /// <summary>

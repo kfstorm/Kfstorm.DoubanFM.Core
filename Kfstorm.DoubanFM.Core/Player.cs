@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using log4net;
-using static Kfstorm.DoubanFM.Core.ExceptionHelper;
 
 namespace Kfstorm.DoubanFM.Core
 {
@@ -11,11 +9,6 @@ namespace Kfstorm.DoubanFM.Core
     /// </summary>
     public partial class Player : IPlayer
     {
-        /// <summary>
-        /// The logger
-        /// </summary>
-        protected ILog Logger = LogManager.GetLogger(typeof(Player));
-
         private volatile Song _currentSong;
 
         private volatile Channel _currentChannel;
@@ -162,7 +155,7 @@ namespace Kfstorm.DoubanFM.Core
                 }
             }
 
-            await LogExceptionIfAny(Logger, async () => await Report(reportType, CurrentChannel.Id, CurrentSong?.Sid, null /* should not pass the start song code here */));
+            await Report(reportType, CurrentChannel.Id, CurrentSong?.Sid, null /* should not pass the start song code here */);
         }
 
         /// <summary>
@@ -178,21 +171,18 @@ namespace Kfstorm.DoubanFM.Core
             CurrentSong = null;
             if (newChannel != null)
             {
-                await LogExceptionIfAny(Logger, async () =>
-                {
-                    var start = type == ChangeChannelCommandType.Normal ? newChannel.Start : null;
-                    await Report(ReportType.CurrentChannelChanged, newChannel.Id, CurrentSong?.Sid, start);
+                var start = type == ChangeChannelCommandType.Normal ? newChannel.Start : null;
+                await Report(ReportType.CurrentChannelChanged, newChannel.Id, CurrentSong?.Sid, start);
 
-                    /*
+                /*
                         If user called ChangeChannel twice in a short time, say call 1 and call 2.
                         But call 2 responded before call 1. Then we want to use call 2's response.
                         So we need to check AsyncExpectedChannelId here because it should be call 2's ID.
                         */
-                    if (AsyncExpectedChannelId == newChannel.Id)
-                    {
-                        CurrentChannel = newChannel;
-                    }
-                });
+                if (AsyncExpectedChannelId == newChannel.Id)
+                {
+                    CurrentChannel = newChannel;
+                }
             }
         }
 
@@ -207,7 +197,7 @@ namespace Kfstorm.DoubanFM.Core
             ThrowExceptionIfCurrentChannelIsNull();
             ThrowExceptionIfCurrentSongIsNull();
             var sid = CurrentSong.Sid;
-            await LogExceptionIfAny(Logger, async () => await Report(redHeart ? ReportType.Like : ReportType.CancelLike, CurrentChannel.Id, CurrentSong?.Sid, null));
+            await Report(redHeart ? ReportType.Like : ReportType.CancelLike, CurrentChannel.Id, CurrentSong?.Sid, null);
             if (CurrentSong != null && CurrentSong.Sid == sid)
             {
                 CurrentSong.Like = redHeart;
@@ -220,7 +210,6 @@ namespace Kfstorm.DoubanFM.Core
         /// <param name="e">The <see cref="Kfstorm.DoubanFM.Core.EventArgs{T}" /> instance containing the event data.</param>
         protected virtual void OnCurrentSongChanged(EventArgs<Song> e)
         {
-            Logger.Info($"Current song changed. {e.Object}");
             CurrentSongChanged?.Invoke(this, e);
         }
 
@@ -230,7 +219,6 @@ namespace Kfstorm.DoubanFM.Core
         /// <param name="e">The <see cref="Kfstorm.DoubanFM.Core.EventArgs{T}" /> instance containing the event data.</param>
         protected virtual void OnCurrentChannelChanged(EventArgs<Channel> e)
         {
-            Logger.Info($"Current channel changed. {e.Object}");
             CurrentChannelChanged?.Invoke(this, e);
         }
 
@@ -244,54 +232,46 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns></returns>
         private async Task Report(ReportType type, int channelId, string sid, string start)
         {
-            try
+            var changeCurrentSong = !(type == ReportType.Like || type == ReportType.CancelLike);
+            if (changeCurrentSong)
             {
-                var changeCurrentSong = !(type == ReportType.Like || type == ReportType.CancelLike);
-                if (changeCurrentSong)
+                CurrentSong = null;
+            }
+            var newPlayList = await GetPlayList(type, channelId, sid, start);
+            if (newPlayList.Length == 0)
+            {
+                if (type != ReportType.CurrentSongEnded)
                 {
-                    CurrentSong = null;
+                    throw new NoAvailableSongsException();
                 }
-                var newPlayList = await GetPlayList(type, channelId, sid, start);
-                if (newPlayList.Length == 0)
+                if (_pendingSongs.Count == 0)
                 {
-                    if (type != ReportType.CurrentSongEnded)
-                    {
-                        throw new NoAvailableSongsException();
-                    }
-                    if (_pendingSongs.Count == 0)
-                    {
-                        await Report(ReportType.PlayListEmpty, channelId, sid, start);
-                        return;
-                    }
-                }
-                if (channelId == AsyncExpectedChannelId)
-                {
-                    if (newPlayList.Length != 0)
-                    {
-                        if (_pendingSongs == null)
-                        {
-                            _pendingSongs = new Queue<Song>();
-                        }
-                        _pendingSongs.Clear();
-                        foreach (var song in newPlayList)
-                        {
-                            _pendingSongs.Enqueue(song);
-                        }
-                    }
-                    if (changeCurrentSong)
-                    {
-                        CurrentSong = _pendingSongs.Dequeue();
-                    }
-                }
-                else
-                {
-                    // TODO: throw exception or not?
+                    await Report(ReportType.PlayListEmpty, channelId, sid, start);
+                    return;
                 }
             }
-            catch (Exception ex)
+            if (channelId == AsyncExpectedChannelId)
             {
-                Logger.Error($"Failed to send report to server. Report type: {type}. Current channel: {CurrentChannel}. Current song: {CurrentSong}.", ex);
-                throw;
+                if (newPlayList.Length != 0)
+                {
+                    if (_pendingSongs == null)
+                    {
+                        _pendingSongs = new Queue<Song>();
+                    }
+                    _pendingSongs.Clear();
+                    foreach (var song in newPlayList)
+                    {
+                        _pendingSongs.Enqueue(song);
+                    }
+                }
+                if (changeCurrentSong)
+                {
+                    CurrentSong = _pendingSongs.Dequeue();
+                }
+            }
+            else
+            {
+                // TODO: throw exception or not?
             }
         }
 

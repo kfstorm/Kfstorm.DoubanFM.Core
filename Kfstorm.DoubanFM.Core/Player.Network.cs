@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace Kfstorm.DoubanFM.Core
 {
@@ -50,7 +49,6 @@ namespace Kfstorm.DoubanFM.Core
             var uri = CreateGetPlayListUri(channelId, type, sid, start, (string)formats, (int?)kbps, null /* TODO: fill played time here */);
             var jsonContent = await ServerConnection.Get(uri, ServerConnection.SetSessionInfoToRequest);
             var newPlayList = ParsePlayList(jsonContent);
-            Logger.Info($"Got play list. Type: {type}. Channel ID: {channelId}. Sid: {sid}. song count: {newPlayList.Length}. Detail: {JsonConvert.SerializeObject(newPlayList)}");
             return newPlayList;
         }
     }

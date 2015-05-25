@@ -4,8 +4,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using log4net;
-using static Kfstorm.DoubanFM.Core.ExceptionHelper;
 
 namespace Kfstorm.DoubanFM.Core
 {
@@ -14,11 +12,6 @@ namespace Kfstorm.DoubanFM.Core
     /// </summary>
     public class ServerConnection : IServerConnection
     {
-        /// <summary>
-        /// The logger
-        /// </summary>
-        protected ILog Logger = LogManager.GetLogger(typeof(ServerConnection));
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerConnection"/> class.
         /// </summary>
@@ -187,8 +180,7 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns>The content of response.</returns>
         public async Task<string> Get(Uri uri, Action<HttpWebRequest> modifier)
         {
-            Logger.Debug($"GET: {uri}");
-            return await LogExceptionIfAny(Logger, () => ServerException.TryThrow(async () =>
+            return await ServerException.TryThrow(async () =>
             {
                 var request = CreateRequest(uri);
                 request.Method = WebRequestMethods.Http.Get;
@@ -198,10 +190,9 @@ namespace Kfstorm.DoubanFM.Core
                 // ReSharper disable once AssignNullToNotNullAttribute
                 var reader = new StreamReader(responseStream, Encoding.UTF8);
                 var content = await reader.ReadToEndAsync();
-                Logger.Debug($"Response: {content}");
                 ServerException.TryThrow(content);
                 return content;
-            }));
+            });
         }
 
         /// <summary>
@@ -224,9 +215,7 @@ namespace Kfstorm.DoubanFM.Core
         /// <returns>The content of response.</returns>
         public async Task<string> Post(Uri uri, byte[] data, Action<HttpWebRequest> modifier)
         {
-            var dataLength = data?.Length ?? 0;
-            Logger.Debug($"POST: {uri}. Data length: {dataLength}");
-            return await LogExceptionIfAny(Logger, () => ServerException.TryThrow(async () =>
+            return await ServerException.TryThrow(async () =>
             {
                 var request = CreateRequest(uri);
                 request.Method = WebRequestMethods.Http.Post;
@@ -242,10 +231,9 @@ namespace Kfstorm.DoubanFM.Core
                 // ReSharper disable once AssignNullToNotNullAttribute
                 var reader = new StreamReader(responseStream, Encoding.UTF8);
                 var content = await reader.ReadToEndAsync();
-                Logger.Debug($"Response: {content}");
                 ServerException.TryThrow(content);
                 return content;
-            }));
+            });
         }
     }
 }

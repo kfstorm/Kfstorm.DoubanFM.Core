@@ -45,7 +45,6 @@ namespace Kfstorm.DoubanFM.Core
                 throw new InvalidOperationException("Password is empty");
             }
 
-            Logger.Info("Start password authentication.");
             var uriBuilder = new UriBuilder("https://www.douban.com/service/auth2/token");
             uriBuilder.AppendAuthenticationCommonFields(ServerConnection);
             uriBuilder.AppendQuery(StringTable.GrantType, StringTable.Password);

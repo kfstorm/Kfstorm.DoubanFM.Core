@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using log4net;
 using Newtonsoft.Json.Linq;
 
 namespace Kfstorm.DoubanFM.Core
@@ -10,21 +9,12 @@ namespace Kfstorm.DoubanFM.Core
     public abstract class AuthenticationBase : IAuthentication
     {
         /// <summary>
-        /// Gets the logger.
-        /// </summary>
-        /// <value>
-        /// The logger.
-        /// </value>
-        protected ILog Logger { get; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationBase"/> class.
         /// </summary>
         /// <param name="serverConnection">The server connection.</param>
         protected AuthenticationBase(IServerConnection serverConnection)
         {
             ServerConnection = serverConnection;
-            Logger = LogManager.GetLogger(GetType());
         }
 
         /// <summary>

@@ -40,7 +40,6 @@ namespace Kfstorm.DoubanFM.Core
         /// </returns>
         public override async Task<UserInfo> Authenticate()
         {
-            Logger.Info("Start OAuth authentication.");
             var uriBuilder = new UriBuilder("https://www.douban.com/service/auth2/auth");
             uriBuilder.AppendAuthenticationCommonFields(ServerConnection);
             uriBuilder.AppendQuery(StringTable.ResponseType, StringTable.Code);
