@@ -35,9 +35,9 @@ namespace Kfstorm.DoubanFM.Core
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="start">The preferred index of the first channel in the returned channel array.</param>
-        /// <param name="size">The max size of returned channel array.</param>
+        /// <param name="maxSize">The maximum size of returned channel array.</param>
         /// <returns>A channel array with the first channel at index <paramref name="start"/>, or an empty array if no channels available.</returns>
-        Task<PartialList<Channel>> SearchChannel(string query, int start, int size);
+        Task<PartialList<Channel>> SearchChannel(string query, int start, int maxSize);
 
         /// <summary>
         /// Gets the song detail.

@@ -49,6 +49,7 @@
     <Compile Include="PlayerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DiscoveryTests.cs" />
+    <Compile Include="ServerBugTests.cs" />
     <Compile Include="Validator.cs" />
   </ItemGroup>
   <ItemGroup>

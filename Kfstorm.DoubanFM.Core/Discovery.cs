@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Kfstorm.DoubanFM.Core
@@ -50,11 +49,11 @@ namespace Kfstorm.DoubanFM.Core
         /// </summary>
         /// <param name="query">The query.</param>
         /// <param name="start">The preferred index of the first channel in the returned channel array.</param>
-        /// <param name="size">The max size of returned channel array.</param>
+        /// <param name="maxSize">The maximum size of returned channel array.</param>
         /// <returns>A channel array with the first channel at index <paramref name="start"/>, or an empty array if no channels available.</returns>
-        public async Task<PartialList<Channel>> SearchChannel(string query, int start, int size)
+        public async Task<PartialList<Channel>> SearchChannel(string query, int start, int maxSize)
         {
-            var uri = ServerConnection.CreateSearchChannelUri(query, start, size);
+            var uri = ServerConnection.CreateSearchChannelUri(query, start, maxSize);
             var jsonContent = await ServerConnection.Get(uri, null);
             return ServerRequests.ParseSearchChannelResult(jsonContent);
         }
