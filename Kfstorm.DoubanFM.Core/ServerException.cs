@@ -62,7 +62,7 @@ namespace Kfstorm.DoubanFM.Core
             {
                 return await action();
             }
-            catch (WebException ex)
+            catch (WebException ex) when (ex.Status == WebExceptionStatus.ProtocolError)
             {
                 var stream = ex.Response.GetResponseStream();
                 // ReSharper disable once AssignNullToNotNullAttribute
