@@ -3,6 +3,8 @@ A .NET client library for douban.fm
 
 **NOTE: This project is still under development.**
 
+[![Build status](https://ci.appveyor.com/api/projects/status/iepm8qbipch1xrco/branch/master?svg=true)](https://ci.appveyor.com/project/kfstorm/kfstorm-doubanfm-core/branch/master)
+
 ## Usage
 1. Install [the nuget package](https://www.nuget.org/packages/Kfstorm.DoubanFM.Core/) to your project.
 2. Create an instance of `IPlayer` interface and call the methods. Here is the sample code:
