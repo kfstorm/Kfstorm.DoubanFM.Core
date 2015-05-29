@@ -9,13 +9,5 @@
         <description>$description$</description>
         <releaseNotes>Offline red heart songs.</releaseNotes>
         <language>en-US</language>
-        <dependencies>
-            <dependency id="Newtonsoft.Json" version="6.0.8" />
-        </dependencies>
     </metadata>
-    <files>
-        <file src="bin\$configuration$\$id$.dll" target="lib\net45" />
-        <file src="bin\$configuration$\$id$.pdb" target="lib\net45" />
-        <file src="bin\$configuration$\$id$.xml" target="lib\net45" />
-    </files>
 </package>
