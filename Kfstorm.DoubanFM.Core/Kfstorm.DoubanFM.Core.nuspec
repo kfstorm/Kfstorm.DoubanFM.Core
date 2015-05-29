@@ -7,7 +7,7 @@
         <projectUrl>https://github.com/kfstorm/Kfstorm.DoubanFM.Core</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>$description$</description>
-        <releaseNotes>Offline red heart songs.</releaseNotes>
+        <releaseNotes>A test release.</releaseNotes>
         <language>en-US</language>
     </metadata>
 </package>
